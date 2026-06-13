@@ -1,8 +1,8 @@
 "use client";
 import Link from 'next/link';
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState } from 'react';
 import { useLanguage } from './context/LanguageContext';
-import { CheckCircle2, BedDouble, Sofa, Utensils, MessageCircle, MapPin, BadgeCheck, Truck } from 'lucide-react';
+import { CheckCircle2, MessageCircle, MapPin, BadgeCheck, Truck } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const translations = {
@@ -54,30 +54,15 @@ const translations = {
 
     enCokTercih: "En Çok Tercih Edilenler",
 
-   iletisimBaslik: "Showroom ve Konumlarımız",
+    iletisimBaslik: "Showroom ve Konumlarımız",
 
-magazalar: [
-  {
-    ad: "Eskidji Bazaar-Pendik",
-    konum: "2. Kat"
-  },
-  {
-    ad: "Eskidji Bazaar-Esenyurt",
-    konum: "1. Kat"
-  },
-  {
-    ad: "Eskidji Bazaar-Esenyurt",
-    konum: "2. Kat"
-  },
-  {
-    ad: "Eskidji Bazaar-Bayrampaşa",
-    konum: "1. Kat"
-  },
-  {
-    ad: "Eskidji Bazaar-Avcılar",
-    konum: "2. Kat"
-  }
-],
+    magazalar: [
+      { ad: "Eskidji Bazaar-Pendik", konum: "2. Kat" },
+      { ad: "Eskidji Bazaar-Esenyurt", konum: "1. Kat" },
+      { ad: "Eskidji Bazaar-Esenyurt", konum: "2. Kat" },
+      { ad: "Eskidji Bazaar-Bayrampaşa", konum: "1. Kat" },
+      { ad: "Eskidji Bazaar-Avcılar", konum: "2. Kat" }
+    ],
     bizeUlasin: "BİZE ULAŞIN",
     iletisimKartBaslik: "Hayalinizdeki Yaşam Alanını Birlikte Tasarlayalım",
     iletisimKartMetin: "Koleksiyonlarımız hakkında detaylı bilgi almak veya özel projeleriniz için tasarım ekibimizle görüşmek için bizimle iletişime geçin.",
@@ -135,28 +120,13 @@ magazalar: [
     enCokTercih: "Most Preferred",
 
     iletisimBaslik: "Showrooms and Locations",
- magazalar: [
-  {
-    ad: "Eskidji Bazaar-Pendik",
-    konum: "2nd Floor"
-  },
-  {
-    ad: "Eskidji Bazaar-Esenyurt",
-    konum: "1st Floor"
-  },
-  {
-    ad: "Eskidji Bazaar-Esenyurt",
-    konum: "2nd Floor"
-  },
-  {
-    ad: "Eskidji Bazaar-Bayrampaşa",
-    konum: "1st Floor"
-  },
-  {
-    ad: "Eskidji Bazaar-Avcılar",
-    konum: "2nd Floor"
-  }
-],
+    magazalar: [
+      { ad: "Eskidji Bazaar-Pendik", konum: "2nd Floor" },
+      { ad: "Eskidji Bazaar-Esenyurt", konum: "1st Floor" },
+      { ad: "Eskidji Bazaar-Esenyurt", konum: "2nd Floor" },
+      { ad: "Eskidji Bazaar-Bayrampaşa", konum: "1st Floor" },
+      { ad: "Eskidji Bazaar-Avcılar", konum: "2nd Floor" }
+    ],
     bizeUlasin: "CONTACT US",
     iletisimKartBaslik: "Let's Design Your Dream Living Space Together",
     iletisimKartMetin: "Contact us to get detailed information about our collections or to meet with our design team for your custom projects.",
@@ -213,28 +183,14 @@ magazalar: [
     hikayemizStat2Yazi: "مشروع مكتمل",
 
     enCokTercih: "الأكثر تفضيلاً",
-magazalar: [
-  {
-    ad: "إسكيدجي بازار - بنديك",
-    konum: "الطابق الثاني"
-  },
-  {
-    ad: "إسكيدجي بازار - إسنيورت",
-    konum: "الطابق الأول"
-  },
-  {
-    ad: "إسكيدجي بازار - إسنيورت",
-    konum: "الطابق الثاني"
-  },
-  {
-    ad: "إسكيدجي بازار - بايرام باشا",
-    konum: "الطابق الأول"
-  },
-  {
-    ad: "إسكيدجي بازار - أفجلار",
-    konum: "الطابق الثاني"
-  }
-],
+    iletisimBaslik: "صالة العرض والمواقع",
+    magazalar: [
+      { ad: "إسكيدجي بازار - بنديك", konum: "الطابق الثاني" },
+      { ad: "إسكيدجي بازار - إسنيورت", konum: "الطابق الأول" },
+      { ad: "إسكيدجي بازار - إسنيورت", konum: "الطابق الثاني" },
+      { ad: "إسكيدجي بازار - بايرام باشا", konum: "الطابق الأول" },
+      { ad: "إسكيدجي بازار - أفجلار", konum: "الطابق الثاني" }
+    ],
     bizeUlasin: "اتصل بنا",
     iletisimKartBaslik: "دعنا نصمم مساحة المعيشة التي تحلم بها معًا",
     iletisimKartMetin: "اتصل بنا للحصول على معلومات مفصلة حول مجموعاتنا أو لمقابلة فريق التصميم الخاص بنا لمشاريعك المخصصة.",
@@ -244,66 +200,41 @@ magazalar: [
   }
 };
 
-const urunlerListesi = [
-{
-  kategori: {
-    TR: "Yatak Odası",
-    EN: "Bedroom",
-    AR: "غرفة النوم"
-  },
-  isim: {
-    TR: "Yüklüklü 4 Kapılı Roma Dolap",
-    EN: "Roma 4-Door Wardrobe with Storage Unit",
-    AR: "خزانة روما بأربعة أبواب مع وحدة تخزين علوية"
-  },
-  fiyat: "16.500₺",
-  img: "/images/cok-tercih1.jpeg"
-},
-{
-  kategori: { 
-    TR: "Genç Odası", 
-    EN: "Youth Room", 
-    AR: "غرفة الشباب" 
-  },
-  isim: { 
-    TR: "Marmaris Ranza", 
-    EN: "Marmaris Bunk Bed", 
-    AR: "سرير بطابقين مارماريس" 
-  },
-  fiyat: "17.499₺",
-  img: "/images/cok-tercih2.jpeg"
-},
-{
-  kategori: { 
-    TR: "Oturma Odası", 
-    EN: "Living Room", 
-    AR: "غرفة المعيشة" 
-  },
-  isim: { 
-    TR: "Valery Koltuk Takımı", 
-    EN: "Valery Sofa Set", 
-    AR: "طقم كنب فاليري" 
-  },
-  fiyat: "21.000₺",
-  img: "/images/cok-tercih3.jpeg"
-},
-{
-  kategori: { 
-    TR: "Portmanto", 
-    EN: "Hallway Coat Rack", 
-    AR: "وحدة تعليق الملابس عند المدخل" 
-  },
-  isim: { 
-    TR: "Nevin Portmanto", 
-    EN: "Nevin Hallway Coat Rack", 
-    AR: "وحدة تعليق نيفين للمدخل" 
-  },
-  fiyat: "12.999₺",
-  img: "/images/cok-tercih4.jpeg"
+interface Urun {
+  kategori: { TR: string; EN: string; AR: string; };
+  isim: { TR: string; EN: string; AR: string; };
+  fiyat: string;
+  img: string;
+  renkler?: string[];
 }
+
+const urunlerListesi: Urun[] = [
+  {
+    kategori: { TR: "Yatak Odası", EN: "Bedroom", AR: "غرفة النوم" },
+    isim: { TR: "Yüklüklü 4 Kapılı Roma Dolap", EN: "Roma 4-Door Wardrobe with Storage Unit", AR: "خزانة روما بأربعة أبواب مع وحدة تخزين علوية" },
+    fiyat: "16.500₺",
+    img: "/images/cok-tercih1.jpeg"
+  },
+  {
+    kategori: { TR: "Genç Odası", EN: "Youth Room", AR: "غرفة الشباب" },
+    isim: { TR: "Marmaris Ranza", EN: "Marmaris Bunk Bed", AR: "سرير بطابقين مارماريس" },
+    fiyat: "17.499₺",
+    img: "/images/cok-tercih2.jpeg"
+  },
+  {
+    kategori: { TR: "Oturma Odası", EN: "Living Room", AR: "غرفة المعيشة" },
+    isim: { TR: "Valery Koltuk Takımı", EN: "Valery Sofa Set", AR: "طقم كنب فاليري" },
+    fiyat: "21.000₺",
+    img: "/images/cok-tercih3.jpeg"
+  },
+  {
+    kategori: { TR: "Portmanto", EN: "Hallway Coat Rack", AR: "وحدة تعليق الملابس عند المدخل" },
+    isim: { TR: "Nevin Portmanto", EN: "Nevin Hallway Coat Rack", AR: "وحدة تعليق نيفين للمدخل" },
+    fiyat: "12.999₺",
+    img: "/images/cok-tercih4.jpeg"
+  }
 ];
 
-// Animation Variants (İleri Düzey Tip Güvenliği ile Güncellendi)
 const staggerContainer = {
   hidden: { opacity: 0 },
   show: {
@@ -315,7 +246,7 @@ const staggerContainer = {
 const fadeUpItem = {
   hidden: { opacity: 0, y: 40 },
   show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" } }
-} as const; // <-- Buraya da 'as const' ekledik
+} as const;
 
 const fadeIn = {
   hidden: { opacity: 0 },
@@ -326,19 +257,16 @@ export default function Home() {
   const { lang } = useLanguage();
   const t = translations[lang as keyof typeof translations];
   
-  // دالة إرسال رسالة الواتساب مع اسم المنتج ورابط الصورة
   const sendWhatsApp = (productName?: string, imageUrl?: string) => {
-    const phoneNumber = "905514835322"; // 👉 ضعي رقمك هنا (بدون +)
-    let message = t.whatsappHemen; // رسالة عامة افتراضية
+    const phoneNumber = "905514835322"; 
+    let message = t.whatsappHemen;
 
     if (productName) {
-      // التأكد من أن رابط الصورة كامل (عشان يشتغل وتظهر الصورة بالواتس)
       let imgLink = "";
       if (imageUrl) {
         imgLink = imageUrl.startsWith('http') ? imageUrl : `${window.location.origin}${imageUrl}`;
       }
       
-      // تجهيز الرسالة حسب لغة الموقع الحالية
       if (lang === 'AR') {
         message = `مرحباً، أنا مهتم بهذا المنتج/الباقة:\n\n*${productName}*\n\nرابط صورة الموديل: ${imgLink}`;
       } else if (lang === 'EN') {
@@ -352,7 +280,6 @@ export default function Home() {
     window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
   };
 
-  // Drag Scroll Logic
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
@@ -374,7 +301,7 @@ export default function Home() {
     scrollRef.current.scrollLeft = scrollLeft - walk;
   };
 
-const categories = [
+  const categories = [
     { id: 1, key: "cOturma", href: "/kategori/oturma-odasi", img: "/images/oturma-odasi.jpg" }, 
     { id: 2, key: "cYemek", href: "/kategori/yemek-odasi", img: "/images/yemek-odasi.jpg" },
     { id: 3, key: "cYatak", href: "/kategori/yatak-odasi", img: "/images/yatak-odasi.jpg" },
@@ -386,7 +313,7 @@ const categories = [
   const packageImages = [
     "/images/oturma-odasi.jpg", 
     "/images/yatak-odasi.jpg", 
-     "/images/yemek-odasi.jpg", 
+    "/images/yemek-odasi.jpg", 
   ];
 
   return (
@@ -507,13 +434,12 @@ const categories = [
                       </p>
                     </div>
                     <div className="flex flex-col gap-4">
-                    <Link 
-  href={`/paket/${paket.isim1.toLowerCase()}`}
-  className="w-full bg-[#241a0e] text-[#f9f8f4] py-5 rounded-2xl font-semibold text-[17px] tracking-wide hover:bg-[#382b1c] transition-colors flex items-center justify-center"
->
-  {t.detaylar}
-</Link>
-                      {/* الزر الخاص بالواتساب في الباقات (يرسل اسم الباقة وصورتها) */}
+                      <Link 
+                        href={`/paket/${paket.isim1.toLowerCase()}`}
+                        className="w-full bg-[#241a0e] text-[#f9f8f4] py-5 rounded-2xl font-semibold text-[17px] tracking-wide hover:bg-[#382b1c] transition-colors flex items-center justify-center"
+                      >
+                        {t.detaylar}
+                      </Link>
                       <button 
                         onClick={() => sendWhatsApp(`${paket.isim1} ${paket.isim2}`, packageImages[index])}
                         className="w-full bg-[#22c55e] text-white py-5 rounded-2xl font-semibold text-[17px] tracking-wide flex items-center justify-center gap-2 hover:bg-[#1ca64e] transition-colors"
@@ -558,7 +484,6 @@ const categories = [
                   <p className="text-3xl md:text-4xl font-serif text-[#2a241e] mb-2">{t.hikayemizStat1Sayi}</p>
                   <p className="text-[11px] font-bold text-[#8c7f73] uppercase tracking-wider">{t.hikayemizStat1Yazi}</p>
                 </div>
-
               </div>
             </motion.div>
 
@@ -570,10 +495,10 @@ const categories = [
               className="relative w-full h-[450px] md:h-[550px] lg:h-[600px] mt-10 lg:mt-0"
             >
               <div className="absolute top-0 right-0 rtl:right-auto rtl:left-0 w-[80%] h-[75%] rounded-[32px] overflow-hidden shadow-lg">
-               <img src="/images/hikayemiz2.jpg" className="w-full h-full object-cover" />
+               <img src="/images/hikayemiz2.jpg" alt="Hikayemiz Görsel 2" className="w-full h-full object-cover" />
               </div>
               <div className="absolute bottom-0 left-0 rtl:left-auto rtl:right-0 w-[60%] h-[65%] rounded-[32px] overflow-hidden border-[12px] border-[#faf9f6] shadow-2xl z-10">
-               <img src="/images/hikayemiz1.jpg" className="w-full h-full object-cover" />
+               <img src="/images/hikayemiz1.jpg" alt="Hikayemiz Görsel 1" className="w-full h-full object-cover" />
               </div>
             </motion.div>
           </div>
@@ -601,7 +526,6 @@ const categories = [
                 >
                   <div className="w-full h-[260px] rounded-[20px] overflow-hidden bg-[#f4f2f0] mb-6 relative">
                     <img src={urun.img} alt={urun.isim[lang as keyof typeof urun.isim]} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                    {/* شريط واتساب يظهر عند تمرير الماوس للمنتجات */}
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                       <div className="bg-[#25D366] text-white px-4 py-2 rounded-full font-medium flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                         <MessageCircle size={18} />
@@ -653,27 +577,27 @@ const categories = [
                 {t.iletisimBaslik}
               </h2>
               <div className="flex flex-col gap-10">
-        {(t as any).magazalar.map((magaza: any, index: number) => (
-  <div
-    key={index}
-    className="flex items-center gap-6 ltr:border-l-4 rtl:border-r-4 ltr:pl-6 rtl:pr-6 border-[#8c7f73]"
-  >
-    <MapPin
-      className="text-[#2a241e] w-6 h-6 flex-shrink-0"
-      strokeWidth={2.5}
-    />
+                {(t as any).magazalar.map((magaza: any, index: number) => (
+                  <div
+                    key={index}
+                    className="flex items-center gap-6 ltr:border-l-4 rtl:border-r-4 ltr:pl-6 rtl:pr-6 border-[#8c7f73]"
+                  >
+                    <MapPin
+                      className="text-[#2a241e] w-6 h-6 flex-shrink-0"
+                      strokeWidth={2.5}
+                    />
 
-    <div className="flex flex-col gap-1">
-      <p className="text-[20px] text-[#52525b] tracking-wide">
-        {magaza.konum}
-      </p>
+                    <div className="flex flex-col gap-1">
+                      <p className="text-[20px] text-[#52525b] tracking-wide">
+                        {magaza.konum}
+                      </p>
 
-      <p className="text-[20px] font-bold tracking-wider text-[#2a241e]">
-        {magaza.ad}
-      </p>
-    </div>
-  </div>
-))}
+                      <p className="text-[20px] font-bold tracking-wider text-[#2a241e]">
+                        {magaza.ad}
+                      </p>
+                    </div>
+                  </div>
+                ))}
               </div>
             </motion.div>
 
@@ -690,7 +614,6 @@ const categories = [
                 {t.iletisimKartMetin}
               </p>
               
-              {/* زر التواصل العام */}
               <button 
                 onClick={() => sendWhatsApp()} 
                 className="w-full bg-[#22c55e] text-white py-5 rounded-2xl font-bold text-[16px] flex items-center justify-center gap-2 hover:bg-[#1ca64e] transition-colors mb-8 shadow-sm hover:shadow-md"

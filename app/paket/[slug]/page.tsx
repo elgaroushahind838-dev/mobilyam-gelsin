@@ -35,29 +35,90 @@ const packageData = {
 
 const translations = {
   TR: {
-    anaSayfa: "Ana Sayfa", paketler: "Düğün Paketleri", bolum1Tag: "BÖLÜM 01", bolum1Baslik: "Yatak Odası Takımı", bolum1Aciklama: "Dinginliği yansıtan, fonksiyonel ve zarif parçalar.",
-    bolum2Tag: "BÖLÜM 02", bolum2Baslik: "Oturma Grubu", bolum2Aciklama: "Konforun en yalın hali, fırınlanmış iskelet yapısı.",
-    teknikDetay: "TEKNİK DETAY", olculer: ["Genişlik: 280cm", "Derinlik: 105cm", "Yükseklik: 75cm"], cizimIndir: "SEÇİMLERİMİ WHATSAPP'A GÖNDER",
-    bolum3Tag: "BÖLÜM 03", bolum3Baslik: "Yemek Odası", bolum3Aciklama: "Mermer ve masif meşenin kusursuz uyumu.",
-    tablaSecimi: "TABLA SEÇİMİ", tablaDetay: "Carrara Mermer veya Doğal Meşe", sandalyeAdedi: "SANDALYE ADEDİ", sandalyeDetay: "6 veya 8 Kişilik Seçenekler", uzmanDestegi: "UZMAN DESTEĞİ", uzmanDetay: "İç mimarlarımız konfigürasyon yapabilir.",
-    indirimBaslik: "DÜĞÜN PAKETİNE ÖZEL -20% İNDİRİM", waMesaj: "Merhaba, konfigürasyon detaylarım:"
+    anaSayfa: "Ana Sayfa", 
+    paketler: "Düğün Paketleri", 
+    bolum1Tag: "BÖLÜM 01", 
+    bolum1Baslik: "Yatak Odası Takımı", 
+    bolum1Aciklama: "Dinginliği yansıtan, fonksiyonel ve zarif parçalar.",
+    ahsapSecenek: "AHŞAP SEÇENEKLERİ", 
+    kumasDoku: "KUMAŞ DOKUSU", 
+    kumaslar: ["BUKLET", "KETEN", "KADİFE"], 
+    icerik: ["Karyola (160x200)", "2 Adet Komodin", "6 Kapılı Dolap"], 
+    dahil: "Dahil",
+    bolum2Tag: "BÖLÜM 02", 
+    bolum2Baslik: "Oturma Grubu", 
+    bolum2Aciklama: "Konforun en yalın hali, fırınlanmış iskelet yapısı.",
+    teknikDetay: "TEKNİK DETAY", 
+    olculer: ["Genişlik: 280cm", "Derinlik: 105cm", "Yükseklik: 75cm"], 
+    cizimIndir: "SEÇİMLERİMİ WHATSAPP'A GÖNDER",
+    bolum3Tag: "BÖLÜM 03", 
+    bolum3Baslik: "Yemek Odası", 
+    bolum3Aciklama: "Mermer ve masif meşenin kusursuz uyumu.",
+    tablaSecimi: "TABLA SEÇİMİ", 
+    tablaDetay: "Carrara Mermer veya Doğal Meşe", 
+    sandalyeAdedi: "SANDALYE ADEDİ", 
+    sandalyeDetay: "6 veya 8 Kişilik Seçenekler", 
+    uzmanDestegi: "UZMAN DESTEĞİ", 
+    uzmanDetay: "İç mimarlarımız konfigürasyon yapabilir.",
+    indirimBaslik: "DÜĞÜN PAKETİNE ÖZEL -20% İNDİRİM", 
+    waMesaj: "Merhaba, konfigürasyon detaylarım:"
   },
   EN: {
-    anaSayfa: "Home", paketler: "Wedding Packages", bolum1Tag: "PART 01", bolum1Baslik: "Bedroom Set", bolum1Aciklama: "Functional and elegant pieces reflecting serenity.",
-    ahsapSecenek: "WOOD OPTIONS", kumasDoku: "FABRIC TEXTURE", kumaslar: ["BOUCLE", "LINEN", "VELVET"], icerik: ["Bed Frame (160x200)", "2 Nightstands", "6-Door Wardrobe"], dahil: "Included",
-    bolum2Tag: "PART 02", bolum2Baslik: "Living Room Group", bolum2Aciklama: "The purest form of comfort, kiln-dried frame.",
-    teknikDetay: "TECHNICAL DETAILS", olculer: ["Width: 280cm", "Depth: 105cm", "Height: 75cm"], cizimIndir: "SEND SELECTIONS VIA WHATSAPP",
-    bolum3Tag: "PART 03", bolum3Baslik: "Dining Room", bolum3Aciklama: "Perfect harmony of marble and solid oak.",
-    tablaSecimi: "TABLETOP", tablaDetay: "Carrara Marble or Natural Oak", sandalyeAdedi: "CHAIRS", sandalyeDetay: "6 or 8 Person Options", uzmanDestegi: "EXPERT SUPPORT", uzmanDetay: "Our architects can configure.",
+    anaSayfa: "Home", 
+    paketler: "Wedding Packages", 
+    bolum1Tag: "PART 01", 
+    bolum1Baslik: "Bedroom Set", 
+    bolum1Aciklama: "Functional and elegant pieces reflecting serenity.",
+    ahsapSecenek: "WOOD OPTIONS", 
+    kumasDoku: "FABRIC TEXTURE", 
+    kumaslar: ["BOUCLE", "LINEN", "VELVET"], 
+    icerik: ["Bed Frame (160x200)", "2 Nightstands", "6-Door Wardrobe"], 
+    dahil: "Included",
+    bolum2Tag: "PART 02", 
+    bolum2Baslik: "Living Room Group", 
+    bolum2Aciklama: "The purest form of comfort, kiln-dried frame.",
+    teknikDetay: "TECHNICAL DETAILS", 
+    olculer: ["Width: 280cm", "Depth: 105cm", "Height: 75cm"], 
+    cizimIndir: "SEND SELECTIONS VIA WHATSAPP",
+    bolum3Tag: "PART 03", 
+    bolum3Baslik: "Dining Room", 
+    bolum3Aciklama: "Perfect harmony of marble and solid oak.",
+    tablaSecimi: "TABLETOP", 
+    tablaDetay: "Carrara Marble or Natural Oak", 
+    sandalyeAdedi: "CHAIRS", 
+    sandalyeDetay: "6 or 8 Person Options", 
+    uzmanDestegi: "EXPERT SUPPORT", 
+    uzmanDetay: "Our architects can configure.",
+    indirimBaslik: "SPECIAL FOR WEDDING PACKAGE -20% DISCOUNT",
     waMesaj: "Hello, my configuration details:"
   },
   AR: {
-    anaSayfa: "الرئيسية", paketler: "باقات الزفاف", bolum1Tag: "الجزء 01", bolum1Baslik: "طقم غرفة النوم", bolum1Aciklama: "قطع عملية وأنيقة تعكس الهدوء والسكينة.",
-    ahsapSecenek: "خيارات الخشب", kumasDoku: "ملمس القماش", kumaslar: ["بوكليت", "كتان", "مخمل"], icerik: ["هيكل سرير (160x200)", "2 كومودينو", "خزانة بـ 6 أبواب"], dahil: "متضمن",
-    bolum2Tag: "الجزء 02", bolum2Baslik: "طقم الجلوس", bolum2Aciklama: "الراحة بأنقى صورها، وهيكل خشب متين.",
-    teknikDetay: "تفاصيل تقنية", olculer: ["العرض: 280 سم", "العمق: 105 سم", "الارتفاع: 75 سم"], cizimIndir: "أرسل خياراتي عبر واتساب",
-    bolum3Tag: "الجزء 03", bolum3Baslik: "غرفة الطعام", bolum3Aciklama: "التناغم المثالي بين الرخام والبلوط الصلب.",
-    tablaSecimi: "سطح الطاولة", tablaDetay: "رخام كرارا أو بلوط طبيعي", sandalyeAdedi: "عدد الكراسي", sandalyeDetay: "خيارات لـ 6 أو 8 أشخاص", uzmanDestegi: "دعم الخبراء", uzmanDetay: "مهندسونا جاهزون للمساعدة.",
+    anaSayfa: "الرئيسية", 
+    paketler: "باقات الزفاف", 
+    bolum1Tag: "الجزء 01", 
+    bolum1Baslik: "طقم غرفة النوم", 
+    bolum1Aciklama: "قطع عملية وأنيقة تعكس الهدوء والسكينة.",
+    ahsapSecenek: "خيارات الخشب", 
+    kumasDoku: "ملمس القماش", 
+    kumaslar: ["بوكليت", "كتان", "مخمل"], 
+    icerik: ["هيكل سرير (160x200)", "2 كومودينو", "خزانة بـ 6 أبواب"], 
+    dahil: "متضمن",
+    bolum2Tag: "الجزء 02", 
+    bolum2Baslik: "طقم الجلوس", 
+    bolum2Aciklama: "الراحة بأنقى صورها، وهيكل خشب متين.",
+    teknikDetay: "تفاصيل تقنية", 
+    olculer: ["العرض: 280 سم", "العمق: 105 سم", "الارتفاع: 75 سم"], 
+    cizimIndir: "أرسل خياراتي عبر واتساب",
+    bolum3Tag: "الجزء 03", 
+    bolum3Baslik: "غرفة الطعام", 
+    bolum3Aciklama: "التناغم المثالي بين الرخام والبلوط الصلب.",
+    tablaSecimi: "سطح الطاولة", 
+    tablaDetay: "رخام كرارا أو بلوط طبيعي", 
+    sandalyeAdedi: "عدد الكراسي", 
+    sandalyeDetay: "خيارات لـ 6 أو 8 أشخاص", 
+    uzmanDestegi: "دعم الخبراء", 
+    uzmanDetay: "مهندسونا جاهزون للمساعدة.",
+    indirimBaslik: "خصم خاص -20% حصرياً لباقة الزفاف",
     waMesaj: "مرحباً، هذه تفضيلاتي للباقة:"
   }
 };
@@ -81,7 +142,7 @@ export default function PackageDetailPage() {
   const woodColors = ["#4a3728", "#8c7f73", "#d2b48c"];
   const woodNames = ["Koyu Ceviz", "Açık Meşe", "Doğal Ahşap"];
   const sofaColors = ["#eacbd2", "#dcdde1", "#8ba1b5", "#2d4a5a", "#fdf3d0", "#849021", "#556b2f", "#1f3b2a"];
-  const sofaColorNames = ["Gül Kurusu", "Açık Gri", "Buz Mavisi", "Lacivert", "Krem", "Hardal", "Ada Çayı", "Zümrüt Yeشيل Yeşil"];
+  const sofaColorNames = ["Gül Kurusu", "Açık Gri", "Buz Mavisi", "Lacivert", "Krem", "Hardal", "Ada Çayı", "Zümrüt Yeşil"];
 
   const bedImages = woodColors.map((_, idx) => {
     const base = currentPackage.images.bed;
@@ -126,7 +187,7 @@ export default function PackageDetailPage() {
             <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-2" style={{ scrollbarWidth: 'none' }} onScroll={(e) => handleScroll(e, setBedSlide)}>
               {bedImages[selectedWood].map((img, idx) => (
                 <div key={idx} className="flex-none w-full h-[320px] md:h-[450px] snap-center rounded-[20px] overflow-hidden bg-[#e8e4dc]">
-                  <img src={img} className="w-full h-full object-cover"/>
+                  <img src={img} className="w-full h-full object-cover" alt="Bed option"/>
                 </div>
               ))}
             </div>
@@ -143,7 +204,7 @@ export default function PackageDetailPage() {
         </div>
       </section>
 
-      {/* BÖLÜM 02: OTURMA GRUBU (تم تكبير مربعات الألوان وتقريب المسافات هنا) */}
+      {/* BÖLÜM 02: OTURMA GRUBU */}
       <section className="py-10 max-w-[1200px] mx-auto px-6 md:px-10 border-t border-[#e8e4dc]">
         <div className="mb-5">
           <span className="text-[10px] font-bold tracking-[0.2em] text-[#8c7f73] uppercase mb-1 block">{t.bolum2Tag}</span>
@@ -156,7 +217,7 @@ export default function PackageDetailPage() {
             <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-2" style={{ scrollbarWidth: 'none' }} onScroll={(e) => handleScroll(e, setSofaSlide)}>
               {sofaImages[selectedSofaColor].map((img, idx) => (
                 <div key={idx} className="flex-none w-full h-[320px] md:h-[450px] snap-center rounded-[20px] overflow-hidden bg-[#e8e4dc]">
-                  <img src={img} className="w-full h-full object-cover"/>
+                  <img src={img} className="w-full h-full object-cover" alt="Sofa option"/>
                 </div>
               ))}
             </div>
@@ -166,8 +227,6 @@ export default function PackageDetailPage() {
           </div>
 
           <div className="flex flex-col bg-[#f0ece6] p-5 md:p-6 rounded-[20px] lg:col-span-5 h-auto self-start">
-            
-      
             <div className="mb-6">
               <span className="text-[9px] font-bold tracking-widest text-[#2a241e] uppercase mb-1 block">{t.teknikDetay}</span>
               <div className="flex flex-col gap-0.5">
@@ -197,7 +256,7 @@ export default function PackageDetailPage() {
           <div className="relative lg:col-span-7">
             <div className="flex overflow-x-auto snap-x snap-mandatory gap-4" style={{ scrollbarWidth: 'none' }} onScroll={(e) => handleScroll(e, setDiningSlide)}>
               {currentPackage.images.dining.map((img, idx) => (
-                <div key={idx} className="flex-none w-full h-[320px] md:h-[450px] snap-center rounded-[20px] overflow-hidden bg-[#e8e4dc]"><img src={img} className="w-full h-full object-cover" /></div>
+                <div key={idx} className="flex-none w-full h-[320px] md:h-[450px] snap-center rounded-[20px] overflow-hidden bg-[#e8e4dc]"><img src={img} className="w-full h-full object-cover" alt="Dining room option"/></div>
               ))}
             </div>
             <div className="flex justify-center gap-2 mt-2">

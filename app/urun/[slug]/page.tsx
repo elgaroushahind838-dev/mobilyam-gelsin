@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useLanguage } from '../../context/LanguageContext';
-import { ChevronRight, CheckCircle2, MessageCircle, Download } from 'lucide-react';
+import { ChevronRight, CheckCircle2, MessageCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 //  بيانات المنتجات
@@ -29,23 +29,21 @@ const productsDB = {
     ],
     dimensions: { width: "220 cm", depth: "100 cm", height: "75 cm" },
     options: [
-     { 
-  title: { TR: "Kulp Seçimi", EN: "HANDLE SELECTION", AR: "اختيار المقابض" }, 
-  items: [
-    { color: "#d4af37", label: { TR: "Ezgi Altın Siyah", EN: "Ezgi Gold Black", AR: "إيزغي ذهبي أسود" }, img: "images/ezgi-altin-siyah.jpg" },
-    { color: "#c0c0c0", label: { TR: "Ezgi Gümüş", EN: "Ezgi Silver", AR: "إيزغي فضي" }, img: "images/ezgi-gumus.jpg" },
-    { color: "#1a1a1a", label: { TR: "Ezgi Siyah", EN: "Ezgi Black", AR: "إيزغي أسود" }, img: "images/ezgi-siyah.jpg" },
-    
-    { color: "#d4af37", label: { TR: "Halka Altın", EN: "Gold Ring", AR: "حلقة ذهبية" }, img: "images/halka-altin.jpg" },
-    { color: "#1a1a1a", label: { TR: "Halka Siyah", EN: "Black Ring", AR: "حلقة سوداء" }, img: "images/halka-siyah.jpg" },
-    { color: "#c0c0c0", label: { TR: "Halka Gümüş", EN: "Silver Ring", AR: "حلقة فضية" }, img: "images/halka-gumus.jpg" },
-    
-    { color: "#b89068", label: { TR: "Bohem", EN: "Boho Wooden", AR: "بوهيمي" }, img: "images/bohem.jpg" },
-    { color: "#1a1a1a", label: { TR: "Yuvarlak Siyah", EN: "Round Black", AR: "دائري أسود" }, img: "images/yuvarlak-siyah.jpg" },
-    { color: "#1a1a1a", label: { TR: "Kare Siyah", EN: "Square Black", AR: "مربع أسود" }, img: "images/kare-siyah.jpg" },
-    { color: "#d4af37", label: { TR: "Kare Altın", EN: "Square Gold", AR: "مربع ذهبي" }, img: "images/kare-altin.jpg" }
-  ] 
-},
+      { 
+        title: { TR: "Kulp Seçimi", EN: "HANDLE SELECTION", AR: "اختيار المقابض" }, 
+        items: [
+          { color: "#d4af37", label: { TR: "Ezgi Altın Siyah", EN: "Ezgi Gold Black", AR: "إيزغي ذهبي أسود" }, img: "images/ezgi-altin-siyah.jpg" },
+          { color: "#c0c0c0", label: { TR: "Ezgi Gümüş", EN: "Ezgi Silver", AR: "إيزغي فضي" }, img: "images/ezgi-gumus.jpg" },
+          { color: "#1a1a1a", label: { TR: "Ezgi Siyah", EN: "Ezgi Black", AR: "إيزغي أسود" }, img: "images/ezgi-siyah.jpg" },
+          { color: "#d4af37", label: { TR: "Halka Altın", EN: "Gold Ring", AR: "حلقة ذهبية" }, img: "images/halka-altin.jpg" },
+          { color: "#1a1a1a", label: { TR: "Halka Siyah", EN: "Black Ring", AR: "حلقة سوداء" }, img: "images/halka-siyah.jpg" },
+          { color: "#c0c0c0", label: { TR: "Halka Gümüş", EN: "Silver Ring", AR: "حلقة فضية" }, img: "images/halka-gumus.jpg" },
+          { color: "#b89068", label: { TR: "Bohem", EN: "Boho Wooden", AR: "بوهيمي" }, img: "images/bohem.jpg" },
+          { color: "#1a1a1a", label: { TR: "Yuvarlak Siyah", EN: "Round Black", AR: "دائري أسود" }, img: "images/yuvarlak-siyah.jpg" },
+          { color: "#1a1a1a", label: { TR: "Kare Siyah", EN: "Square Black", AR: "مربع أسود" }, img: "images/kare-siyah.jpg" },
+          { color: "#d4af37", label: { TR: "Kare Altın", EN: "Square Gold", AR: "مربع ذهby" } }
+        ] 
+      },
       { 
         title: { TR: "ahşap rengi", EN: "MARBLE PATTERN", AR: "شكل الرخام" }, 
         items: [
@@ -54,7 +52,7 @@ const productsDB = {
           { color: "#8c7f73", label: { TR: "Emperador", EN: "Emperador", AR: "إمبرادور" } }
         ] 
       },
-            { 
+      { 
         title: { TR: "PVS", EN: "MARBLE PATTERN", AR: "شكل الرخام" }, 
         items: [
           { color: "#e0dcd3", label: { TR: "Carrara Beyaz", EN: "Carrara White", AR: "كرارا أبيض" } },
@@ -63,7 +61,7 @@ const productsDB = {
         ] 
       },
       {
-         title: { TR: "Kapak", EN: "MARBLE PATTERN", AR: "شكل الرخام" }, 
+        title: { TR: "Kapak", EN: "MARBLE PATTERN", AR: "شكل الرخام" }, 
         items: [
           { color: "#e0dcd3", label: { TR: "Carrara Beyaz", EN: "Carrara White", AR: "كرارا أبيض" } },
           { color: "#2a2a2a", label: { TR: "Nero Marquina", EN: "Nero Marquina", AR: "نيرو ماركينا" } },
@@ -96,7 +94,7 @@ const productsDB = {
       { 
         title: { TR: "AYAK RENGİ", EN: "LEG COLOR", AR: "لون الأرجل" }, 
         items: [
-          { color: "#5e4028", label: { TR: "Koyu Ceviz", EN: "Dark Walnut", AR: "جوز غامق" }, img: "https://images.unsplash.com/photo-1604578762246-41134e37f9cc?q=80&w=1200&auto=format&fit=crop" },
+          { color: "#5e4028", label: { TR: "Koyu Ceviz", EN: "Dark Walnut", AR: "جوز غamık" }, img: "https://images.unsplash.com/photo-1604578762246-41134e37f9cc?q=80&w=1200&auto=format&fit=crop" },
           { color: "#1a1a1a", label: { TR: "Siyah Meşe", EN: "Black Oak", AR: "بلوط أسود" }, img: "https://images.unsplash.com/photo-1617806118233-18e1c094f094?q=80&w=1200&auto=format&fit=crop" },
           { color: "#f5f5f5", label: { TR: "Doğal Meşe", EN: "Natural Oak", AR: "بلوط طبيعي" }, img: "https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=1200&auto=format&fit=crop" }
         ] 
@@ -106,21 +104,21 @@ const productsDB = {
         items: [
           { color: "#e0dcd3", label: { TR: "Carrara Beyaz", EN: "Carrara White", AR: "كرارا أبيض" } },
           { color: "#2a2a2a", label: { TR: "Nero Marquina", EN: "Nero Marquina", AR: "نيرو ماركينا" } },
-          { color: "#8c7f73", label: { TR: "Emperador", EN: "Emperador", AR: "إمبرادور" } }
+          { color: "#8c7f73", label: { TR: "Emperador", EN: "Emperador", AR: "إمبرador" } }
         ] 
       },
-            { 
+      { 
         title: { TR: "MERMER DESENİ", EN: "MARBLE PATTERN", AR: "شكل الرخام" }, 
         items: [
           { color: "#e0dcd3", label: { TR: "Carrara Beyaz", EN: "Carrara White", AR: "كرارا أبيض" } },
           { color: "#2a2a2a", label: { TR: "Nero Marquina", EN: "Nero Marquina", AR: "نيرو ماركينا" } },
-          { color: "#8c7f73", label: { TR: "Emperador", EN: "Emperador", AR: "إمبرادور" } }
+          { color: "#8c7f73", label: { TR: "Emperador", EN: "Emperador", AR: "إمبرador" } }
         ] 
       }
-      
     ]
   },
-      //id:3 yani ürün3 
+
+  //id:3 yani ürün3 
   "surgulu-dolap": {
     price: "45.000 TL",
     categorySlug: "yatak-odasi",
@@ -153,21 +151,21 @@ const productsDB = {
         items: [
           { color: "#e0dcd3", label: { TR: "Carrara Beyaz", EN: "Carrara White", AR: "كرارا أبيض" } },
           { color: "#2a2a2a", label: { TR: "Nero Marquina", EN: "Nero Marquina", AR: "نيرو ماركينا" } },
-          { color: "#8c7f73", label: { TR: "Emperador", EN: "Emperador", AR: "إمبرادور" } }
+          { color: "#8c7f73", label: { TR: "Emperador", EN: "Emperador", AR: "إمبرador" } }
         ] 
       },
-            { 
+      { 
         title: { TR: "MERMER DESENİ", EN: "MARBLE PATTERN", AR: "شكل الرخام" }, 
         items: [
           { color: "#e0dcd3", label: { TR: "Carrara Beyaz", EN: "Carrara White", AR: "كرارا أبيض" } },
           { color: "#2a2a2a", label: { TR: "Nero Marquina", EN: "Nero Marquina", AR: "نيرو ماركينا" } },
-          { color: "#8c7f73", label: { TR: "Emperador", EN: "Emperador", AR: "إمبرادور" } }
+          { color: "#8c7f73", label: { TR: "Emperador", EN: "Emperador", AR: "إمبرador" } }
         ] 
       }
-      
     ]
-    },
-        //id:4 yani ürün4
+  },
+
+  //id:4 yani ürün4
   "seher-4-kapili-dolap": {
     price: "45.000 TL",
     categorySlug: "yatak-odasi",
@@ -175,7 +173,7 @@ const productsDB = {
     subCategory: { TR: "Gardırop", EN: "Wardrobe", AR: "خزانة ملابس" },
     name: { TR: "6 Kapılı 3 Çekmeceli MARKA Dolap", EN: "MARKA Wardrobe with 6 Doors and 3 Drawers", AR: "خزانة ماركا بستة أبواب وثلاثة أدراج" },
     description: {
-      TR: "İstanbullu zanaatkarların elinden çıkan Luvia, doğanın en saf halini modern bir formla buluşturuyor. Masif ceviz ayakların mimari duruşu, seçkin İtalyan mermerinin zerafetiyle birleşerek yaşam alanınıza zamansız bir karakter katıyor.",
+      TR: "İstanbullu zanaatkarların elinden çıkan Luvia, doğanın en sah halini modern bir formla buluşturuyor. Masif ceviz ayakların mimari duruşu, seçkin İtalyan mermerinin zerafetiyle birleşerek yaşam alanınıza zamansız bir karakter katıyor.",
       EN: "Handcrafted by Istanbul artisans, Luvia brings the purest form of nature together with a modern form. The architectural stance of solid walnut legs combines with the elegance of premium Italian marble.",
       AR: "طاولة لوفيا المصنوعة يدوياً على أيدي حرفيي إسطنبول، تجمع بين أنقى أشكال الطبيعة والتصميم الحديث. الموقف المعماري لأرجل الجوز الصلب يتحد مع أناقة الرخام الإيطالي الفاخر."
     },
@@ -200,22 +198,21 @@ const productsDB = {
         items: [
           { color: "#e0dcd3", label: { TR: "Carrara Beyaz", EN: "Carrara White", AR: "كرارا أبيض" } },
           { color: "#2a2a2a", label: { TR: "Nero Marquina", EN: "Nero Marquina", AR: "نيرو ماركينا" } },
-          { color: "#8c7f73", label: { TR: "Emperador", EN: "Emperador", AR: "إمبرادور" } }
+          { color: "#8c7f73", label: { TR: "Emperador", EN: "Emperador", AR: "إمبرador" } }
         ] 
       },
-            { 
+      { 
         title: { TR: "MERMER DESENİ", EN: "MARBLE PATTERN", AR: "شكل الرخام" }, 
         items: [
           { color: "#e0dcd3", label: { TR: "Carrara Beyaz", EN: "Carrara White", AR: "كرارا أبيض" } },
           { color: "#2a2a2a", label: { TR: "Nero Marquina", EN: "Nero Marquina", AR: "نيرو ماركينا" } },
-          { color: "#8c7f73", label: { TR: "Emperador", EN: "Emperador", AR: "إمبرادور" } }
+          { color: "#8c7f73", label: { TR: "Emperador", EN: "Emperador", AR: "إمبرador" } }
         ] 
       }
-      
     ]
-    },
+  },
 
-     //id:5 yani ürün5
+  //id:5 yani ürün5
   "3-kapili-dolap": {
     price: "45.000 TL",
     categorySlug: "yatak-odasi",
@@ -238,7 +235,7 @@ const productsDB = {
       { 
         title: { TR: "AYAK RENGİ", EN: "LEG COLOR", AR: "لون الأرجل" }, 
         items: [
-          { color: "#5e4028", label: { TR: "Koyu Ceviz", EN: "Dark Walnut", AR: "جوز غامق" }, img: "https://images.unsplash.com/photo-1604578762246-41134e37f9cc?q=80&w=1200&auto=format&fit=crop" },
+          { color: "#5e4028", label: { TR: "Koyu Ceviz", EN: "Dark Walnut", AR: "جوز غamık" }, img: "https://images.unsplash.com/photo-1604578762246-41134e37f9cc?q=80&w=1200&auto=format&fit=crop" },
           { color: "#1a1a1a", label: { TR: "Siyah Meşe", EN: "Black Oak", AR: "بلوط أسود" }, img: "https://images.unsplash.com/photo-1617806118233-18e1c094f094?q=80&w=1200&auto=format&fit=crop" },
           { color: "#f5f5f5", label: { TR: "Doğal Meşe", EN: "Natural Oak", AR: "بلوط طبيعي" }, img: "https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=1200&auto=format&fit=crop" }
         ] 
@@ -248,22 +245,21 @@ const productsDB = {
         items: [
           { color: "#e0dcd3", label: { TR: "Carrara Beyaz", EN: "Carrara White", AR: "كرارا أبيض" } },
           { color: "#2a2a2a", label: { TR: "Nero Marquina", EN: "Nero Marquina", AR: "نيرو ماركينا" } },
-          { color: "#8c7f73", label: { TR: "Emperador", EN: "Emperador", AR: "إمبرادور" } }
+          { color: "#8c7f73", label: { TR: "Emperador", EN: "Emperador", AR: "إمبرador" } }
         ] 
       },
-            { 
+      { 
         title: { TR: "MERMER DESENİ", EN: "MARBLE PATTERN", AR: "شكل الرخام" }, 
         items: [
           { color: "#e0dcd3", label: { TR: "Carrara Beyaz", EN: "Carrara White", AR: "كرارا أبيض" } },
           { color: "#2a2a2a", label: { TR: "Nero Marquina", EN: "Nero Marquina", AR: "نيرو ماركينا" } },
-          { color: "#8c7f73", label: { TR: "Emperador", EN: "Emperador", AR: "إمبرادور" } }
+          { color: "#8c7f73", label: { TR: "Emperador", EN: "Emperador", AR: "إمبرador" } }
         ] 
       }
-      
     ]
-    },
+  },
 
-     //id:6 yani ürün6
+  //id:6 yani ürün6
   "6-kapili-dolap": {
     price: "45.000 TL",
     categorySlug: "yatak-odasi",
@@ -273,7 +269,7 @@ const productsDB = {
     description: {
       TR: "İstanbullu zanaatkarların elinden çıkan Luvia, doğanın en saf halini modern bir formla buluşturuyor. Masif ceviz ayakların mimari duruşu, seçkin İtalyan mermerinin zerafetiyle birleşerek yaşam alanınıza zamansız bir karakter katıyor.",
       EN: "Handcrafted by Istanbul artisans, Luvia brings the purest form of nature together with a modern form. The architectural stance of solid walnut legs combines with the elegance of premium Italian marble.",
-      AR: "طاولة لوفيا المصنوعة يدوياً على أيدي حرفيي إسطنبول، تجمع بين أنقى أشكال الطبيعة والتصميم الحديث. الموقف المعماري لأرجل الجوز الصلب يتحد مع أناقة الرخام الإيطالي الفاخر."
+      AR: "طاولة لوفيا المصنوعة يدوياً على أيدي حرفيي إسطنبول، تجمع بين أنقى أشكال الطبيعة والتصميم الحديث. الموقف المعماري لأرجل الجوز الصلب يتحد مع أناقة الرخام İtalyan الفاخر."
     },
     stock: { TR: "Stokta Mevcut - 2 Haftada Teslimat", EN: "In Stock - Delivery in 2 Weeks", AR: "متوفر بالمخزون - تسليم خلال أسبوعين" },
     images: [
@@ -296,212 +292,19 @@ const productsDB = {
         items: [
           { color: "#e0dcd3", label: { TR: "Carrara Beyaz", EN: "Carrara White", AR: "كرارا أبيض" } },
           { color: "#2a2a2a", label: { TR: "Nero Marquina", EN: "Nero Marquina", AR: "نيرو ماركينا" } },
-          { color: "#8c7f73", label: { TR: "Emperador", EN: "Emperador", AR: "إمبرادور" } }
+          { color: "#8c7f73", label: { TR: "Emperador", EN: "Emperador", AR: "إمبرador" } }
         ] 
       },
-            { 
+      { 
         title: { TR: "MERMER DESENİ", EN: "MARBLE PATTERN", AR: "شكل الرخام" }, 
         items: [
           { color: "#e0dcd3", label: { TR: "Carrara Beyaz", EN: "Carrara White", AR: "كرارا أبيض" } },
           { color: "#2a2a2a", label: { TR: "Nero Marquina", EN: "Nero Marquina", AR: "نيرو ماركينا" } },
-          { color: "#8c7f73", label: { TR: "Emperador", EN: "Emperador", AR: "إمبرادور" } }
+          { color: "#8c7f73", label: { TR: "Emperador", EN: "Emperador", AR: "إمبرador" } }
         ] 
       }
-      
     ]
-    },
-
-     //id:4 yani ürün4
-  "seher-4-kapili-dolap": {
-    price: "45.000 TL",
-    categorySlug: "yatak-odasi",
-    category: { TR: "Yatak Odası", EN: "Bedroom", AR: "غرفة نوم" },
-    subCategory: { TR: "Gardırop", EN: "Wardrobe", AR: "خزانة ملابس" },
-    name: { TR: "6 Kapılı 3 Çekmeceli MARKA Dolap", EN: "MARKA Wardrobe with 6 Doors and 3 Drawers", AR: "خزانة ماركا بستة أبواب وثلاثة أدراج" },
-    description: {
-      TR: "İstanbullu zanaatkarların elinden çıkan Luvia, doğanın en saf halini modern bir formla buluşturuyor. Masif ceviz ayakların mimari duruşu, seçkin İtalyan mermerinin zerafetiyle birleşerek yaşam alanınıza zamansız bir karakter katıyor.",
-      EN: "Handcrafted by Istanbul artisans, Luvia brings the purest form of nature together with a modern form. The architectural stance of solid walnut legs combines with the elegance of premium Italian marble.",
-      AR: "طاولة لوفيا المصنوعة يدوياً على أيدي حرفيي إسطنبول، تجمع بين أنقى أشكال الطبيعة والتصميم الحديث. الموقف المعماري لأرجل الجوز الصلب يتحد مع أناقة الرخام الإيطالي الفاخر."
-    },
-    stock: { TR: "Stokta Mevcut - 2 Haftada Teslimat", EN: "In Stock - Delivery in 2 Weeks", AR: "متوفر بالمخزون - تسليم خلال أسبوعين" },
-    images: [
-      "/images/seher4kon.jpeg", 
-      "/images/seher4kyan.jpeg", 
-      "/images/seher4kacik.jpeg"  
-    ],
-    dimensions: { width: "220 cm", depth: "100 cm", height: "75 cm" },
-    options: [
-      { 
-        title: { TR: "AYAK RENGİ", EN: "LEG COLOR", AR: "لون الأرجل" }, 
-        items: [
-          { color: "#5e4028", label: { TR: "Koyu Ceviz", EN: "Dark Walnut", AR: "جوز غامق" }, img: "https://images.unsplash.com/photo-1604578762246-41134e37f9cc?q=80&w=1200&auto=format&fit=crop" },
-          { color: "#1a1a1a", label: { TR: "Siyah Meşe", EN: "Black Oak", AR: "بلوط أسود" }, img: "https://images.unsplash.com/photo-1617806118233-18e1c094f094?q=80&w=1200&auto=format&fit=crop" },
-          { color: "#f5f5f5", label: { TR: "Doğal Meşe", EN: "Natural Oak", AR: "بلوط طبيعي" }, img: "https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=1200&auto=format&fit=crop" }
-        ] 
-      },
-      { 
-        title: { TR: "MERMER DESENİ", EN: "MARBLE PATTERN", AR: "شكل الرخام" }, 
-        items: [
-          { color: "#e0dcd3", label: { TR: "Carrara Beyaz", EN: "Carrara White", AR: "كرارا أبيض" } },
-          { color: "#2a2a2a", label: { TR: "Nero Marquina", EN: "Nero Marquina", AR: "نيرو ماركينا" } },
-          { color: "#8c7f73", label: { TR: "Emperador", EN: "Emperador", AR: "إمبرادور" } }
-        ] 
-      },
-            { 
-        title: { TR: "MERMER DESENİ", EN: "MARBLE PATTERN", AR: "شكل الرخام" }, 
-        items: [
-          { color: "#e0dcd3", label: { TR: "Carrara Beyaz", EN: "Carrara White", AR: "كرارا أبيض" } },
-          { color: "#2a2a2a", label: { TR: "Nero Marquina", EN: "Nero Marquina", AR: "نيرو ماركينا" } },
-          { color: "#8c7f73", label: { TR: "Emperador", EN: "Emperador", AR: "إمبرادور" } }
-        ] 
-      }
-      
-    ]
-    },
-
-     //id:4 yani ürün4
-  "seher-4-kapili-dolap": {
-    price: "45.000 TL",
-    categorySlug: "yatak-odasi",
-    category: { TR: "Yatak Odası", EN: "Bedroom", AR: "غرفة نوم" },
-    subCategory: { TR: "Gardırop", EN: "Wardrobe", AR: "خزانة ملابس" },
-    name: { TR: "6 Kapılı 3 Çekmeceli MARKA Dolap", EN: "MARKA Wardrobe with 6 Doors and 3 Drawers", AR: "خزانة ماركا بستة أبواب وثلاثة أدراج" },
-    description: {
-      TR: "İstanbullu zanaatkarların elinden çıkan Luvia, doğanın en saf halini modern bir formla buluşturuyor. Masif ceviz ayakların mimari duruşu, seçkin İtalyan mermerinin zerafetiyle birleşerek yaşam alanınıza zamansız bir karakter katıyor.",
-      EN: "Handcrafted by Istanbul artisans, Luvia brings the purest form of nature together with a modern form. The architectural stance of solid walnut legs combines with the elegance of premium Italian marble.",
-      AR: "طاولة لوفيا المصنوعة يدوياً على أيدي حرفيي إسطنبول، تجمع بين أنقى أشكال الطبيعة والتصميم الحديث. الموقف المعماري لأرجل الجوز الصلب يتحد مع أناقة الرخام الإيطالي الفاخر."
-    },
-    stock: { TR: "Stokta Mevcut - 2 Haftada Teslimat", EN: "In Stock - Delivery in 2 Weeks", AR: "متوفر بالمخزون - تسليم خلال أسبوعين" },
-    images: [
-      "/images/seher4kon.jpeg", 
-      "/images/seher4kyan.jpeg", 
-      "/images/seher4kacik.jpeg"  
-    ],
-    dimensions: { width: "220 cm", depth: "100 cm", height: "75 cm" },
-    options: [
-      { 
-        title: { TR: "AYAK RENGİ", EN: "LEG COLOR", AR: "لون الأرجل" }, 
-        items: [
-          { color: "#5e4028", label: { TR: "Koyu Ceviz", EN: "Dark Walnut", AR: "جوز غامق" }, img: "https://images.unsplash.com/photo-1604578762246-41134e37f9cc?q=80&w=1200&auto=format&fit=crop" },
-          { color: "#1a1a1a", label: { TR: "Siyah Meşe", EN: "Black Oak", AR: "بلوط أسود" }, img: "https://images.unsplash.com/photo-1617806118233-18e1c094f094?q=80&w=1200&auto=format&fit=crop" },
-          { color: "#f5f5f5", label: { TR: "Doğal Meşe", EN: "Natural Oak", AR: "بلوط طبيعي" }, img: "https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=1200&auto=format&fit=crop" }
-        ] 
-      },
-      { 
-        title: { TR: "MERMER DESENİ", EN: "MARBLE PATTERN", AR: "شكل الرخام" }, 
-        items: [
-          { color: "#e0dcd3", label: { TR: "Carrara Beyaz", EN: "Carrara White", AR: "كرارا أبيض" } },
-          { color: "#2a2a2a", label: { TR: "Nero Marquina", EN: "Nero Marquina", AR: "نيرو ماركينا" } },
-          { color: "#8c7f73", label: { TR: "Emperador", EN: "Emperador", AR: "إمبرادور" } }
-        ] 
-      },
-            { 
-        title: { TR: "MERMER DESENİ", EN: "MARBLE PATTERN", AR: "شكل الرخام" }, 
-        items: [
-          { color: "#e0dcd3", label: { TR: "Carrara Beyaz", EN: "Carrara White", AR: "كرارا أبيض" } },
-          { color: "#2a2a2a", label: { TR: "Nero Marquina", EN: "Nero Marquina", AR: "نيرو ماركينا" } },
-          { color: "#8c7f73", label: { TR: "Emperador", EN: "Emperador", AR: "إمبرادور" } }
-        ] 
-      }
-      
-    ]
-    },
-
-     //id:4 yani ürün4
-  "seher-4-kapili-dolap": {
-    price: "45.000 TL",
-    categorySlug: "yatak-odasi",
-    category: { TR: "Yatak Odası", EN: "Bedroom", AR: "غرفة نوم" },
-    subCategory: { TR: "Gardırop", EN: "Wardrobe", AR: "خزانة ملابس" },
-    name: { TR: "6 Kapılı 3 Çekmeceli MARKA Dolap", EN: "MARKA Wardrobe with 6 Doors and 3 Drawers", AR: "خزانة ماركا بستة أبواب وثلاثة أدراج" },
-    description: {
-      TR: "İstanbullu zanaatkarların elinden çıkan Luvia, doğanın en saf halini modern bir formla buluşturuyor. Masif ceviz ayakların mimari duruşu, seçkin İtalyan mermerinin zerafetiyle birleşerek yaşam alanınıza zamansız bir karakter katıyor.",
-      EN: "Handcrafted by Istanbul artisans, Luvia brings the purest form of nature together with a modern form. The architectural stance of solid walnut legs combines with the elegance of premium Italian marble.",
-      AR: "طاولة لوفيا المصنوعة يدوياً على أيدي حرفيي إسطنبول، تجمع بين أنقى أشكال الطبيعة والتصميم الحديث. الموقف المعماري لأرجل الجوز الصلب يتحد مع أناقة الرخام الإيطالي الفاخر."
-    },
-    stock: { TR: "Stokta Mevcut - 2 Haftada Teslimat", EN: "In Stock - Delivery in 2 Weeks", AR: "متوفر بالمخزون - تسليم خلال أسبوعين" },
-    images: [
-      "/images/seher4kon.jpeg", 
-      "/images/seher4kyan.jpeg", 
-      "/images/seher4kacik.jpeg"  
-    ],
-    dimensions: { width: "220 cm", depth: "100 cm", height: "75 cm" },
-    options: [
-      { 
-        title: { TR: "AYAK RENGİ", EN: "LEG COLOR", AR: "لون الأرجل" }, 
-        items: [
-          { color: "#5e4028", label: { TR: "Koyu Ceviz", EN: "Dark Walnut", AR: "جوز غامق" }, img: "https://images.unsplash.com/photo-1604578762246-41134e37f9cc?q=80&w=1200&auto=format&fit=crop" },
-          { color: "#1a1a1a", label: { TR: "Siyah Meşe", EN: "Black Oak", AR: "بلوط أسود" }, img: "https://images.unsplash.com/photo-1617806118233-18e1c094f094?q=80&w=1200&auto=format&fit=crop" },
-          { color: "#f5f5f5", label: { TR: "Doğal Meşe", EN: "Natural Oak", AR: "بلوط طبيعي" }, img: "https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=1200&auto=format&fit=crop" }
-        ] 
-      },
-      { 
-        title: { TR: "MERMER DESENİ", EN: "MARBLE PATTERN", AR: "شكل الرخام" }, 
-        items: [
-          { color: "#e0dcd3", label: { TR: "Carrara Beyaz", EN: "Carrara White", AR: "كرارا أبيض" } },
-          { color: "#2a2a2a", label: { TR: "Nero Marquina", EN: "Nero Marquina", AR: "نيرو ماركينا" } },
-          { color: "#8c7f73", label: { TR: "Emperador", EN: "Emperador", AR: "إمبرادور" } }
-        ] 
-      },
-            { 
-        title: { TR: "MERMER DESENİ", EN: "MARBLE PATTERN", AR: "شكل الرخام" }, 
-        items: [
-          { color: "#e0dcd3", label: { TR: "Carrara Beyaz", EN: "Carrara White", AR: "كرارا أبيض" } },
-          { color: "#2a2a2a", label: { TR: "Nero Marquina", EN: "Nero Marquina", AR: "نيرو ماركينا" } },
-          { color: "#8c7f73", label: { TR: "Emperador", EN: "Emperador", AR: "إمبرادور" } }
-        ] 
-      }
-      
-    ]
-    },
-
-     //id:4 yani ürün4
-  "seher-4-kapili-dolap": {
-    price: "45.000 TL",
-    categorySlug: "yatak-odasi",
-    category: { TR: "Yatak Odası", EN: "Bedroom", AR: "غرفة نوم" },
-    subCategory: { TR: "Gardırop", EN: "Wardrobe", AR: "خزانة ملابس" },
-    name: { TR: "6 Kapılı 3 Çekmeceli MARKA Dolap", EN: "MARKA Wardrobe with 6 Doors and 3 Drawers", AR: "خزانة ماركا بستة أبواب وثلاثة أدراج" },
-    description: {
-      TR: "İstanbullu zanaatkarların elinden çıkan Luvia, doğanın en saf halini modern bir formla buluşturuyor. Masif ceviz ayakların mimari duruşu, seçkin İtalyan mermerinin zerafetiyle birleşerek yaşam alanınıza zamansız bir karakter katıyor.",
-      EN: "Handcrafted by Istanbul artisans, Luvia brings the purest form of nature together with a modern form. The architectural stance of solid walnut legs combines with the elegance of premium Italian marble.",
-      AR: "طاولة لوفيا المصنوعة يدوياً على أيدي حرفيي إسطنبول، تجمع بين أنقى أشكال الطبيعة والتصميم الحديث. الموقف المعماري لأرجل الجوز الصلب يتحد مع أناقة الرخام الإيطالي الفاخر."
-    },
-    stock: { TR: "Stokta Mevcut - 2 Haftada Teslimat", EN: "In Stock - Delivery in 2 Weeks", AR: "متوفر بالمخزون - تسليم خلال أسبوعين" },
-    images: [
-      "/images/seher4kon.jpeg", 
-      "/images/seher4kyan.jpeg", 
-      "/images/seher4kacik.jpeg"  
-    ],
-    dimensions: { width: "220 cm", depth: "100 cm", height: "75 cm" },
-    options: [
-      { 
-        title: { TR: "AYAK RENGİ", EN: "LEG COLOR", AR: "لون الأرجل" }, 
-        items: [
-          { color: "#5e4028", label: { TR: "Koyu Ceviz", EN: "Dark Walnut", AR: "جوز غامق" }, img: "https://images.unsplash.com/photo-1604578762246-41134e37f9cc?q=80&w=1200&auto=format&fit=crop" },
-          { color: "#1a1a1a", label: { TR: "Siyah Meşe", EN: "Black Oak", AR: "بلوط أسود" }, img: "https://images.unsplash.com/photo-1617806118233-18e1c094f094?q=80&w=1200&auto=format&fit=crop" },
-          { color: "#f5f5f5", label: { TR: "Doğal Meşe", EN: "Natural Oak", AR: "بلوط طبيعي" }, img: "https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=1200&auto=format&fit=crop" }
-        ] 
-      },
-      { 
-        title: { TR: "MERMER DESENİ", EN: "MARBLE PATTERN", AR: "شكل الرخام" }, 
-        items: [
-          { color: "#e0dcd3", label: { TR: "Carrara Beyaz", EN: "Carrara White", AR: "كرارا أبيض" } },
-          { color: "#2a2a2a", label: { TR: "Nero Marquina", EN: "Nero Marquina", AR: "نيرو ماركينا" } },
-          { color: "#8c7f73", label: { TR: "Emperador", EN: "Emperador", AR: "إمبرادور" } }
-        ] 
-      },
-            { 
-        title: { TR: "MERMER DESENİ", EN: "MARBLE PATTERN", AR: "شكل الرخام" }, 
-        items: [
-          { color: "#e0dcd3", label: { TR: "Carrara Beyaz", EN: "Carrara White", AR: "كرارا أبيض" } },
-          { color: "#2a2a2a", label: { TR: "Nero Marquina", EN: "Nero Marquina", AR: "نيرو ماركينا" } },
-          { color: "#8c7f73", label: { TR: "Emperador", EN: "Emperador", AR: "إمبرادور" } }
-        ] 
-      }
-      
-    ]
-    },
+  },
 };
 
 const similarProducts = [
@@ -516,18 +319,16 @@ export default function ProductDetailPage() {
   const params = useParams();
   
   const slug = (params.slug as string) || "luvia-mermer-masa";
- const product =
-  productsDB[slug as keyof typeof productsDB] ||
-  productsDB["6-kapili-3-cekmeceli-marka-dolap"];
+  const product =
+    productsDB[slug as keyof typeof productsDB] ||
+    productsDB["6-kapili-3-cekmeceli-marka-dolap"];
 
-const [mainImage, setMainImage] = useState(product.images[0]);
+  const [mainImage, setMainImage] = useState(product.images[0]);
 
-   
-  
   const initialOptions: { [key: number]: number } = {};
-product.options?.forEach((_, idx) => {
-  initialOptions[idx] = 0;
-});
+  product.options?.forEach((_, idx) => {
+    initialOptions[idx] = 0;
+  });
   const [selectedOptions, setSelectedOptions] = useState<{ [key: number]: number }>(initialOptions);
 
   const handleOptionSelect = (groupIndex: number, itemIndex: number, imgUrl?: string) => {
@@ -647,7 +448,7 @@ product.options?.forEach((_, idx) => {
                     {opt.items.map((item, itemIdx) => (
                       <button 
                         key={itemIdx}
-                        onClick={() => handleOptionSelect(groupIdx, itemIdx, item.img)}
+                        onClick={() => handleOptionSelect(groupIdx, itemIdx, (item as any).img)}
                         className={`w-9 h-9 md:w-10 md:h-10 rounded-xl transition-all duration-300 border border-[#e5e5e5] ${selectedOptions[groupIdx] === itemIdx ? 'ring-2 ring-offset-2 ring-[#2a241e] scale-105' : 'hover:scale-105'}`}
                         style={{ backgroundColor: item.color }}
                       />
@@ -698,24 +499,23 @@ product.options?.forEach((_, idx) => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {similarProducts.map((prod) => (
-  <button
-    key={prod.id}
-    onClick={() => {
-      const phoneNumber = "905514835322";
+          {similarProducts.map((prod) => (
+            <button
+              key={prod.id}
+              onClick={() => {
+                const phoneNumber = "905514835322";
+                const text =
+                  langKey === "AR"
+                    ? `مرحباً، أود الاستفسار عن هذا المنتج:\n\n${prod.name}\nالسعر: ${prod.price}`
+                    : `Merhaba, bu ürünle ilgileniyorum:\n\n${prod.name}\nFiyat: ${prod.price}`;
 
-      const text =
-        langKey === "AR"
-          ? `مرحباً، أود الاستفسار عن هذا المنتج:\n\n${prod.name}\nالسعر: ${prod.price}`
-          : `Merhaba, bu ürünle ilgileniyorum:\n\n${prod.name}\nFiyat: ${prod.price}`;
-
-      window.open(
-        `https://wa.me/${phoneNumber}?text=${encodeURIComponent(text)}`,
-        "_blank"
-      );
-    }}
-    className="group bg-[#f4f2f0] rounded-[24px] overflow-hidden flex flex-col hover:shadow-xl transition-all duration-300 border border-[#e8e4dc] text-left"
-  >
+                window.open(
+                  `https://wa.me/${phoneNumber}?text=${encodeURIComponent(text)}`,
+                  "_blank"
+                );
+              }}
+              className="group bg-[#f4f2f0] rounded-[24px] overflow-hidden flex flex-col hover:shadow-xl transition-all duration-300 border border-[#e8e4dc] text-left"
+            >
               <div className="w-full h-[350px] overflow-hidden">
                 <img src={prod.img} alt={prod.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
               </div>

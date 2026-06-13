@@ -68,7 +68,8 @@ export default function Navbar() {
             {/* Dropdown Menu */}
             {isLangOpen && (
               <div className="absolute right-0 mt-3 bg-[#fdfcfb] border border-[#bab5b0]/30 shadow-xl rounded-xl overflow-hidden min-w-[130px] animate-in fade-in zoom-in duration-200">
-                {['TR', 'EN', 'AR'].map((l) => (
+                {/* 🛠️ TypeScript hatasını çözmek için 'as const' eklendi */}
+                {(['TR', 'EN', 'AR'] as const).map((l) => (
                   <button 
                     key={l} 
                     onClick={() => { setLang(l); setIsLangOpen(false); }}
