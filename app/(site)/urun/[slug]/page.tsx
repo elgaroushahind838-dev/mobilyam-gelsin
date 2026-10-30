@@ -1,8 +1,8 @@
 "use client";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { useLanguage } from '../../context/LanguageContext';
+import { useLanguage } from '../../../context/LanguageContext';
 import { ChevronRight, MessageCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -162,12 +162,60 @@ export default function ProductDetailPage() {
   const params = useParams();
 
   const slug = (params.slug as string) || "6-kapili-3-cekmeceli-marka-dolap";
-  const product =
-    productsDB[slug as keyof typeof productsDB] ||
-    productsDB["6-kapili-3-cekmeceli-marka-dolap"];
+  const known = productsDB[slug as keyof typeof productsDB];
+  const [remote, setRemote] = useState<{ slug: string; product: typeof known | null; missing: boolean } | null>(null);
+  const remoteForSlug = remote?.slug === slug ? remote : null;
 
-  const [imageState, setImageState] = useState({ slug, image: product.images[0] });
-  const mainImage = imageState.slug === slug ? imageState.image : product.images[0];
+  useEffect(() => {
+    let ignore = false;
+    fetch(`/api/catalog/${slug}`, { cache: "no-store" })
+      .then(async (response) => {
+        if (response.status === 404) return { missing: true as const };
+        if (!response.ok) return null;
+        return response.json();
+      })
+      .then((data) => {
+        if (ignore || !data) return;
+        if ("missing" in data) {
+          setRemote({ slug, product: null, missing: true });
+          return;
+        }
+        const item = data.product;
+        setRemote({
+          slug,
+          missing: false,
+          product: {
+            price: item.price,
+            categorySlug: item.categorySlug,
+            category: { TR: item.categoryLabel, EN: item.categoryLabel, AR: item.categoryLabel },
+            subCategory: { TR: item.tag, EN: item.tag, AR: item.tag },
+            name: item.name,
+            description: item.description,
+            images: item.images?.length ? item.images : [item.img],
+            dimensions: item.dimensions || { width: "", depth: "", height: "" },
+          },
+        });
+      })
+      .catch(() => undefined);
+    return () => {
+      ignore = true;
+    };
+  }, [slug]);
+
+  const product = remoteForSlug?.product || (remoteForSlug?.missing ? null : known) || null;
+
+  const [imageState, setImageState] = useState({ slug, image: product?.images[0] || "" });
+  const mainImage = product && imageState.slug === slug && imageState.image ? imageState.image : product?.images[0] || "";
+
+  if (!product) {
+    const missing = Boolean(remoteForSlug?.missing);
+    return (
+      <main className="min-h-screen bg-[#faf9f6] px-6 pt-32 text-[#2a241e]">
+        <h1 className="font-serif text-4xl">{missing ? "Ürün bulunamadı" : "Yükleniyor"}</h1>
+        {missing && <Link href="/" className="mt-6 inline-block text-sm font-semibold underline">Ana sayfaya dön</Link>}
+      </main>
+    );
+  }
 
   const productName = product.name[langKey];
   const whatsappHref = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(t.message(productName))}`;

@@ -2,7 +2,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useMemo, useEffect, useRef } from "react";
-import { useLanguage } from "../../context/LanguageContext";
+import { useLanguage } from "../../../context/LanguageContext";
 import { useParams } from "next/navigation";
 import { ChevronRight, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -237,6 +237,43 @@ export default function CategoryPage() {
   const [activeTag, setActiveTag] = useState(ALL_PRODUCTS);
   const [sortBy, setSortBy] = useState("newest");
   const [isSortOpen, setIsSortOpen] = useState(false);
+  const [catalog, setCatalog] = useState(productsDB);
+
+  useEffect(() => {
+    let ignore = false;
+    fetch("/api/catalog", { cache: "no-store" })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data) => {
+        if (ignore || !Array.isArray(data?.products)) return;
+        setCatalog(data.products.map((product: {
+          id: string;
+          slug: string;
+          categorySlug: string;
+          tag: string;
+          name: { TR: string; EN: string; AR: string };
+          material?: string;
+          price: string;
+          priceVal: number;
+          date: string;
+          img: string;
+        }) => ({
+          id: product.id,
+          slug: product.slug,
+          categorySlug: product.categorySlug,
+          tag: product.tag,
+          name: product.name,
+          material: product.material || product.tag,
+          price: product.price,
+          priceVal: product.priceVal,
+          date: product.date,
+          img: product.img,
+        })));
+      })
+      .catch(() => undefined);
+    return () => {
+      ignore = true;
+    };
+  }, []);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -261,8 +298,8 @@ export default function CategoryPage() {
   // CATEGORY FILTER
   const categoryProducts = useMemo(() => {
     if (!slug) return [];
-    return productsDB.filter((p) => p.categorySlug === slug);
-  }, [slug]);
+    return catalog.filter((p) => p.categorySlug === slug);
+  }, [slug, catalog]);
 
   // UNIQUE TAGS
   const uniqueTags = useMemo(() => {

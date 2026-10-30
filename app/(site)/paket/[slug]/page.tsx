@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { useLanguage } from '../../context/LanguageContext';
+import { useLanguage } from '../../../context/LanguageContext';
 import { CheckCircle2, Layers, Users, ChevronRight, Download } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -163,7 +163,7 @@ export default function PackageDetailPage() {
 
   const sendConfigToWhatsApp = () => {
     const phoneNumber = "905514835322";
-    let text = `${t.waMesaj}\n\n📦 *Paket:* ${currentPackage.name[lang as keyof typeof currentPackage.name]}\n🛏️ *Yatak Odası:* ${woodNames[selectedWood]} / ${t.kumaslar[selectedFabric]}\n🛋️ *Oturma Grubu:* ${sofaColorNames[selectedSofaColor]}`;
+    const text = `${t.waMesaj}\n\n📦 *Paket:* ${currentPackage.name[lang as keyof typeof currentPackage.name]}\n🛏️ *Yatak Odası:* ${woodNames[selectedWood]} / ${t.kumaslar[selectedFabric]}\n🛋️ *Oturma Grubu:* ${sofaColorNames[selectedSofaColor]}`;
     window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(text)}`, '_blank');
   };
 
