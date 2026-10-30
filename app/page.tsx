@@ -455,10 +455,10 @@ export default function Home() {
                       </Link>
                       <button 
                         onClick={() => sendWhatsApp(`${paket.isim1} ${paket.isim2}`, packageImages[index])}
-                        className="w-full bg-[#22c55e] text-white py-5 rounded-2xl font-semibold text-[17px] tracking-wide flex items-center justify-center gap-2 hover:bg-[#1ca64e] transition-colors"
+                        className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#22c55e] px-4 py-4 text-center text-[15px] font-semibold leading-none tracking-wide text-white transition-colors hover:bg-[#1ca64e] sm:py-5 sm:text-[17px]"
                       >
-                        <MessageCircle size={22} className="fill-white" />
-                        {t.whatsapp}
+                        <MessageCircle size={20} className="shrink-0 fill-white" aria-hidden="true" />
+                        <span className="whitespace-nowrap">{t.whatsapp}</span>
                       </button>
                     </div>
                   </div>
@@ -626,7 +626,7 @@ export default function Home() {
               </div>
             </motion.div>
 
-            <motion.div variants={fadeUpItem} className="bg-white p-10 md:p-14 lg:p-16 rounded-[24px] shadow-[0_10px_40px_rgba(0,0,0,0.04)] border border-[#f0ece6]">
+            <motion.div variants={fadeUpItem} className="bg-white px-5 py-8 sm:p-10 md:p-14 lg:p-16 rounded-[24px] shadow-[0_10px_40px_rgba(0,0,0,0.04)] border border-[#f0ece6]">
               <span className="text-xs font-bold tracking-[0.15em] text-[#8c7f73] uppercase mb-5 block">
                 {t.bizeUlasin}
               </span>
@@ -641,10 +641,10 @@ export default function Home() {
               
               <button 
                 onClick={() => sendWhatsApp()} 
-                className="w-full bg-[#22c55e] text-white py-5 rounded-2xl font-bold text-[16px] flex items-center justify-center gap-2 hover:bg-[#1ca64e] transition-colors mb-8 shadow-sm hover:shadow-md"
+                className="mb-8 flex w-full items-center justify-center gap-2 rounded-2xl bg-[#22c55e] px-3 py-4 text-center text-[13px] font-bold leading-none text-white shadow-sm transition-colors hover:bg-[#1ca64e] hover:shadow-md min-[380px]:text-[14px] min-[414px]:px-4 min-[414px]:text-[15px] sm:px-6 sm:py-5 sm:text-[16px]"
               >
-                <MessageCircle size={22} className="fill-white" />
-                {t.whatsappHemen}
+                <MessageCircle size={18} className="shrink-0 fill-white" aria-hidden="true" />
+                <span className="whitespace-nowrap">{t.whatsappHemen}</span>
               </button>
 
               <div className="flex items-center justify-center text-[#52525b]">

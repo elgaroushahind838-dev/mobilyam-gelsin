@@ -252,10 +252,10 @@ export default function ProductDetailPage() {
               href={whatsappHref}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full bg-[#25D366] text-white py-4 px-6 rounded-xl font-bold text-[15px] md:text-[16px] flex items-center justify-center gap-2 hover:bg-[#1ebd5a] transition-all shadow-md text-center"
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#25D366] px-4 py-4 text-center text-[14px] font-bold leading-snug text-white shadow-md transition-all hover:bg-[#1ebd5a] min-[400px]:text-[15px] md:text-[16px]"
             >
-              <MessageCircle size={18} />
-              {t.whatsapp}
+              <MessageCircle size={18} className="shrink-0" aria-hidden="true" />
+              <span className="text-balance">{t.whatsapp}</span>
             </a>
           </div>
         </div>
