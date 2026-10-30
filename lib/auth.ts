@@ -59,6 +59,23 @@ export function sessionCookieOptions() {
   };
 }
 
+export async function isAdminRequest(request: Request): Promise<boolean> {
+  const cookie = request.headers.get("cookie") ?? "";
+  const token = cookie
+    .split(";")
+    .map((part) => part.trim())
+    .find((part) => part.startsWith(`${COOKIE}=`))
+    ?.slice(COOKIE.length + 1);
+  if (await verifySessionToken(token ? decodeURIComponent(token) : undefined)) return true;
+
+  const expected = process.env.EXPORT_TOKEN;
+  if (!expected) return false;
+  const header = request.headers.get("authorization") ?? "";
+  const match = /^Bearer\s+(\S+)\s*$/i.exec(header);
+  if (!match) return false;
+  return passwordsMatch(match[1], expected);
+}
+
 export async function passwordsMatch(input: string, expected: string): Promise<boolean> {
   const digest = async (value: string) => {
     const hash = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(value));

@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useState } from "react";
 import type { Measurement } from "@/lib/types";
 import { formatWhen, mapsLink, whatsAppLink } from "@/lib/format";
-import QuickAdd from "./QuickAdd";
 import { adminJson, dangerClass, fieldClass, ghostClass, primaryClass } from "./client";
 
 const empty = { customerName: "", phone: "", address: "", appointmentAt: "", notes: "" };
@@ -102,7 +101,6 @@ export default function MeasurementsScreen() {
       <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Ad, telefon veya adres ara" className={`${fieldClass} mt-4`} />
       {open && (
         <form onSubmit={save} className="mt-4 grid gap-3 rounded-3xl border border-[#efeae3] bg-white p-4">
-          <QuickAdd onFill={(value) => setForm((current) => ({ ...current, customerName: value.name || current.customerName, phone: value.phone || current.phone, notes: value.notes || current.notes }))} />
           <label className="text-sm">Müşteri<input required value={form.customerName} onChange={(event) => setForm({ ...form, customerName: event.target.value })} className={`${fieldClass} mt-1`} /></label>
           <label className="text-sm">Telefon<input required value={form.phone} onChange={(event) => setForm({ ...form, phone: event.target.value })} className={`${fieldClass} mt-1`} /></label>
           <label className="text-sm">Adres<input required value={form.address} onChange={(event) => setForm({ ...form, address: event.target.value })} className={`${fieldClass} mt-1`} /></label>

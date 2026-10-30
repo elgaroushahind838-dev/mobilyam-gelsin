@@ -1,32 +1,12 @@
 import ExcelJS from "exceljs";
 import { NextResponse } from "next/server";
-import { adminCookieName, passwordsMatch, verifySessionToken } from "@/lib/auth";
+import { isAdminRequest } from "@/lib/auth";
 import { formatWhen, todayIstanbul } from "@/lib/format";
 import { getStore, StoreUnavailable } from "@/lib/store";
 import type { Measurement, Order, Product } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
-
-async function bearerAllowed(request: Request): Promise<boolean> {
-  const expected = process.env.EXPORT_TOKEN;
-  if (!expected) return false;
-  const header = request.headers.get("authorization") ?? "";
-  const match = /^Bearer\s+(\S+)\s*$/i.exec(header);
-  if (!match) return false;
-  return passwordsMatch(match[1], expected);
-}
-
-async function authorized(request: Request): Promise<boolean> {
-  const cookie = request.headers.get("cookie") ?? "";
-  const token = cookie
-    .split(";")
-    .map((part) => part.trim())
-    .find((part) => part.startsWith(`${adminCookieName()}=`))
-    ?.slice(adminCookieName().length + 1);
-  if (await verifySessionToken(token ? decodeURIComponent(token) : undefined)) return true;
-  return bearerAllowed(request);
-}
 
 function orderRow(order: Order) {
   return {
@@ -71,7 +51,7 @@ function measurementRow(item: Measurement) {
     telefon: item.phone,
     adres: item.address,
     randevu: formatWhen(item.appointmentAt),
-    durum: "Ölçü ziyareti",
+    durum: item.status === "done" ? "Tamamlandı" : item.status === "cancelled" ? "İptal" : "Planlandı",
     not: item.notes,
     kayit: formatWhen(item.createdAt),
   };
@@ -81,23 +61,17 @@ function productRow(product: Product) {
   return {
     ad: product.name,
     aciklama: product.description,
-    fiyat: product.price,
-    tutar: product.priceAmount,
     koleksiyon: product.categoryLabel,
     etiket: product.tag,
-    genislik: product.width,
-    derinlik: product.depth,
-    yukseklik: product.height,
     gorseller: product.images.join(", "),
     slug: product.slug,
     durum: "Vitrinde",
-    not: product.description,
     kayit: formatWhen(product.createdAt),
   };
 }
 
 export async function GET(request: Request) {
-  if (!(await authorized(request))) {
+  if (!(await isAdminRequest(request))) {
     return NextResponse.json({ error: "Giriş gerekli" }, { status: 401 });
   }
 
@@ -145,17 +119,11 @@ export async function GET(request: Request) {
       [
         { header: "Ad", key: "ad", width: 32 },
         { header: "Açıklama", key: "aciklama", width: 42 },
-        { header: "Fiyat", key: "fiyat", width: 16 },
-        { header: "Tutar (TL)", key: "tutar", width: 14 },
         { header: "Koleksiyon", key: "koleksiyon", width: 18 },
         { header: "Etiket", key: "etiket", width: 16 },
-        { header: "Genişlik", key: "genislik", width: 12 },
-        { header: "Derinlik", key: "derinlik", width: 12 },
-        { header: "Yükseklik", key: "yukseklik", width: 12 },
         { header: "Görseller", key: "gorseller", width: 36 },
         { header: "Slug", key: "slug", width: 28 },
         { header: "Durum", key: "durum", width: 12 },
-        { header: "Not", key: "not", width: 42 },
         { header: "Kayıt tarihi", key: "kayit", width: 22 },
       ] as ExcelJS.Column[],
       products.map(productRow),

@@ -44,6 +44,11 @@ function sqlClient() {
         completed_at timestamptz,
         created_at timestamptz NOT NULL DEFAULT now()
       )`;
+      await sql`ALTER TABLE products ALTER COLUMN price DROP NOT NULL`;
+      await sql`ALTER TABLE products ALTER COLUMN price_amount DROP NOT NULL`;
+      await sql`ALTER TABLE products ALTER COLUMN width DROP NOT NULL`;
+      await sql`ALTER TABLE products ALTER COLUMN depth DROP NOT NULL`;
+      await sql`ALTER TABLE products ALTER COLUMN height DROP NOT NULL`;
       await sql`CREATE TABLE IF NOT EXISTS measurements (
         id text PRIMARY KEY,
         customer_name text NOT NULL,
@@ -51,8 +56,10 @@ function sqlClient() {
         address text NOT NULL,
         appointment_at timestamptz NOT NULL,
         notes text NOT NULL DEFAULT '',
+        status text NOT NULL DEFAULT 'scheduled',
         created_at timestamptz NOT NULL DEFAULT now()
       )`;
+      await sql`ALTER TABLE measurements ADD COLUMN IF NOT EXISTS status text NOT NULL DEFAULT 'scheduled'`;
       const count = await sql`SELECT COUNT(*)::int AS count FROM products`;
       if (Number(count[0]?.count ?? 0) === 0) {
         for (const item of SEED_PRODUCTS) {
@@ -123,6 +130,7 @@ function asMeasurement(row: Record<string, unknown>): Measurement {
     address: String(row.address),
     appointmentAt: new Date(String(row.appointment_at)).toISOString(),
     notes: String(row.notes ?? ""),
+    status: row.status === "done" || row.status === "cancelled" ? row.status : "scheduled",
     createdAt: new Date(String(row.created_at)).toISOString(),
   };
 }
@@ -235,10 +243,11 @@ export function createPostgresStore(): Store {
     async createMeasurement(input: MeasurementInput) {
       const sql = await sqlClient();
       const id = crypto.randomUUID();
+      const status = input.status ?? "scheduled";
       const rows = await sql`INSERT INTO measurements (
-        id, customer_name, phone, address, appointment_at, notes
+        id, customer_name, phone, address, appointment_at, notes, status
       ) VALUES (
-        ${id}, ${input.customerName}, ${input.phone}, ${input.address}, ${input.appointmentAt}, ${input.notes}
+        ${id}, ${input.customerName}, ${input.phone}, ${input.address}, ${input.appointmentAt}, ${input.notes}, ${status}
       ) RETURNING *`;
       return asMeasurement(rows[0] as Record<string, unknown>);
     },

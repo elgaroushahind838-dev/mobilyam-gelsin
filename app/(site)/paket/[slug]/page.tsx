@@ -49,7 +49,6 @@ const translations = {
     bolum2Baslik: "Oturma Grubu", 
     bolum2Aciklama: "Konforun en yalın hali, fırınlanmış iskelet yapısı.",
     teknikDetay: "TEKNİK DETAY", 
-    olculer: ["Genişlik: 280cm", "Derinlik: 105cm", "Yükseklik: 75cm"], 
     cizimIndir: "SEÇİMLERİMİ WHATSAPP'A GÖNDER",
     bolum3Tag: "BÖLÜM 03", 
     bolum3Baslik: "Yemek Odası", 
@@ -78,7 +77,6 @@ const translations = {
     bolum2Baslik: "Living Room Group", 
     bolum2Aciklama: "The purest form of comfort, kiln-dried frame.",
     teknikDetay: "TECHNICAL DETAILS", 
-    olculer: ["Width: 280cm", "Depth: 105cm", "Height: 75cm"], 
     cizimIndir: "SEND SELECTIONS VIA WHATSAPP",
     bolum3Tag: "PART 03", 
     bolum3Baslik: "Dining Room", 
@@ -107,7 +105,6 @@ const translations = {
     bolum2Baslik: "طقم الجلوس", 
     bolum2Aciklama: "الراحة بأنقى صورها، وهيكل خشب متين.",
     teknikDetay: "تفاصيل تقنية", 
-    olculer: ["العرض: 280 سم", "العمق: 105 سم", "الارتفاع: 75 سم"], 
     cizimIndir: "أرسل خياراتي عبر واتساب",
     bolum3Tag: "الجزء 03", 
     bolum3Baslik: "غرفة الطعام", 
@@ -227,13 +224,6 @@ export default function PackageDetailPage() {
           </div>
 
           <div className="flex flex-col bg-[#f0ece6] p-5 md:p-6 rounded-[20px] lg:col-span-5 h-auto self-start">
-            <div className="mb-6">
-              <span className="text-[9px] font-bold tracking-widest text-[#2a241e] uppercase mb-1 block">{t.teknikDetay}</span>
-              <div className="flex flex-col gap-0.5">
-                {t.olculer.map((olcu, idx) => <span key={idx} className="text-[12px] md:text-[13px] text-[#52525b]">{olcu}</span>)}
-              </div>
-            </div>
-
             <button onClick={sendConfigToWhatsApp} className="w-full bg-transparent border border-[#2a241e] text-[#2a241e] py-3 md:py-3.5 rounded-full font-bold text-[11px] tracking-widest uppercase hover:bg-[#2a241e] hover:text-white transition-all shadow-sm">
               <Download size={14} className="inline mr-2" /> {t.cizimIndir}
             </button>

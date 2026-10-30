@@ -18,13 +18,39 @@ export function formatLira(amount: number): string {
   return `${new Intl.NumberFormat("tr-TR").format(amount)} TL`;
 }
 
-export function todayIstanbul(): string {
+export function todayIstanbul(date = new Date()): string {
   return new Intl.DateTimeFormat("en-CA", {
     timeZone: "Europe/Istanbul",
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
-  }).format(new Date());
+  }).format(date);
+}
+
+export function tomorrowIstanbul(date = new Date()): string {
+  const [year, month, day] = todayIstanbul(date).split("-").map(Number);
+  const next = new Date(Date.UTC(year, month - 1, day + 1));
+  const pad = (value: number) => String(value).padStart(2, "0");
+  return `${next.getUTCFullYear()}-${pad(next.getUTCMonth() + 1)}-${pad(next.getUTCDate())}`;
+}
+
+export function istanbulClock(value: string): { date: string; time: string } {
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return { date: "", time: "" };
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Europe/Istanbul",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(parsed);
+  const read = (type: Intl.DateTimeFormatPartTypes) => parts.find((part) => part.type === type)?.value ?? "";
+  return {
+    date: `${read("year")}-${read("month")}-${read("day")}`,
+    time: `${read("hour")}:${read("minute")}`,
+  };
 }
 
 export function monthKeyIstanbul(date = new Date()): string {

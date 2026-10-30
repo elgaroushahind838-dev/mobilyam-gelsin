@@ -10,7 +10,6 @@ const WHATSAPP_PHONE = "905514835322";
 
 const productsDB = {
   "6-kapili-3-cekmeceli-marka-dolap": {
-    price: "19.000 TL",
     categorySlug: "yatak-odasi",
     category: { TR: "Yatak Odası", EN: "Bedroom", AR: "غرفة نوم" },
     subCategory: { TR: "Gardırop", EN: "Wardrobe", AR: "خزانة ملابس" },
@@ -26,11 +25,9 @@ const productsDB = {
       "/images/6k3cmarka-yan.jpeg",
       "/images/6k3cmarka-ezgialtinsiyah-kulp.jpeg"
     ],
-    dimensions: { width: "220 cm", depth: "100 cm", height: "75 cm" },
   },
 
   "sardunya-ranza": {
-    price: "45.000 TL",
     categorySlug: "genc-odasi",
     category: { TR: "Genç Odası", EN: "Bedroom", AR: "غرفة نوم" },
     subCategory: { TR: "Ranza", EN: "Wardrobe", AR: "خزانة ملابس" },
@@ -45,11 +42,9 @@ const productsDB = {
       "/images/sardunya-ranza-ust.jpeg",
       "/images/sardunya-ranza-acık.jpeg"
     ],
-    dimensions: { width: "220 cm", depth: "100 cm", height: "75 cm" },
   },
 
   "surgulu-dolap": {
-    price: "45.000 TL",
     categorySlug: "yatak-odasi",
     category: { TR: "Yatak Odası", EN: "Bedroom", AR: "غرفة نوم" },
     subCategory: { TR: "Gardırop", EN: "Wardrobe", AR: "خزانة ملابس" },
@@ -64,11 +59,9 @@ const productsDB = {
       "/images/surgulu-dolapyan.jpeg",
       "/images/surgulu-dolapacık.jpeg"
     ],
-    dimensions: { width: "220 cm", depth: "100 cm", height: "75 cm" },
   },
 
   "seher-4-kapili-dolap": {
-    price: "45.000 TL",
     categorySlug: "yatak-odasi",
     category: { TR: "Yatak Odası", EN: "Bedroom", AR: "غرفة نوم" },
     subCategory: { TR: "Gardırop", EN: "Wardrobe", AR: "خزانة ملابس" },
@@ -83,11 +76,9 @@ const productsDB = {
       "/images/seher4kyan.jpeg",
       "/images/seher4kacik.jpeg"
     ],
-    dimensions: { width: "220 cm", depth: "100 cm", height: "75 cm" },
   },
 
   "3-kapili-dolap": {
-    price: "45.000 TL",
     categorySlug: "yatak-odasi",
     category: { TR: "Yatak Odası", EN: "Bedroom", AR: "غرفة نوم" },
     subCategory: { TR: "Gardırop", EN: "Wardrobe", AR: "خزانة ملابس" },
@@ -102,11 +93,9 @@ const productsDB = {
       "/images/3kdolap-yan.jpeg",
       "/images/3kdolap-acik.jpeg"
     ],
-    dimensions: { width: "220 cm", depth: "100 cm", height: "75 cm" },
   },
 
   "6-kapili-dolap": {
-    price: "45.000 TL",
     categorySlug: "yatak-odasi",
     category: { TR: "Yatak Odası", EN: "Bedroom", AR: "غرفة نوم" },
     subCategory: { TR: "Gardırop", EN: "Wardrobe", AR: "خزانة ملابس" },
@@ -121,35 +110,22 @@ const productsDB = {
       "/images/seher4kyan.jpeg",
       "/images/seher4kacik.jpeg"
     ],
-    dimensions: { width: "220 cm", depth: "100 cm", height: "75 cm" },
   },
 };
 
 const copy = {
   TR: {
     home: "Ana Sayfa",
-    width: "Genişlik",
-    depth: "Derinlik",
-    height: "Yükseklik",
-    dimensions: "Ölçüler",
     whatsapp: "WhatsApp üzerinden bizimle iletişime geçin",
     message: (name: string) => `Merhaba, ${name} hakkında bilgi almak istiyorum.`,
   },
   EN: {
     home: "Home",
-    width: "Width",
-    depth: "Depth",
-    height: "Height",
-    dimensions: "Dimensions",
     whatsapp: "Contact us on WhatsApp",
     message: (name: string) => `Hello, I would like information about ${name}.`,
   },
   AR: {
     home: "الرئيسية",
-    width: "العرض",
-    depth: "العمق",
-    height: "الارتفاع",
-    dimensions: "المقاسات",
     whatsapp: "تواصلوا معنا عبر واتساب",
     message: (name: string) => `مرحباً، أود الحصول على معلومات حول ${name}.`,
   },
@@ -185,14 +161,12 @@ export default function ProductDetailPage() {
           slug,
           missing: false,
           product: {
-            price: item.price,
             categorySlug: item.categorySlug,
             category: { TR: item.categoryLabel, EN: item.categoryLabel, AR: item.categoryLabel },
             subCategory: { TR: item.tag, EN: item.tag, AR: item.tag },
             name: item.name,
             description: item.description,
             images: item.images?.length ? item.images : [item.img],
-            dimensions: item.dimensions || { width: "", depth: "", height: "" },
           },
         });
       })
@@ -273,28 +247,6 @@ export default function ProductDetailPage() {
             <p className="text-[#52525b] text-[15px] md:text-[16px] leading-relaxed mb-8">
               {product.description[langKey]}
             </p>
-
-            <div className="border-t border-b border-[#e5e5e5] py-6 mb-8">
-              <span className="text-[11px] font-bold tracking-[0.15em] text-[#8c7f73] uppercase block mb-4">
-                {t.dimensions}
-              </span>
-              <div className="flex justify-between items-center text-[#2a241e]">
-                <div className="flex flex-col gap-1">
-                  <span className="text-[11px] font-bold text-[#8c7f73] uppercase tracking-wider">{t.width}</span>
-                  <span className="text-[15px] font-medium">{product.dimensions.width}</span>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <span className="text-[11px] font-bold text-[#8c7f73] uppercase tracking-wider">{t.depth}</span>
-                  <span className="text-[15px] font-medium">{product.dimensions.depth}</span>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <span className="text-[11px] font-bold text-[#8c7f73] uppercase tracking-wider">{t.height}</span>
-                  <span className="text-[15px] font-medium">{product.dimensions.height}</span>
-                </div>
-              </div>
-            </div>
-
-            <p className="text-3xl font-serif text-[#2a241e] mb-8">{product.price}</p>
 
             <a
               href={whatsappHref}

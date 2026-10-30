@@ -21,7 +21,11 @@ async function readData(): Promise<StoreData> {
     return {
       products: parsed.products ?? [],
       orders: parsed.orders ?? [],
-      measurements: parsed.measurements ?? [],
+      measurements: (parsed.measurements ?? []).map((item) => ({
+        ...item,
+        appointmentAt: item.appointmentAt,
+        status: item.status === "done" || item.status === "cancelled" ? item.status : "scheduled",
+      })),
     };
   } catch {
     const seeded: StoreData = { products: SEED_PRODUCTS, orders: [], measurements: [] };
@@ -160,7 +164,12 @@ export function createFileStore(): Store {
     async createMeasurement(input: MeasurementInput) {
       return withLock(async () => {
         const data = await readData();
-        const item: Measurement = { ...input, id: crypto.randomUUID(), createdAt: new Date().toISOString() };
+        const item: Measurement = {
+          ...input,
+          status: input.status ?? "scheduled",
+          id: crypto.randomUUID(),
+          createdAt: new Date().toISOString(),
+        };
         data.measurements.push(item);
         await writeData(data);
         return item;
