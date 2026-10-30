@@ -333,12 +333,12 @@ export default function Home() {
     <main className="relative w-full">
       
       {/* 1. Hero Section */}
-      <section className="relative h-screen flex items-center px-6 md:px-16 overflow-hidden">
+      <section className="relative flex h-screen w-full min-w-0 items-center overflow-hidden px-4 sm:px-6 md:px-16">
         <motion.div variants={fadeIn} initial="hidden" animate="show" className="absolute inset-0 -z-10">
           <img 
             src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?q=80&w=2000&auto=format&fit=crop" 
             alt="Lüks Mobilya" 
-            className="w-full h-full object-cover object-center"
+            className="h-full w-full object-cover object-center"
           />
           <div className="absolute inset-0 bg-black/20"></div>
         </motion.div>
@@ -347,25 +347,25 @@ export default function Home() {
           initial={{ opacity: 0, y: 50 }} 
           animate={{ opacity: 1, y: 0 }} 
           transition={{ duration: 1, delay: 0.2 }}
-          className="bg-transparent backdrop-blur-sm p-10 md:p-14 rounded-2xl max-w-2xl border border-white/5 shadow-2xl mt-16"
+          className="mt-16 box-border w-full min-w-0 max-w-2xl rounded-2xl border border-white/5 bg-transparent p-5 shadow-2xl backdrop-blur-sm sm:p-10 md:p-14"
         >
-          <span className="text-xs md:text-sm uppercase tracking-[0.3em] text-white/90 mb-4 block font-semibold">
+          <span className="mb-4 block max-w-full text-xs font-semibold uppercase tracking-[0.18em] text-white/90 sm:tracking-[0.3em] md:text-sm">
             {t.etiket}
           </span>
-          <h1 className="text-5xl md:text-7xl font-serif text-white mb-6 leading-tight drop-shadow-lg">
+          <h1 className="mb-6 max-w-full break-words font-serif text-[2.15rem] leading-tight text-white drop-shadow-lg min-[400px]:text-5xl md:text-7xl">
             {t.baslik1} <br /> {t.baslik2}
           </h1>
-          <p className="text-white/90 text-lg mb-10 leading-relaxed font-light drop-shadow-md">
+          <p className="mb-8 max-w-full break-words text-base font-light leading-relaxed text-white/90 drop-shadow-md sm:mb-10 sm:text-lg">
             {t.aciklama}
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-5">
+          <div className="flex w-full min-w-0 flex-col gap-4 sm:flex-row sm:gap-5">
             <Link href="#koleksiyonlar" 
-              className="bg-[#4d453e] text-white px-8 py-4 rounded-xl font-medium text-center transition-all duration-300 hover:bg-[#241a0e] hover:shadow-xl">
+              className="w-full min-w-0 rounded-xl bg-[#4d453e] px-6 py-4 text-center font-medium text-white transition-all duration-300 hover:bg-[#241a0e] hover:shadow-xl sm:w-auto sm:px-8">
               {t.buton1}
             </Link>
             <a href="#magazalar" 
-              className="bg-transparent border-2 border-white text-white px-8 py-4 rounded-xl font-medium text-center transition-all duration-300 hover:bg-white hover:text-[#241a0e] hover:shadow-xl">
+              className="w-full min-w-0 rounded-xl border-2 border-white bg-transparent px-6 py-4 text-center font-medium text-white transition-all duration-300 hover:bg-white hover:text-[#241a0e] hover:shadow-xl sm:w-auto sm:px-8">
               {t.buton2}
             </a>
           </div>
