@@ -32,13 +32,16 @@ export function measurementFromBody(body: Record<string, unknown>): MeasurementI
   return { customerName, phone, address, appointmentAt: date.toISOString(), notes };
 }
 
-export function productFromBody(body: Record<string, unknown>, existingImages: string[] = []): ProductInput | string {
+export function productFromBody(
+  body: Record<string, unknown>,
+  existing?: { images?: string[]; price?: string; priceAmount?: number; width?: string; depth?: string; height?: string },
+): ProductInput | string {
   const name = String(body.name ?? "").trim();
   const description = String(body.description ?? "").trim();
-  const price = String(body.price ?? "").trim();
   const categorySlug = String(body.categorySlug ?? "").trim();
   const category = CATEGORIES.find((item) => item.slug === categorySlug);
-  if (!name || !description || !price || !category) return "Ad, açıklama, fiyat ve koleksiyon gerekli.";
+  if (!name || !description || !category) return "Ad, açıklama ve koleksiyon gerekli.";
+  const existingImages = existing?.images ?? [];
   const imageUrl = String(body.imageUrl ?? "").trim();
   const images = imageUrl ? [imageUrl, ...existingImages.filter((item) => item !== imageUrl)] : existingImages;
   if (!images.filter(Boolean).length) return "Bir ürün fotoğrafı yükleyin veya görsel adresi yazın.";
@@ -49,14 +52,14 @@ export function productFromBody(body: Record<string, unknown>, existingImages: s
     description,
     descriptionEn: String(body.descriptionEn ?? description),
     descriptionAr: String(body.descriptionAr ?? description),
-    price,
-    priceAmount: parsePriceAmount(price),
+    price: existing?.price ?? "",
+    priceAmount: existing?.priceAmount ?? 0,
     categorySlug: category.slug,
     categoryLabel: category.label,
     tag: String(body.tag ?? category.label).trim() || category.label,
-    width: String(body.width ?? "").trim(),
-    depth: String(body.depth ?? "").trim(),
-    height: String(body.height ?? "").trim(),
+    width: existing?.width ?? "",
+    depth: existing?.depth ?? "",
+    height: existing?.height ?? "",
     images: images.filter(Boolean),
   };
 }

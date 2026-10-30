@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useState } from "react";
 import type { Order } from "@/lib/types";
 import { formatWhen, todayIstanbul, whatsAppLink } from "@/lib/format";
-import QuickAdd from "./QuickAdd";
 import { adminJson, dangerClass, fieldClass, ghostClass, primaryClass } from "./client";
 
 const empty = { customerName: "", phone: "", product: "", price: "", orderDate: "" };
@@ -90,7 +89,6 @@ export default function OrdersScreen({ status }: { status: "active" | "completed
       <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Ad, telefon veya ürün ara" className={`${fieldClass} mt-4`} />
       {open && (
         <form onSubmit={save} className="mt-4 grid gap-3 rounded-3xl border border-[#efeae3] bg-white p-4 md:grid-cols-2">
-          <QuickAdd onFill={(value) => setForm((current) => ({ ...current, customerName: value.name || current.customerName, phone: value.phone || current.phone }))} />
           <label className="text-sm">Müşteri<input required value={form.customerName} onChange={(event) => setForm({ ...form, customerName: event.target.value })} className={`${fieldClass} mt-1`} /></label>
           <label className="text-sm">Telefon<input required value={form.phone} onChange={(event) => setForm({ ...form, phone: event.target.value })} className={`${fieldClass} mt-1`} /></label>
           <label className="text-sm">Ürün<input required value={form.product} onChange={(event) => setForm({ ...form, product: event.target.value })} className={`${fieldClass} mt-1`} /></label>

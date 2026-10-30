@@ -10,7 +10,7 @@ const translations = {
     etiket: "YENİ SEZON",
     baslik1: "Mekânınıza Özel",
     baslik2: "Tasarım",
-    aciklama: "Özel tasarım mobilya ve sabit dolapları, yaşam alanınızın ölçülerine göre tasarlıyor ve üretiyoruz.",
+    aciklama: "Özel tasarım mobilya ve sabit dolapları yaşam alanınıza göre tasarlıyor ve üretiyoruz.",
     buton1: "Koleksiyonu Keşfet",
     buton2: "Atölyemiz",
     kolBaslik: "Koleksiyonlar",
@@ -23,25 +23,21 @@ const translations = {
     
     secKoleksiyonlar: "Düğün Paketleri",
     stokta: "StoktaMevcut",
-    fiyatBaslayan: "ŞU FİYATTAN BAŞLAYAN:",
     detaylar: "Detayları İncele",
     whatsapp: "WhatsApp ile Sipariş",
     
     paketler: [
       {
         isim1: "Ekonomik",
-        isim2: "Paket",
-        fiyat: "₺89.000"
+        isim2: "Paket"
       },
       {
         isim1: "Premium",
-        isim2: "Paket",
-        fiyat: "₺210.000"
+        isim2: "Paket"
       },
       {
         isim1: "Standart",
-        isim2: "Paket",
-        fiyat: "₺145.000"
+        isim2: "Paket"
       }
     ],
 
@@ -69,7 +65,7 @@ const translations = {
     etiket: "NEW SEASON",
     baslik1: "Designed for",
     baslik2: "Your Space",
-    aciklama: "We design and build custom furniture and fitted wardrobes to the measurements of your space.",
+    aciklama: "We design and build custom furniture and fitted wardrobes for your space.",
     buton1: "Discover Collection",
     buton2: "Our Workshop",
     kolBaslik: "Collections",
@@ -82,25 +78,21 @@ const translations = {
     
     secKoleksiyonlar: "wedding packages",
     stokta: "InStock",
-    fiyatBaslayan: "STARTING FROM:",
     detaylar: "View Details",
     whatsapp: "Order via WhatsApp",
     
     paketler: [
       {
         isim1: "Economic",
-        isim2: "Package",
-        fiyat: "₺89.000"
+        isim2: "Package"
       },
       {
         isim1: "Premium",
-        isim2: "Package",
-        fiyat: "₺210.000"
+        isim2: "Package"
       },
       {
         isim1: "Standard",
-        isim2: "Package",
-        fiyat: "₺145.000"
+        isim2: "Package"
       }
     ],
 
@@ -129,7 +121,7 @@ const translations = {
     etiket: "الموسم الجديد",
     baslik1: "تصميم خاص",
     baslik2: "لمساحتك",
-    aciklama: "نصمّم ونصنع الأثاث حسب الطلب والخزائن الثابتة وفق مقاسات مساحتك.",
+    aciklama: "نصمّم ونصنع الأثاث حسب الطلب والخزائن الثابتة لمساحتك.",
     buton1: "اكتشف المجموعة",
     buton2: "ورشتنا",
     kolBaslik: "المجموعات",
@@ -142,25 +134,21 @@ const translations = {
     
     secKoleksiyonlar: "حزم الزفاف",
     stokta: "متوفر_بالمخزون",
-    fiyatBaslayan: "يبدأ السعر من:",
     detaylar: "عرض التفاصيل",
     whatsapp: "اطلب عبر واتساب",
     
     paketler: [
       {
         isim1: "الباقة",
-        isim2: "الاقتصادية",
-        fiyat: "₺89.000"
+        isim2: "الاقتصادية"
       },
       {
         isim1: "الباقة",
-        isim2: "المميزة",
-        fiyat: "₺210.000"
+        isim2: "المميزة"
       },
       {
         isim1: "الباقة",
-        isim2: "القياسية",
-        fiyat: "₺145.000"
+        isim2: "القياسية"
       }
     ],
 
@@ -190,7 +178,6 @@ const translations = {
 interface Urun {
   kategori: { TR: string; EN: string; AR: string; };
   isim: { TR: string; EN: string; AR: string; };
-  fiyat: string;
   img: string;
   renkler?: string[];
 }
@@ -199,25 +186,21 @@ const urunlerListesi: Urun[] = [
   {
     kategori: { TR: "Yatak Odası", EN: "Bedroom", AR: "غرفة النوم" },
     isim: { TR: "Yüklüklü 4 Kapılı Roma Dolap", EN: "Roma 4-Door Wardrobe with Storage Unit", AR: "خزانة روما بأربعة أبواب مع وحدة تخزين علوية" },
-    fiyat: "16.500₺",
     img: "/images/cok-tercih1.jpeg"
   },
   {
     kategori: { TR: "Genç Odası", EN: "Youth Room", AR: "غرفة الشباب" },
     isim: { TR: "Marmaris Ranza", EN: "Marmaris Bunk Bed", AR: "سرير بطابقين مارماريس" },
-    fiyat: "17.499₺",
     img: "/images/cok-tercih2.jpeg"
   },
   {
     kategori: { TR: "Oturma Odası", EN: "Living Room", AR: "غرفة المعيشة" },
     isim: { TR: "Valery Koltuk Takımı", EN: "Valery Sofa Set", AR: "طقم كنب فاليري" },
-    fiyat: "21.000₺",
     img: "/images/cok-tercih3.jpeg"
   },
   {
     kategori: { TR: "Portmanto", EN: "Hallway Coat Rack", AR: "وحدة تعليق الملابس عند المدخل" },
     isim: { TR: "Nevin Portmanto", EN: "Nevin Hallway Coat Rack", AR: "وحدة تعليق نيفين للمدخل" },
-    fiyat: "12.999₺",
     img: "/images/cok-tercih4.jpeg"
   }
 ];
@@ -244,7 +227,6 @@ type LiveProduct = {
   slug: string;
   kategori: { TR: string; EN: string; AR: string };
   isim: { TR: string; EN: string; AR: string };
-  fiyat: string;
   img: string;
   renkler?: string[];
 };
@@ -264,13 +246,11 @@ export default function Home() {
           slug: string;
           categoryLabel: string;
           name: { TR: string; EN: string; AR: string };
-          price: string;
           img: string;
         }) => ({
           slug: product.slug,
           kategori: { TR: product.categoryLabel, EN: product.categoryLabel, AR: product.categoryLabel },
           isim: product.name,
-          fiyat: product.price,
           img: product.img,
         })));
       })
@@ -476,14 +456,6 @@ export default function Home() {
                     </div>
                   </div>
                   <div className="mt-auto">
-                    <div className="mb-8">
-                      <p className="text-[11px] font-bold tracking-[0.15em] text-[#a1a1aa] uppercase mb-2">
-                        {t.fiyatBaslayan}
-                      </p>
-                      <p className="text-[44px] font-serif text-[#241a0e] leading-none">
-                        {paket.fiyat}
-                      </p>
-                    </div>
                     <div className="flex flex-col gap-4">
                       <Link 
                         href={`/paket/${paket.isim1.toLowerCase()}`}
@@ -595,9 +567,6 @@ export default function Home() {
                     <div className="flex justify-between items-center mb-3">
                       <span className="text-[14px] font-bold text-[#8c7f73] tracking-wide">
                         {urun.kategori[lang as keyof typeof urun.kategori]}
-                      </span>
-                      <span className="text-[15px] font-bold text-[#2a241e]">
-                        {urun.fiyat}
                       </span>
                     </div>
                     <h3 className="text-[19px] font-bold text-[#2a241e] group-hover:text-[#ba7e6a] transition-colors">

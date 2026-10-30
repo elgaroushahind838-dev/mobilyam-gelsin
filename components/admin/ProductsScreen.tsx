@@ -7,11 +7,7 @@ import { adminJson, dangerClass, fieldClass, ghostClass, primaryClass } from "./
 const empty = {
   name: "",
   description: "",
-  price: "",
   categorySlug: "yatak-odasi",
-  width: "",
-  depth: "",
-  height: "",
   imageUrl: "",
 };
 
@@ -101,15 +97,11 @@ export default function ProductsScreen() {
         <form onSubmit={save} className="mt-4 grid gap-3 rounded-3xl border border-[#efeae3] bg-white p-4 md:grid-cols-2">
           <label className="text-sm md:col-span-2">Ad<input required value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} className={`${fieldClass} mt-1`} /></label>
           <label className="text-sm md:col-span-2">Açıklama<textarea required value={form.description} onChange={(event) => setForm({ ...form, description: event.target.value })} rows={3} className={`${fieldClass} mt-1`} /></label>
-          <label className="text-sm">Fiyat<input required value={form.price} onChange={(event) => setForm({ ...form, price: event.target.value })} className={`${fieldClass} mt-1`} placeholder="19.000 TL" /></label>
           <label className="text-sm">Koleksiyon
             <select value={form.categorySlug} onChange={(event) => setForm({ ...form, categorySlug: event.target.value })} className={`${fieldClass} mt-1`}>
               {CATEGORIES.map((category) => <option key={category.slug} value={category.slug}>{category.label}</option>)}
             </select>
           </label>
-          <label className="text-sm">Genişlik<input value={form.width} onChange={(event) => setForm({ ...form, width: event.target.value })} className={`${fieldClass} mt-1`} placeholder="220 cm" /></label>
-          <label className="text-sm">Derinlik<input value={form.depth} onChange={(event) => setForm({ ...form, depth: event.target.value })} className={`${fieldClass} mt-1`} /></label>
-          <label className="text-sm">Yükseklik<input value={form.height} onChange={(event) => setForm({ ...form, height: event.target.value })} className={`${fieldClass} mt-1`} /></label>
           <label className="text-sm">Fotoğraf
             <input type="file" accept="image/*" className={`${fieldClass} mt-1`} onChange={(event) => { const file = event.target.files?.[0]; if (file) upload(file); }} />
           </label>
@@ -129,10 +121,8 @@ export default function ProductsScreen() {
               <p className="text-xs font-bold uppercase tracking-wide text-[#8c7f73]">{product.categoryLabel}</p>
               <h2 className="mt-1 text-lg font-semibold">{product.name}</h2>
               <p className="mt-1 line-clamp-2 text-sm text-[#6b625a]">{product.description}</p>
-              <p className="mt-2 font-serif text-xl">{product.price}</p>
-              <p className="text-xs text-[#8c7f73]">{[product.width, product.depth, product.height].filter(Boolean).join(" · ")}</p>
               <div className="mt-3 flex gap-2">
-                <button type="button" className={ghostClass} onClick={() => { setEditing(product.id); setForm({ name: product.name, description: product.description, price: product.price, categorySlug: product.categorySlug, width: product.width, depth: product.depth, height: product.height, imageUrl: product.images[0] || "" }); setOpen(true); }}>Düzenle</button>
+                <button type="button" className={ghostClass} onClick={() => { setEditing(product.id); setForm({ name: product.name, description: product.description, categorySlug: product.categorySlug, imageUrl: product.images[0] || "" }); setOpen(true); }}>Düzenle</button>
                 <button type="button" className={dangerClass} onClick={() => remove(product.id)}>Sil</button>
               </div>
             </div>

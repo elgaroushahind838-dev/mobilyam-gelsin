@@ -18,8 +18,6 @@ const productsDB = [
     tag: "Gardırop",
     name: { TR: "6 Kapılı 3 Çekmeceli MARKA Dolap", EN: "MARKA Wardrobe with 6 Doors and 3 Drawers", AR: "خزانة ماركا بستة أبواب وثلاثة أدراج" },
     material: "Ahşap",
-    price: "19.000 TL",
-    priceVal: 19000,
     date: "2024-05-01",
     img: "/images/6k3cmarka-on.jpeg"
   },
@@ -30,8 +28,6 @@ const productsDB = [
     tag: "Ranza",
     name: { TR: "Sardunya Ranza", EN: "Artisan Walnut Table", AR: "طاولة أرتيزان جوز" },
     material: "MASİF CEVİZ",
-    price: "28.900 TL",
-    priceVal: 28900,
     date: "2024-01-15",
     img: "/images/sardunya-ranza-on.jpeg",
   },
@@ -42,8 +38,6 @@ const productsDB = [
     tag: "Gardırop",
     name: { TR: "Sürgülü Dolap", EN: "Lumina TV Unit", AR: "وحدة تلفاز لومينا" },
     material: "FIRÇALI METAL",
-    price: "12.200 TL",
-    priceVal: 12200,
     date: "2024-04-10",
     img: "/images/surgulu-dolapon.jpeg",
   },
@@ -54,8 +48,6 @@ const productsDB = [
     tag: "Gardırop",
     name: { TR: "Seher 4 Kapılı Dolap", EN: "Aura Console", AR: "كونسول أورا" },
     material: "MASİF AHŞAP",
-    price: "32.000 TL",
-    priceVal: 32000,
     date: "2024-03-20",
     img: "/images/seher4kon.jpeg",
   },
@@ -66,8 +58,6 @@ const productsDB = [
     tag: "Gardırop",
     name: { TR: "3 Kapılı Dolap", EN: "Nova Dining Set", AR: "طاولة طعام نوفا" },
     material: "MASİF AHŞAP",
-    price: "45.000 TL",
-    priceVal: 45000,
     date: "2024-02-15",
      img: "/images/3kdolap-on.jpeg",
   },
@@ -78,8 +68,6 @@ const productsDB = [
     tag: "Gardırop",
     name: { TR: "6 Kapılı Dolap", EN: "Luna Bed Base", AR: "قاعدة سرير لونا" },
     material: "MASİF AHŞAP",
-    price: "32.000 TL",
-    priceVal: 32000,
     date: "2024-03-20",
     img: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=800&auto=format&fit=crop",
   },
@@ -90,8 +78,6 @@ const productsDB = [
     tag: "Yatak",
     name: { TR: "Comfort Yatak", EN: "Comfort Mattress", AR: "مرتبة كومفورت" },
     material: "ORTHOPEDIC",
-    price: "18.000 TL",
-    priceVal: 18000,
     date: "2024-04-01",
     img: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=800&auto=format&fit=crop",
   },
@@ -102,8 +88,6 @@ const productsDB = [
     tag: "Gardırop",
     name: { TR: "Royal Gardırop", EN: "Royal Wardrobe", AR: "خزانة رويال" },
     material: "MEŞE",
-    price: "39.000 TL",
-    priceVal: 39000,
     date: "2024-01-10",
     img: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=800&auto=format&fit=crop",
   },
@@ -114,8 +98,6 @@ const productsDB = [
     tag: "Komodin",
     name: { TR: "Soft Komodin", EN: "Soft Nightstand", AR: "كومودينة سوفت" },
     material: "MEŞE",
-    price: "8.000 TL",
-    priceVal: 8000,
     date: "2024-02-01",
     img: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=800&auto=format&fit=crop",
   },
@@ -126,8 +108,6 @@ const productsDB = [
     tag: "Şifonir",
     name: { TR: "Elegance Şifonyer", EN: "Elegance Dresser", AR: "خزانة إليغانس" },
     material: "MEŞE",
-    price: "22.000 TL",
-    priceVal: 22000,
     date: "2024-03-05",
     img: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=800&auto=format&fit=crop",
   },
@@ -138,8 +118,6 @@ const productsDB = [
     tag: "Makyaj Masası",
     name: { TR: "Bella Makyaj Masası", EN: "Bella Vanity Table", AR: "طاولة مكياج بيلا" },
     material: "MEŞE",
-    price: "16.000 TL",
-    priceVal: 16000,
     date: "2024-03-12",
     img: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=800&auto=format&fit=crop",
   },
@@ -150,8 +128,6 @@ const productsDB = [
     tag: "Ranza",
     name: { TR: "Kids Ranza", EN: "Kids Bunk Bed", AR: "سرير طابقين للأطفال" },
     material: "AHŞAP",
-    price: "27.000 TL",
-    priceVal: 27000,
     date: "2024-02-22",
     img: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=800&auto=format&fit=crop",
   },
@@ -162,8 +138,6 @@ const productsDB = [
     tag: "Masalar",
     name: { TR: "Office Çalışma Masası", EN: "Office Desk", AR: "مكتب أوفيس" },
     material: "MASİF AHŞAP",
-    price: "19.000 TL",
-    priceVal: 19000,
     date: "2024-04-20",
     img: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=800&auto=format&fit=crop",
   },
@@ -174,8 +148,6 @@ const productsDB = [
     tag: "Portmanto",
     name: { TR: "Modern Portmanto", EN: "Modern Coat Rack", AR: "خزانة مدخل مودرن" },
     material: "MEŞE",
-    price: "14.000 TL",
-    priceVal: 14000,
     date: "2024-05-10",
     img: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=800&auto=format&fit=crop",
   },
@@ -193,8 +165,6 @@ const translations = {
     sortOptions: {
       newest: "En Yeniler",
       oldest: "En Eskiler",
-      priceLow: "En Düşük Fiyat",
-      priceHigh: "En Yüksek Fiyat",
     },
   },
   EN: {
@@ -207,8 +177,6 @@ const translations = {
     sortOptions: {
       newest: "Newest",
       oldest: "Oldest",
-      priceLow: "Lowest Price",
-      priceHigh: "Highest Price",
     },
   },
   AR: {
@@ -221,8 +189,6 @@ const translations = {
     sortOptions: {
       newest: "الأحدث",
       oldest: "الأقدم",
-      priceLow: "الأقل سعراً",
-      priceHigh: "الأعلى سعراً",
     },
   },
 };
@@ -252,8 +218,6 @@ export default function CategoryPage() {
           tag: string;
           name: { TR: string; EN: string; AR: string };
           material?: string;
-          price: string;
-          priceVal: number;
           date: string;
           img: string;
         }) => ({
@@ -263,8 +227,6 @@ export default function CategoryPage() {
           tag: product.tag,
           name: product.name,
           material: product.material || product.tag,
-          price: product.price,
-          priceVal: product.priceVal,
           date: product.date,
           img: product.img,
         })));
@@ -314,16 +276,10 @@ export default function CategoryPage() {
         : categoryProducts.filter((p) => p.tag === activeTag);
 
     return filtered.sort((a, b) => {
-      switch (sortBy) {
-        case "priceLow":
-          return a.priceVal - b.priceVal;
-        case "priceHigh":
-          return b.priceVal - a.priceVal;
-        case "oldest":
-          return new Date(a.date).getTime() - new Date(b.date).getTime();
-        default:
-          return new Date(b.date).getTime() - new Date(a.date).getTime();
+      if (sortBy === "oldest") {
+        return new Date(a.date).getTime() - new Date(b.date).getTime();
       }
+      return new Date(b.date).getTime() - new Date(a.date).getTime();
     });
   }, [activeTag, categoryProducts, sortBy]);
 
@@ -487,11 +443,6 @@ export default function CategoryPage() {
                     </span>
 
                     <div className="mt-auto flex flex-col gap-5">
-                      <span className="text-[18px] font-bold text-[#2a241e]">
-                        {urun.price}
-                      </span>
-
-                      {/* الزر الشفاف الجديد */}
                       <div
                         className="w-full bg-transparent border border-[#2a241e] text-[#2a241e] py-3.5 rounded-[16px] font-bold text-[14px] flex items-center justify-center gap-2 group-hover:bg-[#2a241e] group-hover:text-white transition-colors"
                       >

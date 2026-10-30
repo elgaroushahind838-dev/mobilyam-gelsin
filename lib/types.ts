@@ -34,6 +34,8 @@ export type Order = {
   createdAt: string;
 };
 
+export type MeasurementStatus = "scheduled" | "done" | "cancelled";
+
 export type Measurement = {
   id: string;
   customerName: string;
@@ -41,6 +43,7 @@ export type Measurement = {
   address: string;
   appointmentAt: string;
   notes: string;
+  status: MeasurementStatus;
   createdAt: string;
 };
 

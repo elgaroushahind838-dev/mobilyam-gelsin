@@ -4,7 +4,9 @@ export type OrderInput = Omit<Order, "id" | "createdAt" | "completedAt" | "statu
   status?: Order["status"];
 };
 
-export type MeasurementInput = Omit<Measurement, "id" | "createdAt">;
+export type MeasurementInput = Omit<Measurement, "id" | "createdAt" | "status"> & {
+  status?: Measurement["status"];
+};
 
 export type ProductInput = Omit<Product, "id" | "createdAt" | "slug"> & { slug?: string };
 
