@@ -25,6 +25,7 @@ export const viewport: Viewport = {
   themeColor: "#2a241e",
   width: "device-width",
   initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function AdminPanelLayout({ children }: { children: React.ReactNode }) {
