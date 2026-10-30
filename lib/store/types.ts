@@ -1,7 +1,9 @@
 import type { Measurement, Order, Product } from "../types";
 
-export type OrderInput = Omit<Order, "id" | "createdAt" | "completedAt" | "status"> & {
+export type OrderInput = Omit<Order, "id" | "createdAt" | "completedAt" | "status" | "address" | "notes"> & {
   status?: Order["status"];
+  address?: string;
+  notes?: string;
 };
 
 export type MeasurementInput = Omit<Measurement, "id" | "createdAt" | "status"> & {

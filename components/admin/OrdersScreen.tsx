@@ -7,6 +7,29 @@ import { adminJson, dangerClass, fieldClass, ghostClass, primaryClass } from "./
 
 const empty = { customerName: "", phone: "", product: "", price: "", orderDate: "" };
 
+function StageTrack({ current }: { current: "active" | "completed" }) {
+  const steps = [
+    { label: "Ölçü", state: "done" as const },
+    { label: "Aktif", state: current === "completed" ? "done" as const : "now" as const },
+    { label: "Arşiv", state: current === "completed" ? "now" as const : "wait" as const },
+  ];
+  return (
+    <div className="mb-3 flex items-center" aria-label="Ölçü, Aktif, Arşiv">
+      {steps.map((step, index) => (
+        <div key={step.label} className="flex min-w-0 flex-1 items-center">
+          {index > 0 && <div className={`mx-2 h-px min-w-4 flex-1 ${steps[index - 1].state === "done" ? "bg-[#2a241e]" : "bg-[#e6e0d8]"}`} />}
+          <div className={`flex items-center gap-1.5 text-xs font-bold ${step.state === "wait" ? "text-[#a3988d]" : "text-[#2a241e]"}`}>
+            <span className={`grid h-[22px] w-[22px] place-items-center rounded-full border text-[11px] ${step.state === "done" ? "border-[#2a241e] bg-[#2a241e] text-white" : step.state === "now" ? "border-[#2a241e] bg-white shadow-[0_0_0_4px_#f3efe8]" : "border-[#d9d1c7] bg-white text-[#8c7f73]"}`}>
+              {step.state === "done" ? "✓" : index + 1}
+            </span>
+            {step.label}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function OrdersScreen({ status }: { status: "active" | "completed" }) {
   const [orders, setOrders] = useState<Order[]>([]);
   const [query, setQuery] = useState("");
@@ -104,21 +127,28 @@ export default function OrdersScreen({ status }: { status: "active" | "completed
         {visible.length === 0 && <p className="rounded-3xl bg-white px-4 py-8 text-center text-sm text-[#6b625a]">Kayıt yok.</p>}
         {visible.map((order) => (
           <article key={order.id} className="rounded-3xl border border-[#efeae3] bg-white p-4">
+            <StageTrack current={status} />
             <div className="flex flex-wrap items-start justify-between gap-2">
               <div>
                 <h2 className="text-lg font-semibold">{order.customerName}</h2>
                 <p className="text-sm text-[#6b625a]">{order.phone}</p>
               </div>
-              <p className="font-serif text-xl">{order.price}</p>
+              {order.price ? <p className="font-serif text-xl">{order.price}</p> : null}
             </div>
             <p className="mt-2 text-sm">{order.product}</p>
+            {order.address ? <p className="mt-1 text-sm text-[#4d453e]">{order.address}</p> : null}
+            {order.notes ? <p className="mt-1 text-sm text-[#4d453e]">{order.notes}</p> : null}
             <p className="mt-1 text-xs text-[#8c7f73]">{formatWhen(order.orderDate)}{order.completedAt ? ` · tamamlandı ${formatWhen(order.completedAt)}` : ""}</p>
             <div className="mt-3 flex flex-wrap gap-2">
               <a className="rounded-xl bg-[#25D366] px-3 py-2 text-sm font-semibold text-white" href={whatsAppLink(order.phone)} target="_blank" rel="noreferrer">WhatsApp</a>
-              {status === "active" && <button type="button" className={primaryClass} onClick={() => complete(order.id)}>Tamamlandı</button>}
               <button type="button" className={ghostClass} onClick={() => { setEditing(order.id); setForm({ customerName: order.customerName, phone: order.phone, product: order.product, price: order.price, orderDate: order.orderDate }); setOpen(true); }}>Düzenle</button>
               <button type="button" className={dangerClass} onClick={() => remove(order.id)}>Sil</button>
             </div>
+            {status === "active" && (
+              <button type="button" className="mt-3 flex min-h-[52px] w-full items-center justify-center rounded-[14px] bg-[#2a241e] text-base font-bold text-white" onClick={() => complete(order.id)}>
+                Tamamlandı → Arşiv
+              </button>
+            )}
           </article>
         ))}
       </div>

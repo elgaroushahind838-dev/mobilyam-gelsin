@@ -36,17 +36,34 @@ export async function POST(request: Request, context: Context) {
   const measurements = await store.listMeasurements();
   const current = measurements.find((item) => item.id === id);
   if (!current) return NextResponse.json({ error: "Kayıt bulunamadı" }, { status: 404 });
-  const product = String(body.product ?? "").trim() || "Özel ölçü mobilya";
-  const price = String(body.price ?? "").trim() || "0 TL";
+  if (current.status === "done" || current.status === "cancelled") {
+    return NextResponse.json({ error: "Bu ölçü ziyareti kapanmış." }, { status: 409 });
+  }
+  const price = String(body.price ?? "").trim();
+  const extraNote = String(body.notes ?? "").trim();
+  const carriedNotes = current.notes.trim();
   const order = await store.createOrder({
     customerName: current.customerName,
     phone: current.phone,
-    product,
+    address: current.address,
+    product: carriedNotes || "Özel ölçü mobilya",
+    notes: extraNote,
     price,
-    priceAmount: parsePriceAmount(price),
+    priceAmount: price ? parsePriceAmount(price) : 0,
     orderDate: todayIstanbul(),
     status: "active",
   });
-  await store.deleteMeasurement(id);
+  const updated = await store.updateMeasurement(id, {
+    customerName: current.customerName,
+    phone: current.phone,
+    address: current.address,
+    appointmentAt: current.appointmentAt,
+    notes: current.notes,
+    status: "done",
+  });
+  if (!updated) {
+    await store.deleteOrder(order.id);
+    return NextResponse.json({ error: "Kayıt bulunamadı" }, { status: 404 });
+  }
   return NextResponse.json({ order }, { status: 201 });
 }

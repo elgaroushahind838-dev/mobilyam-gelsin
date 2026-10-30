@@ -30,6 +30,8 @@ export type Order = {
   price: string;
   priceAmount: number;
   orderDate: string;
+  address: string;
+  notes: string;
   completedAt: string | null;
   createdAt: string;
 };

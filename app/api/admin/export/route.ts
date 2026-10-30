@@ -19,7 +19,7 @@ function orderRow(order: Order) {
     durum: order.status === "completed" ? "Tamamlandı" : "Aktif",
     tamamlanma: order.completedAt ? formatWhen(order.completedAt) : "",
     kayit: formatWhen(order.createdAt),
-    not: "",
+    not: order.notes,
   };
 }
 
