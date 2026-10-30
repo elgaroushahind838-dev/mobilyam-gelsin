@@ -2,14 +2,15 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { Archive, ClipboardList, LayoutDashboard, Ruler, Sofa } from "lucide-react";
 import { adminJson } from "./client";
 
 const links = [
-  { href: "/admin", label: "Özet" },
-  { href: "/admin/aktif", label: "Aktif" },
-  { href: "/admin/olcu", label: "Ölçü" },
-  { href: "/admin/arsiv", label: "Arşiv" },
-  { href: "/admin/urunler", label: "Ürünler" },
+  { href: "/admin", label: "Özet", icon: LayoutDashboard },
+  { href: "/admin/aktif", label: "Aktif", icon: ClipboardList },
+  { href: "/admin/olcu", label: "Ölçü", icon: Ruler },
+  { href: "/admin/arsiv", label: "Arşiv", icon: Archive },
+  { href: "/admin/urunler", label: "Ürünler", icon: Sofa },
 ];
 
 export default function Shell({ children }: { children: React.ReactNode }) {
@@ -44,17 +45,26 @@ export default function Shell({ children }: { children: React.ReactNode }) {
           </nav>
           <button type="button" onClick={logout} className="mt-auto text-left text-sm font-medium text-[#8c7f73]">Çıkış yap</button>
         </aside>
-        <main className="min-w-0 flex-1 px-4 py-5 pb-24 md:px-8 md:py-8 md:pb-10">{children}</main>
+        <main className="min-w-0 flex-1 px-4 py-5 pb-[calc(76px+env(safe-area-inset-bottom)+20px)] md:px-8 md:py-8 md:pb-10">{children}</main>
       </div>
-      <nav className="fixed inset-x-0 bottom-0 z-20 grid grid-cols-5 border-t border-[#efeae3] bg-white px-1 py-2 md:hidden">
-        {links.map((link) => {
-          const active = pathname === link.href;
-          return (
-            <Link key={link.href} href={link.href} className={`text-center text-[11px] font-semibold ${active ? "text-[#2a241e]" : "text-[#8c7f73]"}`}>
-              {link.label}
-            </Link>
-          );
-        })}
+      <nav aria-label="Bölümler" className="fixed inset-x-0 bottom-0 z-20 border-t border-[#efeae3] bg-white pb-[env(safe-area-inset-bottom)] md:hidden">
+        <div className="grid h-[76px] grid-cols-5">
+          {links.map((link) => {
+            const active = pathname === link.href;
+            const Icon = link.icon;
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                aria-current={active ? "page" : undefined}
+                className={`flex h-full flex-col items-center justify-center gap-1.5 px-0.5 ${active ? "text-[#2a241e]" : "text-[#8c7f73]"}`}
+              >
+                <Icon size={26} strokeWidth={1.75} aria-hidden="true" />
+                <span className="text-[13px] font-semibold leading-none">{link.label}</span>
+              </Link>
+            );
+          })}
+        </div>
       </nav>
     </div>
   );
