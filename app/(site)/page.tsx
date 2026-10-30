@@ -48,6 +48,8 @@ const translations = {
     hikayemizStat1Sayi: "25+",
     hikayemizStat1Yazi: "Yıllık Tecrübe",
 
+    enCokTercih: "En Çok Tercih Edilenler",
+
     iletisimBaslik: "Atölyemiz",
     atolyeEtiket: "ATÖLYE",
     atolyeAdres1: "385. Sokak, Yunus Emre Mahallesi",
@@ -101,6 +103,8 @@ const translations = {
     hikayemizStat1Sayi: "25+",
     hikayemizStat1Yazi: "Years of Experience",
     hikayemizStat2Yazi: "Completed Projects",
+
+    enCokTercih: "Most Preferred",
 
     iletisimBaslik: "Our Workshop",
     atolyeEtiket: "WORKSHOP",
@@ -157,6 +161,7 @@ const translations = {
     hikayemizStat2Sayi: "+1200",
     hikayemizStat2Yazi: "مشروع مكتمل",
 
+    enCokTercih: "الأكثر تفضيلاً",
     iletisimBaslik: "ورشتنا",
     atolyeEtiket: "الورشة",
     atolyeAdres1: "385. Sokak، حي يونس إمره",
@@ -169,6 +174,36 @@ const translations = {
     elIsciligi: "مصنوع يدوياً 100%"
   }
 };
+
+interface Urun {
+  kategori: { TR: string; EN: string; AR: string; };
+  isim: { TR: string; EN: string; AR: string; };
+  img: string;
+  renkler?: string[];
+}
+
+const urunlerListesi: Urun[] = [
+  {
+    kategori: { TR: "Yatak Odası", EN: "Bedroom", AR: "غرفة النوم" },
+    isim: { TR: "Yüklüklü 4 Kapılı Roma Dolap", EN: "Roma 4-Door Wardrobe with Storage Unit", AR: "خزانة روما بأربعة أبواب مع وحدة تخزين علوية" },
+    img: "/images/cok-tercih1.jpeg"
+  },
+  {
+    kategori: { TR: "Genç Odası", EN: "Youth Room", AR: "غرفة الشباب" },
+    isim: { TR: "Marmaris Ranza", EN: "Marmaris Bunk Bed", AR: "سرير بطابقين مارماريس" },
+    img: "/images/cok-tercih2.jpeg"
+  },
+  {
+    kategori: { TR: "Oturma Odası", EN: "Living Room", AR: "غرفة المعيشة" },
+    isim: { TR: "Valery Koltuk Takımı", EN: "Valery Sofa Set", AR: "طقم كنب فاليري" },
+    img: "/images/cok-tercih3.jpeg"
+  },
+  {
+    kategori: { TR: "Portmanto", EN: "Hallway Coat Rack", AR: "وحدة تعليق الملابس عند المدخل" },
+    isim: { TR: "Nevin Portmanto", EN: "Nevin Hallway Coat Rack", AR: "وحدة تعليق نيفين للمدخل" },
+    img: "/images/cok-tercih4.jpeg"
+  }
+];
 
 const staggerContainer = {
   hidden: { opacity: 0 },
@@ -188,9 +223,44 @@ const fadeIn = {
   show: { opacity: 1, transition: { duration: 1, ease: "easeOut" } }
 } as const;
 
+type LiveProduct = {
+  slug: string;
+  kategori: { TR: string; EN: string; AR: string };
+  isim: { TR: string; EN: string; AR: string };
+  img: string;
+  renkler?: string[];
+};
+
 export default function Home() {
   const { lang } = useLanguage();
   const t = translations[lang as keyof typeof translations];
+  const [liveProducts, setLiveProducts] = useState<LiveProduct[] | null>(null);
+
+  useEffect(() => {
+    let ignore = false;
+    fetch("/api/catalog", { cache: "no-store" })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data) => {
+        if (ignore || !Array.isArray(data?.products)) return;
+        setLiveProducts(data.products.slice(0, 4).map((product: {
+          slug: string;
+          categoryLabel: string;
+          name: { TR: string; EN: string; AR: string };
+          img: string;
+        }) => ({
+          slug: product.slug,
+          kategori: { TR: product.categoryLabel, EN: product.categoryLabel, AR: product.categoryLabel },
+          isim: product.name,
+          img: product.img,
+        })));
+      })
+      .catch(() => undefined);
+    return () => {
+      ignore = true;
+    };
+  }, []);
+
+  const featured = liveProducts ?? urunlerListesi.map((urun) => ({ ...urun, slug: "" }));
 
   useEffect(() => {
     const id = window.location.hash.replace("#", "");
@@ -458,7 +528,66 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 5. İletişim / Showroom Konumları Bölümü */}
+      {/* 5. En Çok Tercih Edilenler Bölümü */}
+      <section className="py-16 bg-[#faf9f6]">
+        <motion.div 
+          variants={staggerContainer} 
+          initial="hidden" 
+          whileInView="show" 
+          viewport={{ once: true, margin: "-100px" }}
+          className="max-w-[1500px] mx-auto px-6 md:px-16"
+        >
+          <motion.h2 variants={fadeUpItem} className="text-[40px] md:text-[48px] font-serif text-[#2a241e] mb-12">
+            {t.enCokTercih}
+          </motion.h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {featured.map((urun, index) => (
+              <motion.div variants={fadeUpItem} key={urun.slug || index}>
+                <div 
+                  onClick={() => {
+                    if (urun.slug) {
+                      window.location.href = `/urun/${urun.slug}`;
+                      return;
+                    }
+                    sendWhatsApp(urun.isim[lang as keyof typeof urun.isim], urun.img);
+                  }}
+                  className="bg-white p-5 rounded-[32px] shadow-[0_2px_12px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)] transition-all duration-300 group cursor-pointer flex flex-col border border-[#f0ece6] h-full"
+                >
+                  <div className="w-full h-[260px] rounded-[20px] overflow-hidden bg-[#f4f2f0] mb-6 relative">
+                    <img src={urun.img} alt={urun.isim[lang as keyof typeof urun.isim]} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                      <div className="bg-[#25D366] text-white px-4 py-2 rounded-full font-medium flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                        <MessageCircle size={18} />
+                        <span className="text-sm">{t.whatsapp}</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex flex-col flex-grow px-1">
+                    <div className="flex justify-between items-center mb-3">
+                      <span className="text-[14px] font-bold text-[#8c7f73] tracking-wide">
+                        {urun.kategori[lang as keyof typeof urun.kategori]}
+                      </span>
+                    </div>
+                    <h3 className="text-[19px] font-bold text-[#2a241e] group-hover:text-[#ba7e6a] transition-colors">
+                      {urun.isim[lang as keyof typeof urun.isim]}
+                    </h3>
+                    {urun.renkler && (
+                      <div className="flex gap-2.5 mt-5">
+                        {urun.renkler.map((renk, i) => (
+                          <div key={i} className="w-4 h-4 rounded-full border border-gray-200 shadow-sm" style={{ backgroundColor: renk }} />
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+      </section>
+
+      {/* 6. İletişim / Showroom Konumları Bölümü */}
       <section id="magazalar" className="py-24 bg-[#faf9f6] overflow-hidden">
         <motion.div 
           variants={staggerContainer} 
