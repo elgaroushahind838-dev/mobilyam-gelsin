@@ -41,9 +41,13 @@ function sqlClient() {
         price text NOT NULL,
         price_amount integer NOT NULL DEFAULT 0,
         order_date date NOT NULL,
+        address text NOT NULL DEFAULT '',
+        notes text NOT NULL DEFAULT '',
         completed_at timestamptz,
         created_at timestamptz NOT NULL DEFAULT now()
       )`;
+      await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS address text NOT NULL DEFAULT ''`;
+      await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS notes text NOT NULL DEFAULT ''`;
       await sql`ALTER TABLE products ALTER COLUMN price DROP NOT NULL`;
       await sql`ALTER TABLE products ALTER COLUMN price_amount DROP NOT NULL`;
       await sql`ALTER TABLE products ALTER COLUMN width DROP NOT NULL`;
@@ -114,9 +118,11 @@ function asOrder(row: Record<string, unknown>): Order {
     customerName: String(row.customer_name),
     phone: String(row.phone),
     product: String(row.product),
-    price: String(row.price),
+    price: String(row.price ?? ""),
     priceAmount: Number(row.price_amount ?? 0),
     orderDate,
+    address: String(row.address ?? ""),
+    notes: String(row.notes ?? ""),
     completedAt: row.completed_at ? new Date(String(row.completed_at)).toISOString() : null,
     createdAt: new Date(String(row.created_at)).toISOString(),
   };
@@ -205,10 +211,10 @@ export function createPostgresStore(): Store {
       const status = input.status ?? "active";
       const completedAt = status === "completed" ? new Date().toISOString() : null;
       const rows = await sql`INSERT INTO orders (
-        id, status, customer_name, phone, product, price, price_amount, order_date, completed_at
+        id, status, customer_name, phone, product, price, price_amount, order_date, address, notes, completed_at
       ) VALUES (
         ${id}, ${status}, ${input.customerName}, ${input.phone}, ${input.product}, ${input.price},
-        ${input.priceAmount}, ${input.orderDate}, ${completedAt}
+        ${input.priceAmount}, ${input.orderDate}, ${input.address ?? ""}, ${input.notes ?? ""}, ${completedAt}
       ) RETURNING *`;
       return asOrder(rows[0] as Record<string, unknown>);
     },
@@ -221,7 +227,8 @@ export function createPostgresStore(): Store {
       const rows = await sql`UPDATE orders SET
         status = ${next.status}, customer_name = ${next.customerName}, phone = ${next.phone},
         product = ${next.product}, price = ${next.price}, price_amount = ${next.priceAmount},
-        order_date = ${next.orderDate}, completed_at = ${next.completedAt}
+        order_date = ${next.orderDate}, address = ${next.address}, notes = ${next.notes},
+        completed_at = ${next.completedAt}
         WHERE id = ${id} RETURNING *`;
       return rows[0] ? asOrder(rows[0] as Record<string, unknown>) : null;
     },
@@ -253,9 +260,13 @@ export function createPostgresStore(): Store {
     },
     async updateMeasurement(id, input) {
       const sql = await sqlClient();
+      const current = await sql`SELECT status FROM measurements WHERE id = ${id} LIMIT 1`;
+      if (!current[0]) return null;
+      const stored = current[0].status === "done" || current[0].status === "cancelled" ? current[0].status : "scheduled";
+      const status = input.status ?? stored;
       const rows = await sql`UPDATE measurements SET
         customer_name = ${input.customerName}, phone = ${input.phone}, address = ${input.address},
-        appointment_at = ${input.appointmentAt}, notes = ${input.notes}
+        appointment_at = ${input.appointmentAt}, notes = ${input.notes}, status = ${status}
         WHERE id = ${id} RETURNING *`;
       return rows[0] ? asMeasurement(rows[0] as Record<string, unknown>) : null;
     },

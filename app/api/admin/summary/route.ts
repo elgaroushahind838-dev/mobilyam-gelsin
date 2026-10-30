@@ -14,7 +14,7 @@ export async function GET() {
     .reduce((sum, order) => sum + order.priceAmount, 0);
   return NextResponse.json({
     activeOrders: orders.filter((order) => order.status === "active").length,
-    pendingMeasurements: measurements.length,
+    pendingMeasurements: measurements.filter((item) => item.status !== "done" && item.status !== "cancelled").length,
     monthRevenue,
     monthRevenueLabel: formatLira(monthRevenue),
   });

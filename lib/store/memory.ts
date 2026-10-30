@@ -20,7 +20,11 @@ async function readData(): Promise<StoreData> {
     const parsed = JSON.parse(raw) as StoreData;
     return {
       products: parsed.products ?? [],
-      orders: parsed.orders ?? [],
+      orders: (parsed.orders ?? []).map((item) => ({
+        ...item,
+        address: item.address ?? "",
+        notes: item.notes ?? "",
+      })),
       measurements: (parsed.measurements ?? []).map((item) => ({
         ...item,
         appointmentAt: item.appointmentAt,
@@ -118,6 +122,8 @@ export function createFileStore(): Store {
           price: input.price,
           priceAmount: input.priceAmount,
           orderDate: input.orderDate,
+          address: input.address ?? "",
+          notes: input.notes ?? "",
           completedAt: input.status === "completed" ? new Date().toISOString() : null,
           createdAt: new Date().toISOString(),
         };
