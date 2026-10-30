@@ -27,7 +27,8 @@ function LoginForm() {
       return;
     }
     const next = params.get("next");
-    router.replace(next && next.startsWith("/admin") ? next : "/admin");
+    const fallback = "/admin/";
+    router.replace(next && next.startsWith("/admin") ? next : fallback);
     router.refresh();
   }
 

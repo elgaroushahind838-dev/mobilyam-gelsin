@@ -6,12 +6,17 @@ import { Archive, ClipboardList, LayoutDashboard, Ruler, Sofa } from "lucide-rea
 import { adminJson } from "./client";
 
 const links = [
-  { href: "/admin", label: "Özet", icon: LayoutDashboard },
+  { href: "/admin/", label: "Özet", icon: LayoutDashboard },
   { href: "/admin/aktif", label: "Aktif", icon: ClipboardList },
   { href: "/admin/olcu", label: "Ölçü", icon: Ruler },
   { href: "/admin/arsiv", label: "Arşiv", icon: Archive },
   { href: "/admin/urunler", label: "Ürünler", icon: Sofa },
 ];
+
+function isCurrent(pathname: string, href: string) {
+  if (href === "/admin/") return pathname === "/admin" || pathname === "/admin/";
+  return pathname === href;
+}
 
 export default function Shell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -35,7 +40,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
           <p className="font-serif text-2xl leading-tight">Mobilyam<br />Yönetim</p>
           <nav className="mt-8 flex flex-col gap-1">
             {links.map((link) => {
-              const active = pathname === link.href;
+              const active = isCurrent(pathname, link.href);
               return (
                 <Link key={link.href} href={link.href} className={`rounded-xl px-3 py-2.5 text-sm font-medium ${active ? "bg-[#2a241e] text-white" : "hover:bg-white"}`}>
                   {link.label === "Aktif" ? "Aktif Siparişler" : link.label === "Ölçü" ? "Ölçü Alınacaklar" : link.label === "Arşiv" ? "Tamamlananlar" : link.label}
@@ -50,7 +55,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
       <nav aria-label="Bölümler" className="fixed inset-x-0 bottom-0 z-20 border-t border-[#efeae3] bg-white pb-[env(safe-area-inset-bottom)] md:hidden">
         <div className="grid h-[76px] grid-cols-5">
           {links.map((link) => {
-            const active = pathname === link.href;
+            const active = isCurrent(pathname, link.href);
             const Icon = link.icon;
             return (
               <Link
