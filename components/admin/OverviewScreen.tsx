@@ -1,0 +1,50 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { adminJson } from "./client";
+
+type Summary = {
+  activeOrders: number;
+  pendingMeasurements: number;
+  monthRevenueLabel: string;
+};
+
+export default function OverviewScreen() {
+  const [summary, setSummary] = useState<Summary | null>(null);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    adminJson<Summary>("/api/admin/summary")
+      .then(setSummary)
+      .catch((err: Error) => setError(err.message));
+  }, []);
+
+  const cards = [
+    { label: "Aktif sipariş", value: summary ? String(summary.activeOrders) : "—" },
+    { label: "Ölçü bekleyen", value: summary ? String(summary.pendingMeasurements) : "—" },
+    { label: "Bu ay tamamlanan ciro", value: summary?.monthRevenueLabel ?? "—" },
+  ];
+
+  return (
+    <div>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <h1 className="font-serif text-3xl md:text-4xl">Özet</h1>
+        <a href="/api/admin/export" className="inline-flex w-full items-center justify-center rounded-xl bg-[#2a241e] px-4 py-3 text-sm font-semibold text-white sm:w-auto">
+          Excel indir
+        </a>
+      </div>
+      <p className="mt-2 max-w-xl text-sm leading-relaxed text-[#6b625a]">
+        Siparişler, ölçü randevuları ve vitrindeki ürünler buradan yönetilir. Excel dosyasında aktif siparişler, arşiv, ölçü ziyaretleri ve ürünler ayrı sayfalardadır. Telefonunuzda tarayıcı menüsünden “Ana ekrana ekle” ile uygulama gibi açılır.
+      </p>
+      {error && <p className="mt-4 rounded-2xl bg-[#fdf4f3] px-4 py-3 text-sm text-[#9b3b32]">{error}</p>}
+      <div className="mt-6 grid gap-3 sm:grid-cols-3">
+        {cards.map((card) => (
+          <div key={card.label} className="rounded-3xl border border-[#efeae3] bg-white p-5">
+            <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#8c7f73]">{card.label}</p>
+            <p className="mt-3 font-serif text-3xl">{card.value}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}

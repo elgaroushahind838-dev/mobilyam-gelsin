@@ -1,7 +1,7 @@
 "use client";
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
-import { useLanguage } from './context/LanguageContext';
+import { useLanguage } from '../context/LanguageContext';
 import { CheckCircle2, MessageCircle, MapPin, BadgeCheck } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -240,9 +240,47 @@ const fadeIn = {
   show: { opacity: 1, transition: { duration: 1, ease: "easeOut" } }
 } as const;
 
+type LiveProduct = {
+  slug: string;
+  kategori: { TR: string; EN: string; AR: string };
+  isim: { TR: string; EN: string; AR: string };
+  fiyat: string;
+  img: string;
+  renkler?: string[];
+};
+
 export default function Home() {
   const { lang } = useLanguage();
   const t = translations[lang as keyof typeof translations];
+  const [liveProducts, setLiveProducts] = useState<LiveProduct[] | null>(null);
+
+  useEffect(() => {
+    let ignore = false;
+    fetch("/api/catalog", { cache: "no-store" })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data) => {
+        if (ignore || !Array.isArray(data?.products)) return;
+        setLiveProducts(data.products.slice(0, 4).map((product: {
+          slug: string;
+          categoryLabel: string;
+          name: { TR: string; EN: string; AR: string };
+          price: string;
+          img: string;
+        }) => ({
+          slug: product.slug,
+          kategori: { TR: product.categoryLabel, EN: product.categoryLabel, AR: product.categoryLabel },
+          isim: product.name,
+          fiyat: product.price,
+          img: product.img,
+        })));
+      })
+      .catch(() => undefined);
+    return () => {
+      ignore = true;
+    };
+  }, []);
+
+  const featured = liveProducts ?? urunlerListesi.map((urun) => ({ ...urun, slug: "" }));
 
   useEffect(() => {
     const id = window.location.hash.replace("#", "");
@@ -531,10 +569,16 @@ export default function Home() {
             {t.enCokTercih}
           </motion.h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {urunlerListesi.map((urun, index) => (
-              <motion.div variants={fadeUpItem} key={index}>
+            {featured.map((urun, index) => (
+              <motion.div variants={fadeUpItem} key={urun.slug || index}>
                 <div 
-                  onClick={() => sendWhatsApp(urun.isim[lang as keyof typeof urun.isim], urun.img)}
+                  onClick={() => {
+                    if (urun.slug) {
+                      window.location.href = `/urun/${urun.slug}`;
+                      return;
+                    }
+                    sendWhatsApp(urun.isim[lang as keyof typeof urun.isim], urun.img);
+                  }}
                   className="bg-white p-5 rounded-[32px] shadow-[0_2px_12px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)] transition-all duration-300 group cursor-pointer flex flex-col border border-[#f0ece6] h-full"
                 >
                   <div className="w-full h-[260px] rounded-[20px] overflow-hidden bg-[#f4f2f0] mb-6 relative">
