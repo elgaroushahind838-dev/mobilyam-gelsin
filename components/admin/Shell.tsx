@@ -24,10 +24,13 @@ export default function Shell({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-[#faf9f6] text-[#2a241e]">
       <header className="sticky top-0 z-20 border-b border-[#efeae3] bg-[#faf9f6]/95 px-4 py-3 backdrop-blur md:hidden">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-3">
           <p className="font-serif text-xl">Mobilyam Yönetim</p>
           <button type="button" onClick={logout} className="text-sm font-medium text-[#8c7f73]">Çıkış</button>
         </div>
+        <a href="/api/admin/export" className="mt-3 flex w-full items-center justify-center rounded-xl bg-[#2a241e] px-4 py-2.5 text-sm font-semibold text-white">
+          Excel indir
+        </a>
       </header>
       <div className="mx-auto flex max-w-6xl">
         <aside className="sticky top-0 hidden h-screen w-56 shrink-0 flex-col border-r border-[#efeae3] bg-[#f7f4ef] p-5 md:flex">
@@ -42,7 +45,10 @@ export default function Shell({ children }: { children: React.ReactNode }) {
               );
             })}
           </nav>
-          <button type="button" onClick={logout} className="mt-auto text-left text-sm font-medium text-[#8c7f73]">Çıkış yap</button>
+          <a href="/api/admin/export" className="mt-auto mb-4 rounded-xl bg-[#2a241e] px-3 py-2.5 text-center text-sm font-semibold text-white">
+            Excel indir
+          </a>
+          <button type="button" onClick={logout} className="text-left text-sm font-medium text-[#8c7f73]">Çıkış yap</button>
         </aside>
         <main className="min-w-0 flex-1 px-4 py-5 pb-24 md:px-8 md:py-8 md:pb-10">{children}</main>
       </div>
