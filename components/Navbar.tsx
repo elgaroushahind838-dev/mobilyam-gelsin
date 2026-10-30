@@ -1,6 +1,8 @@
 "use client";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, type MouseEvent } from 'react';
+import Link from 'next/link';
 import { ChevronDown, Globe, Menu, X } from 'lucide-react';
+import { usePathname } from 'next/navigation';
 import { useLanguage } from '../app/context/LanguageContext';
 
 const translations = {
@@ -9,13 +11,29 @@ const translations = {
   AR: { koleksiyonlar: "المجموعات", hakkimizda: "من نحن", iletisim: "اتصل بنا" }
 };
 
+const sectionHrefs: Record<string, string> = {
+  koleksiyonlar: "/#koleksiyonlar",
+  hakkimizda: "/#hakkimizda",
+  iletisim: "#iletisim",
+};
+
 export default function Navbar() {
   const { lang, setLang } = useLanguage();
+  const pathname = usePathname();
   const [isLangOpen, setIsLangOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   const t = translations[lang];
+
+  const handleSectionClick = (event: MouseEvent<HTMLAnchorElement>, id: string) => {
+    setIsMenuOpen(false);
+    if (pathname !== "/") return;
+
+    event.preventDefault();
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    window.history.pushState(null, "", `/#${id}`);
+  };
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -33,7 +51,7 @@ export default function Navbar() {
         {/* Logo */}
         <div className="py-0 flex items-center"> 
           <img 
-            src="images/mobilyamlogo.png" 
+            src="/images/mobilyamlogo.png" 
             alt="mobilyam"          
            className="h-15 sm:h-20 md:h-28 lg:h-12 w-auto object-contain transition-all duration-300"
           />
@@ -42,11 +60,11 @@ export default function Navbar() {
         {/* Desktop Links */}
         <div className="hidden md:flex space-x-10 items-center">
           {Object.entries(t).map(([key, value]) => (
-            <a key={key} href={`#${key}`} 
+            <Link key={key} href={sectionHrefs[key]} scroll={false} onClick={(event) => handleSectionClick(event, key)}
                className="relative group text-[#4d453e] hover:text-[#ba7e6a] transition-colors duration-300 font-medium text-[15px]">
               {value}
               <span className="absolute left-0 bottom-[-4px] w-full h-[1px] bg-[#ba7e6a] scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
-            </a>
+            </Link>
           ))}
         </div>
 
@@ -94,10 +112,10 @@ export default function Navbar() {
       {isMenuOpen && (
         <div className="absolute top-full left-0 w-full bg-[#f9f8f4] shadow-2xl md:hidden flex flex-col p-8 space-y-6 animate-in slide-in-from-top duration-300">
           {Object.entries(t).map(([key, value]) => (
-            <a key={key} href={`#${key}`} onClick={() => setIsMenuOpen(false)}
+            <Link key={key} href={sectionHrefs[key]} scroll={false} onClick={(event) => handleSectionClick(event, key)}
               className="text-xl font-medium text-[#4d453e] border-b border-[#bab5b0]/20 pb-2 active:text-[#ba7e6a]">
               {value}
-            </a>
+            </Link>
           ))}
         </div>
       )}
