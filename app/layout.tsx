@@ -8,12 +8,6 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Mobilyam Gelsin",
   description: "Özel tasarım mobilya koleksiyonları",
-  manifest: "/manifest.webmanifest",
-  appleWebApp: {
-    capable: true,
-    title: "Mobilyam Yönetim",
-    statusBarStyle: "default",
-  },
   icons: {
     icon: "/icons/icon-192.png",
     apple: "/icons/apple-touch-icon.png",

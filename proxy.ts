@@ -8,6 +8,16 @@ export async function proxy(request: NextRequest) {
   if (pathname === "/api/admin/export" || pathname === "/api/admin/measurements/upcoming") return NextResponse.next();
 
   const ok = await verifySessionToken(request.cookies.get(adminCookieName())?.value);
+  if (pathname === "/admin" || pathname === "/admin/") {
+    if (!ok) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/admin/giris";
+      url.search = "";
+      return NextResponse.rewrite(url);
+    }
+    if (pathname === "/admin/") return NextResponse.next();
+  }
+
   if (ok) return NextResponse.next();
 
   if (pathname.startsWith("/api/")) {
@@ -21,5 +31,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin", "/admin/:path*", "/api/admin/:path*"],
+  matcher: ["/admin", "/admin/", "/admin/:path*", "/api/admin/:path*"],
 };
