@@ -98,9 +98,9 @@ export default function Footer() {
                 <Phone size={20} className="text-white/80 group-hover:text-white transition-colors" />
                 +90 551 483 53 22
               </a>
-              <a href="mobilyam.gelsin1@gmail.com" className="flex items-center gap-3 text-white font-bold hover:text-white/80 transition-colors group w-fit">
+              <a href="mailto:info@mobilyam-gelsin.com" className="flex items-center gap-3 text-white font-bold hover:text-white/80 transition-colors group w-fit">
                 <Mail size={20} className="text-white/80 group-hover:text-white transition-colors" />
-                mobilyam.gelsin1@gmail.com
+                info@mobilyam-gelsin.com
               </a>
             </div>
           </div>
