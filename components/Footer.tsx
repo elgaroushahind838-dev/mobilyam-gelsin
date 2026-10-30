@@ -1,5 +1,7 @@
 "use client";
+import { type MouseEvent } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useLanguage } from '../app/context/LanguageContext';
 import { Phone, Mail } from 'lucide-react';
 
@@ -47,17 +49,25 @@ const footerTranslations = {
 
 export default function Footer() {
   const { lang, setLang } = useLanguage();
+  const pathname = usePathname();
   const t = footerTranslations[lang as keyof typeof footerTranslations];
 
+  const scrollToHomeSection = (event: MouseEvent<HTMLAnchorElement>, id: string) => {
+    if (pathname !== "/") return;
+    event.preventDefault();
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    window.history.pushState(null, "", `/#${id}`);
+  };
+
   return (
-    <footer id="iletisim" className="bg-[#5a544c] text-[#fdfcfb] py-16 md:py-20">
+      <footer id="iletisim" className="scroll-mt-28 bg-[#5a544c] text-[#fdfcfb] py-16 md:py-20">
       <div className="max-w-[1400px] mx-auto px-6 md:px-16">
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 mb-16">
           
           <div className="flex flex-col max-w-sm">
             <Link href="/" className="text-3xl font-serif text-white mb-6"> <img 
-            src="images/mobilyamlogo.png" 
+            src="/images/mobilyamlogo.png" 
             alt="mobilyam"         
           /></Link>
             <p className="text-white/80 text-[15px] leading-relaxed">
@@ -70,10 +80,10 @@ export default function Footer() {
               {t.fHizliLinkler}
             </h4>
             <div className="flex flex-col gap-4">
-              <Link href="/#koleksiyonlar" className="text-white/80 hover:text-white transition-colors text-[15px] w-fit">{t.kolBaslik}</Link>
+              <Link href="/#koleksiyonlar" scroll={false} onClick={(event) => scrollToHomeSection(event, "koleksiyonlar")} className="text-white/80 hover:text-white transition-colors text-[15px] w-fit">{t.kolBaslik}</Link>
               <Link href="#" className="text-white/80 hover:text-white transition-colors text-[15px] w-fit">{t.fUrunler}</Link>
-              <Link href="/#hakkimizda" className="text-white/80 hover:text-white transition-colors text-[15px] w-fit">{t.fHakkimizdaLink}</Link>
-              <Link href="/#iletisim" className="text-white/80 hover:text-white transition-colors text-[15px] w-fit">{t.fIletisim}</Link>
+              <Link href="/#hakkimizda" scroll={false} onClick={(event) => scrollToHomeSection(event, "hakkimizda")} className="text-white/80 hover:text-white transition-colors text-[15px] w-fit">{t.fHakkimizdaLink}</Link>
+              <Link href="/#iletisim" scroll={false} onClick={(event) => scrollToHomeSection(event, "iletisim")} className="text-white/80 hover:text-white transition-colors text-[15px] w-fit">{t.fIletisim}</Link>
             </div>
           </div>
 
@@ -83,7 +93,7 @@ export default function Footer() {
             </h4>
             <div className="flex flex-col gap-5">
               <Link href="#" className="text-white/80 hover:text-white transition-colors text-[15px] w-fit">{t.fGizlilik}</Link>
-              <Link href="#" className="text-white font-semibold hover:text-white/80 transition-colors text-[15px] w-fit">{t.fWaSiparis}</Link>
+              <a href="https://wa.me/905514835322" target="_blank" rel="noreferrer" className="text-white font-semibold hover:text-white/80 transition-colors text-[15px] w-fit">{t.fWaSiparis}</a>
               <a href="tel:+905514835322" className="flex items-center gap-3 text-white font-bold hover:text-white/80 transition-colors group mt-2 w-fit">
                 <Phone size={20} className="text-white/80 group-hover:text-white transition-colors" />
                 +90 551 483 53 22

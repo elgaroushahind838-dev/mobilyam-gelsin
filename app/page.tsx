@@ -1,18 +1,18 @@
 "use client";
 import Link from 'next/link';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLanguage } from './context/LanguageContext';
-import { CheckCircle2, MessageCircle, MapPin, BadgeCheck, Truck } from 'lucide-react';
+import { CheckCircle2, MessageCircle, MapPin, BadgeCheck } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const translations = {
   TR: {
     etiket: "YENİ SEZON",
-    baslik1: "Modern Yaşamın",
-    baslik2: "Estetiği",
-    aciklama: "Geleneksel Türk zanaatkarlığını modern tasarım diliyle birleştirerek yaşam alanlarınıza sessiz bir lüks katıyoruz.",
+    baslik1: "Mekânınıza Özel",
+    baslik2: "Tasarım",
+    aciklama: "Özel tasarım mobilya ve sabit dolapları, yaşam alanınızın ölçülerine göre tasarlıyor ve üretiyoruz.",
     buton1: "Koleksiyonu Keşfet",
-    buton2: "Mağazalarımız",
+    buton2: "Atölyemiz",
     kolBaslik: "Koleksiyonlar",
     cOturma: "Oturma Odası",
     cYemek: "Yemek Odası",
@@ -54,29 +54,24 @@ const translations = {
 
     enCokTercih: "En Çok Tercih Edilenler",
 
-    iletisimBaslik: "Showroom ve Konumlarımız",
-
-    magazalar: [
-      { ad: "Eskidji Bazaar-Pendik", konum: "2. Kat" },
-      { ad: "Eskidji Bazaar-Esenyurt", konum: "1. Kat" },
-      { ad: "Eskidji Bazaar-Esenyurt", konum: "2. Kat" },
-      { ad: "Eskidji Bazaar-Bayrampaşa", konum: "1. Kat" },
-      { ad: "Eskidji Bazaar-Avcılar", konum: "2. Kat" }
-    ],
+    iletisimBaslik: "Atölyemiz",
+    atolyeEtiket: "ATÖLYE",
+    atolyeAdres1: "385. Sokak, Yunus Emre Mahallesi",
+    atolyeAdres2: "34510 Esenyurt, İstanbul",
+    haritadaAc: "Google Haritalar'da aç",
     bizeUlasin: "BİZE ULAŞIN",
     iletisimKartBaslik: "Hayalinizdeki Yaşam Alanını Birlikte Tasarlayalım",
     iletisimKartMetin: "Koleksiyonlarımız hakkında detaylı bilgi almak veya özel projeleriniz için tasarım ekibimizle görüşmek için bizimle iletişime geçin.",
     whatsappHemen: "WhatsApp ile Hemen Bilgi Alın",
-    elIsciligi: "%100 El İşçiliği",
-    ucretsizTeslimat: "Ücretsiz Teslimat"
+    elIsciligi: "%100 El İşçiliği"
   },
   EN: {
     etiket: "NEW SEASON",
-    baslik1: "The Aesthetics of",
-    baslik2: "Modern Living",
-    aciklama: "We add a quiet luxury to your living spaces by combining traditional Turkish craftsmanship with a modern design language.",
+    baslik1: "Designed for",
+    baslik2: "Your Space",
+    aciklama: "We design and build custom furniture and fitted wardrobes to the measurements of your space.",
     buton1: "Discover Collection",
-    buton2: "Our Stores",
+    buton2: "Our Workshop",
     kolBaslik: "Collections",
     cOturma: "Living Room",
     cYemek: "Dining Room",
@@ -119,28 +114,24 @@ const translations = {
 
     enCokTercih: "Most Preferred",
 
-    iletisimBaslik: "Showrooms and Locations",
-    magazalar: [
-      { ad: "Eskidji Bazaar-Pendik", konum: "2nd Floor" },
-      { ad: "Eskidji Bazaar-Esenyurt", konum: "1st Floor" },
-      { ad: "Eskidji Bazaar-Esenyurt", konum: "2nd Floor" },
-      { ad: "Eskidji Bazaar-Bayrampaşa", konum: "1st Floor" },
-      { ad: "Eskidji Bazaar-Avcılar", konum: "2nd Floor" }
-    ],
+    iletisimBaslik: "Our Workshop",
+    atolyeEtiket: "WORKSHOP",
+    atolyeAdres1: "385. Sokak, Yunus Emre Mahallesi",
+    atolyeAdres2: "34510 Esenyurt, Istanbul",
+    haritadaAc: "Open in Google Maps",
     bizeUlasin: "CONTACT US",
     iletisimKartBaslik: "Let's Design Your Dream Living Space Together",
     iletisimKartMetin: "Contact us to get detailed information about our collections or to meet with our design team for your custom projects.",
     whatsappHemen: "Get Info via WhatsApp Now",
-    elIsciligi: "100% Handcrafted",
-    ucretsizTeslimat: "Free Delivery"
+    elIsciligi: "100% Handcrafted"
   },
   AR: {
     etiket: "الموسم الجديد",
-    baslik1: "جماليات الحياة",
-    baslik2: "الحديثة",
-    aciklama: "نضيف فخامة هادئة إلى مساحات المعيشة الخاصة بك من خلال الجمع بين الحرفية التركية التقليدية ولغة التصميم الحديثة.",
+    baslik1: "تصميم خاص",
+    baslik2: "لمساحتك",
+    aciklama: "نصمّم ونصنع الأثاث حسب الطلب والخزائن الثابتة وفق مقاسات مساحتك.",
     buton1: "اكتشف المجموعة",
-    buton2: "متاجرنا",
+    buton2: "ورشتنا",
     kolBaslik: "المجموعات",
     cOturma: "غرفة الجلوس",
     cYemek: "غرفة الطعام",
@@ -183,20 +174,16 @@ const translations = {
     hikayemizStat2Yazi: "مشروع مكتمل",
 
     enCokTercih: "الأكثر تفضيلاً",
-    iletisimBaslik: "صالة العرض والمواقع",
-    magazalar: [
-      { ad: "إسكيدجي بازار - بنديك", konum: "الطابق الثاني" },
-      { ad: "إسكيدجي بازار - إسنيورت", konum: "الطابق الأول" },
-      { ad: "إسكيدجي بازار - إسنيورت", konum: "الطابق الثاني" },
-      { ad: "إسكيدجي بازار - بايرام باشا", konum: "الطابق الأول" },
-      { ad: "إسكيدجي بازار - أفجلار", konum: "الطابق الثاني" }
-    ],
+    iletisimBaslik: "ورشتنا",
+    atolyeEtiket: "الورشة",
+    atolyeAdres1: "385. Sokak، حي يونس إمره",
+    atolyeAdres2: "34510 إسنيورت، إسطنبول",
+    haritadaAc: "افتح في خرائط Google",
     bizeUlasin: "اتصل بنا",
     iletisimKartBaslik: "دعنا نصمم مساحة المعيشة التي تحلم بها معًا",
     iletisimKartMetin: "اتصل بنا للحصول على معلومات مفصلة حول مجموعاتنا أو لمقابلة فريق التصميم الخاص بنا لمشاريعك المخصصة.",
     whatsappHemen: "احصل على معلومات عبر واتساب الآن",
-    elIsciligi: "مصنوع يدوياً 100%",
-    ucretsizTeslimat: "توصيل مجاني"
+    elIsciligi: "مصنوع يدوياً 100%"
   }
 };
 
@@ -256,6 +243,32 @@ const fadeIn = {
 export default function Home() {
   const { lang } = useLanguage();
   const t = translations[lang as keyof typeof translations];
+
+  useEffect(() => {
+    const id = window.location.hash.replace("#", "");
+    if (!id) return;
+
+    let frame = 0;
+    let attempts = 0;
+    const scrollToSection = () => {
+      const target = document.getElementById(id);
+      if (target) {
+        target.scrollIntoView({ block: "start" });
+        return;
+      }
+      if (attempts < 8) {
+        attempts += 1;
+        frame = window.requestAnimationFrame(scrollToSection);
+      }
+    };
+
+    scrollToSection();
+    const timer = window.setTimeout(scrollToSection, 200);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.clearTimeout(timer);
+    };
+  }, []);
   
   const sendWhatsApp = (productName?: string, imageUrl?: string) => {
     const phoneNumber = "905514835322"; 
@@ -360,7 +373,7 @@ export default function Home() {
       </section>
 
       {/* 2. Koleksiyonlar Slider */}
-      <section id="koleksiyonlar" className="pt-24 pb-12 bg-[#faf9f6] overflow-hidden">
+      <section id="koleksiyonlar" className="scroll-mt-28 pt-24 pb-12 bg-[#faf9f6] overflow-hidden">
         <motion.div 
           variants={staggerContainer} 
           initial="hidden" 
@@ -457,7 +470,7 @@ export default function Home() {
       </section>
 
       {/* 4. Hakkımızda (Hikayemiz) Bölümü */}
-      <section id="hakkimizda" className="py-24 bg-[#faf9f6] overflow-hidden">
+      <section id="hakkimizda" className="scroll-mt-28 py-24 bg-[#faf9f6] overflow-hidden">
         <div className="max-w-[1400px] mx-auto px-6 md:px-16">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-8 items-center">
             
@@ -576,28 +589,40 @@ export default function Home() {
               <h2 className="text-[30px] md:text-[38px] font-serif text-[#2a241e] mb-12">
                 {t.iletisimBaslik}
               </h2>
-              <div className="flex flex-col gap-10">
-                {(t as any).magazalar.map((magaza: any, index: number) => (
-                  <div
-                    key={index}
-                    className="flex items-center gap-6 ltr:border-l-4 rtl:border-r-4 ltr:pl-6 rtl:pr-6 border-[#8c7f73]"
-                  >
-                    <MapPin
-                      className="text-[#2a241e] w-6 h-6 flex-shrink-0"
-                      strokeWidth={2.5}
-                    />
+              <a
+                href="https://maps.app.goo.gl/JXp1TMJT1MvVsya86"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-start gap-6 ltr:border-l-4 rtl:border-r-4 ltr:pl-6 rtl:pr-6 border-[#8c7f73] group w-fit max-w-xl"
+              >
+                <MapPin
+                  className="text-[#2a241e] w-6 h-6 flex-shrink-0 mt-1"
+                  strokeWidth={2.5}
+                />
+                <div className="flex flex-col gap-1">
+                  <p className="text-[12px] font-bold tracking-[0.18em] text-[#8c7f73] uppercase">
+                    {t.atolyeEtiket}
+                  </p>
+                  <p className="text-[20px] font-bold tracking-wide text-[#2a241e] group-hover:text-[#ba7e6a] transition-colors">
+                    {t.atolyeAdres1}
+                  </p>
+                  <p className="text-[18px] text-[#52525b]">
+                    {t.atolyeAdres2}
+                  </p>
+                  <p className="text-[14px] font-semibold text-[#ba7e6a] mt-2 underline-offset-4 group-hover:underline">
+                    {t.haritadaAc}
+                  </p>
+                </div>
+              </a>
 
-                    <div className="flex flex-col gap-1">
-                      <p className="text-[20px] text-[#52525b] tracking-wide">
-                        {magaza.konum}
-                      </p>
-
-                      <p className="text-[20px] font-bold tracking-wider text-[#2a241e]">
-                        {magaza.ad}
-                      </p>
-                    </div>
-                  </div>
-                ))}
+              <div className="mt-10 overflow-hidden rounded-[24px] border border-[#e5e5e5] shadow-sm h-56 md:h-64 bg-[#e8e4dc]">
+                <iframe
+                  title="Mobilyam Gelsin atölye haritası"
+                  src="https://maps.google.com/maps?q=41.0257583,28.69529&hl=tr&z=16&output=embed"
+                  className="w-full h-full border-0"
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
               </div>
             </motion.div>
 
@@ -622,14 +647,10 @@ export default function Home() {
                 {t.whatsappHemen}
               </button>
 
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-10 text-[#52525b]">
+              <div className="flex items-center justify-center text-[#52525b]">
                 <div className="flex items-center gap-2">
                   <BadgeCheck size={18} className="text-[#8c7f73]" />
                   <span className="text-[14px] font-medium tracking-wide">{t.elIsciligi}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Truck size={18} className="text-[#8c7f73]" />
-                  <span className="text-[14px] font-medium tracking-wide">{t.ucretsizTeslimat}</span>
                 </div>
               </div>
             </motion.div>
