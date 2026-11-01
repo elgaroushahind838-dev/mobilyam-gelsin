@@ -17,7 +17,7 @@ const footerTranslations = {
     fGizlilik: "Gizlilik Politikası",
     fWaSiparis: "WhatsApp Sipariş",
     fSosyal: "Sosyal medya",
-    fCopy: "© 2026 ATA Istanbul Furniture. Tüm hakları saklıdır."
+    fCopy: "© 2026 Mobilyam Gelsin. Tüm hakları saklıdır."
   },
   EN: {
     fHakkimizda: "The meeting point of modern design and traditional craftsmanship. We carefully produce every piece for you in our Istanbul workshop.",
@@ -30,7 +30,7 @@ const footerTranslations = {
     fGizlilik: "Privacy Policy",
     fWaSiparis: "WhatsApp Order",
     fSosyal: "Social media",
-    fCopy: "© 2026 ATA Istanbul Furniture. All rights reserved."
+    fCopy: "© 2026 Mobilyam Gelsin. All rights reserved."
   },
   AR: {
     fHakkimizda: "نقطة التقاء التصميم الحديث والحرفية التقليدية. ننتج كل قطعة بعناية من أجلك في ورشتنا في إسطنبول.",
@@ -43,7 +43,7 @@ const footerTranslations = {
     fGizlilik: "سياسة الخصوصية",
     fWaSiparis: "طلب واتساب",
     fSosyal: "وسائل التواصل الاجتماعي",
-    fCopy: "© 2026 أثاث أتا إسطنبول. جميع الحقوق محفوظة."
+    fCopy: "© 2026 Mobilyam Gelsin. جميع الحقوق محفوظة."
   }
 };
 
