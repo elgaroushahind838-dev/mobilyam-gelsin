@@ -16,6 +16,8 @@ export type Product = {
   depth: string;
   height: string;
   images: string[];
+  bestSeller: boolean;
+  bestSellerOrder: number;
   createdAt: string;
 };
 
@@ -63,3 +65,23 @@ export const CATEGORIES = [
   { slug: "ofis", label: "Çalışma Odası" },
   { slug: "portmanto", label: "Portmanto" },
 ] as const;
+
+export const CATEGORY_COPY: Record<(typeof CATEGORIES)[number]["slug"], { TR: string; EN: string; AR: string }> = {
+  "oturma-odasi": { TR: "Oturma Odası", EN: "Living Room", AR: "غرفة المعيشة" },
+  "yemek-odasi": { TR: "Yemek Odası", EN: "Dining Room", AR: "غرفة الطعام" },
+  "yatak-odasi": { TR: "Yatak Odası", EN: "Bedroom", AR: "غرفة النوم" },
+  "genc-odasi": { TR: "Genç Odası", EN: "Youth Room", AR: "غرفة الشباب" },
+  ofis: { TR: "Çalışma Odası", EN: "Study Room", AR: "غرفة المكتب" },
+  portmanto: { TR: "Portmanto", EN: "Hall Stand", AR: "وحدة المدخل" },
+};
+
+export const TAG_COPY: Record<string, { TR: string; EN: string; AR: string }> = {
+  Gardırop: { TR: "Gardırop", EN: "Wardrobe", AR: "خزانة ملابس" },
+  Ranza: { TR: "Ranza", EN: "Bunk Bed", AR: "سرير بطابقين" },
+  Yatak: { TR: "Yatak", EN: "Bed", AR: "سرير" },
+  Komodin: { TR: "Komodin", EN: "Nightstand", AR: "كومودينة" },
+  Şifonir: { TR: "Şifonir", EN: "Dresser", AR: "تسريحة" },
+  "Makyaj Masası": { TR: "Makyaj Masası", EN: "Vanity Table", AR: "طاولة زينة" },
+  Masalar: { TR: "Masalar", EN: "Tables", AR: "طاولات" },
+  Portmanto: { TR: "Portmanto", EN: "Hall Stand", AR: "وحدة المدخل" },
+};

@@ -34,7 +34,16 @@ export function measurementFromBody(body: Record<string, unknown>): MeasurementI
 
 export function productFromBody(
   body: Record<string, unknown>,
-  existing?: { images?: string[]; price?: string; priceAmount?: number; width?: string; depth?: string; height?: string },
+  existing?: {
+    images?: string[];
+    price?: string;
+    priceAmount?: number;
+    width?: string;
+    depth?: string;
+    height?: string;
+    bestSeller?: boolean;
+    bestSellerOrder?: number;
+  },
 ): ProductInput | string {
   const name = String(body.name ?? "").trim();
   const description = String(body.description ?? "").trim();
@@ -60,6 +69,8 @@ export function productFromBody(
     width: existing?.width ?? "",
     depth: existing?.depth ?? "",
     height: existing?.height ?? "",
+    bestSeller: typeof body.bestSeller === "boolean" ? body.bestSeller : Boolean(existing?.bestSeller),
+    bestSellerOrder: Number.isFinite(Number(body.bestSellerOrder)) ? Number(body.bestSellerOrder) : Number(existing?.bestSellerOrder ?? 0),
     images: images.filter(Boolean),
   };
 }

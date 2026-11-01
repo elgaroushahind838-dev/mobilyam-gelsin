@@ -86,7 +86,7 @@ const translations = {
     sandalyeAdedi: "CHAIRS", 
     sandalyeDetay: "6 or 8 Person Options", 
     uzmanDestegi: "EXPERT SUPPORT", 
-    uzmanDetay: "Our architects can configure.",
+    uzmanDetay: "Our interior designers can configure this.",
     indirimBaslik: "SPECIAL FOR WEDDING PACKAGE -20% DISCOUNT",
     waMesaj: "Hello, my configuration details:"
   },
@@ -103,7 +103,7 @@ const translations = {
     dahil: "متضمن",
     bolum2Tag: "الجزء 02", 
     bolum2Baslik: "طقم الجلوس", 
-    bolum2Aciklama: "الراحة بأنقى صورها، وهيكل خشب متين.",
+    bolum2Aciklama: "الراحة في أبسط صورها، بهيكل خشب مجفف في الفرن.",
     teknikDetay: "تفاصيل تقنية", 
     cizimIndir: "أرسل خياراتي عبر واتساب",
     bolum3Tag: "الجزء 03", 
@@ -114,7 +114,7 @@ const translations = {
     sandalyeAdedi: "عدد الكراسي", 
     sandalyeDetay: "خيارات لـ 6 أو 8 أشخاص", 
     uzmanDestegi: "دعم الخبراء", 
-    uzmanDetay: "مهندسونا جاهزون للمساعدة.",
+    uzmanDetay: "يمكن لمصممينا الداخليين إعداد هذا التكوين.",
     indirimBaslik: "خصم خاص -20% حصرياً لباقة الزفاف",
     waMesaj: "مرحباً، هذه تفضيلاتي للباقة:"
   }
@@ -137,9 +137,19 @@ export default function PackageDetailPage() {
   const [diningSlide, setDiningSlide] = useState(0);
 
   const woodColors = ["#4a3728", "#8c7f73", "#d2b48c"];
-  const woodNames = ["Koyu Ceviz", "Açık Meşe", "Doğal Ahşap"];
+  const woodNamesByLang = {
+    TR: ["Koyu Ceviz", "Açık Meşe", "Doğal Ahşap"],
+    EN: ["Dark Walnut", "Light Oak", "Natural Wood"],
+    AR: ["جوز داكن", "بلوط فاتح", "خشب طبيعي"],
+  };
+  const woodNames = woodNamesByLang[lang as keyof typeof woodNamesByLang] ?? woodNamesByLang.TR;
   const sofaColors = ["#eacbd2", "#dcdde1", "#8ba1b5", "#2d4a5a", "#fdf3d0", "#849021", "#556b2f", "#1f3b2a"];
-  const sofaColorNames = ["Gül Kurusu", "Açık Gri", "Buz Mavisi", "Lacivert", "Krem", "Hardal", "Ada Çayı", "Zümrüt Yeşil"];
+  const sofaColorNamesByLang = {
+    TR: ["Gül Kurusu", "Açık Gri", "Buz Mavisi", "Lacivert", "Krem", "Hardal", "Ada Çayı", "Zümrüt Yeşil"],
+    EN: ["Dusty Rose", "Light Gray", "Ice Blue", "Navy", "Cream", "Mustard", "Sage", "Emerald"],
+    AR: ["وردي ترابي", "رمادي فاتح", "أزرق ثلجي", "كحلي", "كريمي", "خردلي", "أخضر مريمية", "أخضر زمردي"],
+  };
+  const sofaColorNames = sofaColorNamesByLang[lang as keyof typeof sofaColorNamesByLang] ?? sofaColorNamesByLang.TR;
 
   const bedImages = woodColors.map((_, idx) => {
     const base = currentPackage.images.bed;
@@ -160,7 +170,7 @@ export default function PackageDetailPage() {
 
   const sendConfigToWhatsApp = () => {
     const phoneNumber = "905514835322";
-    const text = `${t.waMesaj}\n\n📦 *Paket:* ${currentPackage.name[lang as keyof typeof currentPackage.name]}\n🛏️ *Yatak Odası:* ${woodNames[selectedWood]} / ${t.kumaslar[selectedFabric]}\n🛋️ *Oturma Grubu:* ${sofaColorNames[selectedSofaColor]}`;
+    const text = `${t.waMesaj}\n\n📦 *${t.paketler}:* ${currentPackage.name[lang as keyof typeof currentPackage.name]}\n🛏️ *${t.bolum1Baslik}:* ${woodNames[selectedWood]} / ${t.kumaslar[selectedFabric]}\n🛋️ *${t.bolum2Baslik}:* ${sofaColorNames[selectedSofaColor]}`;
     window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(text)}`, '_blank');
   };
 

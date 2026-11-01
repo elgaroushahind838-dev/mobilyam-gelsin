@@ -9,6 +9,8 @@ const empty = {
   description: "",
   categorySlug: "yatak-odasi",
   imageUrl: "",
+  bestSeller: false,
+  bestSellerOrder: 0,
 };
 
 export default function ProductsScreen() {
@@ -76,6 +78,22 @@ export default function ProductsScreen() {
     }
   }
 
+  async function saveProduct(product: Product, patch: { bestSeller?: boolean; bestSellerOrder?: number }) {
+    setError("");
+    await adminJson(`/api/admin/products/${product.id}`, {
+      method: "PATCH",
+      body: JSON.stringify({
+        name: product.name,
+        description: product.description,
+        categorySlug: product.categorySlug,
+        imageUrl: product.images[0] || "",
+        bestSeller: patch.bestSeller ?? product.bestSeller,
+        bestSellerOrder: patch.bestSellerOrder ?? product.bestSellerOrder,
+      }),
+    });
+    await load();
+  }
+
   async function remove(id: string) {
     if (!window.confirm("Bu ürün vitrinden de kalkacak. Silinsin mi?")) return;
     await adminJson(`/api/admin/products/${id}`, { method: "DELETE" });
@@ -106,6 +124,15 @@ export default function ProductsScreen() {
             <input type="file" accept="image/*" className={`${fieldClass} mt-1`} onChange={(event) => { const file = event.target.files?.[0]; if (file) upload(file); }} />
           </label>
           <label className="text-sm md:col-span-2">Veya görsel adresi<input value={form.imageUrl} onChange={(event) => setForm({ ...form, imageUrl: event.target.value })} className={`${fieldClass} mt-1`} placeholder="/images/ornek.jpeg" /></label>
+          <label className="flex items-center gap-2 text-sm font-semibold md:col-span-2">
+            <input type="checkbox" checked={form.bestSeller} onChange={(event) => setForm({ ...form, bestSeller: event.target.checked })} />
+            En çok satan
+          </label>
+          {form.bestSeller && (
+            <label className="text-sm">Sıra
+              <input type="number" min={0} value={form.bestSellerOrder} onChange={(event) => setForm({ ...form, bestSellerOrder: Number(event.target.value) })} className={`${fieldClass} mt-1`} />
+            </label>
+          )}
           {form.imageUrl && <img src={form.imageUrl} alt="" className="h-28 w-28 rounded-2xl object-cover" />}
           <div className="flex gap-2 md:col-span-2">
             <button className={primaryClass} type="submit" disabled={uploading}>{uploading ? "Yükleniyor" : editing ? "Güncelle" : "Kaydet"}</button>
@@ -121,8 +148,32 @@ export default function ProductsScreen() {
               <p className="text-xs font-bold uppercase tracking-wide text-[#8c7f73]">{product.categoryLabel}</p>
               <h2 className="mt-1 text-lg font-semibold">{product.name}</h2>
               <p className="mt-1 line-clamp-2 text-sm text-[#6b625a]">{product.description}</p>
+              <label className="mt-3 flex items-center gap-2 text-sm font-semibold">
+                <input
+                  type="checkbox"
+                  checked={Boolean(product.bestSeller)}
+                  onChange={() => saveProduct(product, { bestSeller: !product.bestSeller }).catch((err: Error) => setError(err.message))}
+                />
+                En çok satan
+              </label>
+              {product.bestSeller && (
+                <label className="mt-2 block text-sm">Sıra
+                  <input
+                    type="number"
+                    min={0}
+                    defaultValue={product.bestSellerOrder || 0}
+                    key={`${product.id}-${product.bestSellerOrder}`}
+                    onBlur={(event) => {
+                      const next = Number(event.target.value);
+                      if (next === product.bestSellerOrder) return;
+                      saveProduct(product, { bestSellerOrder: Number.isFinite(next) ? next : 0 }).catch((err: Error) => setError(err.message));
+                    }}
+                    className={`${fieldClass} mt-1`}
+                  />
+                </label>
+              )}
               <div className="mt-3 flex gap-2">
-                <button type="button" className={ghostClass} onClick={() => { setEditing(product.id); setForm({ name: product.name, description: product.description, categorySlug: product.categorySlug, imageUrl: product.images[0] || "" }); setOpen(true); }}>Düzenle</button>
+                <button type="button" className={ghostClass} onClick={() => { setEditing(product.id); setForm({ name: product.name, description: product.description, categorySlug: product.categorySlug, imageUrl: product.images[0] || "", bestSeller: Boolean(product.bestSeller), bestSellerOrder: product.bestSellerOrder || 0 }); setOpen(true); }}>Düzenle</button>
                 <button type="button" className={dangerClass} onClick={() => remove(product.id)}>Sil</button>
               </div>
             </div>
