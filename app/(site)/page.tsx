@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
@@ -11,6 +12,10 @@ const translations = {
     baslik1: "Mekânınıza Özel",
     baslik2: "Tasarım",
     aciklama: "Özel tasarım mobilya ve sabit dolapları yaşam alanınıza göre tasarlıyor ve üretiyoruz.",
+    yerelGiris: "Mobilyam Gelsin, İstanbul’da gömme dolap, gömme gardırop ve özel ölçü mobilya üreten bir mobilya atölyesidir. Esenyurt’taki imalatımızdan sürgülü dolap ve kişiye özel mobilyayı yaşam alanınıza göre hazırlıyoruz.",
+    heroAlt: "İstanbul’da özel tasarım mobilyalarla döşenmiş aydınlık bir oturma odası",
+    atolyeAlt: "Mobilyam Gelsin mobilya atölyesinde hazırlanan bir parça",
+    imalatAlt: "İstanbul’daki atölyede mobilya imalatından bir detay",
     buton1: "Koleksiyonu Keşfet",
     buton2: "Atölyemiz",
     kolBaslik: "Koleksiyonlar",
@@ -66,6 +71,10 @@ const translations = {
     baslik1: "Designed for",
     baslik2: "Your Space",
     aciklama: "We design and produce custom furniture and fitted wardrobes for your living space.",
+    yerelGiris: "Mobilyam Gelsin is a furniture workshop in Istanbul. From our Esenyurt workshop we make fitted wardrobes, sliding-door closets, and made-to-measure furniture for your home.",
+    heroAlt: "A bright Istanbul living room furnished with custom furniture",
+    atolyeAlt: "A piece prepared in the Mobilyam Gelsin furniture workshop",
+    imalatAlt: "A detail from furniture making in the Istanbul workshop",
     buton1: "Discover Collection",
     buton2: "Our Workshop",
     kolBaslik: "Collections",
@@ -121,6 +130,10 @@ const translations = {
     baslik1: "تصميم خاص",
     baslik2: "لمساحتك",
     aciklama: "نصمّم ونصنع الأثاث حسب الطلب والخزائن الثابتة لمساحتك.",
+    yerelGiris: "موبيليام غيلسين ورشة أثاث في إسطنبول. من مصنعنا في إسنيورت نجهّز خزائن مدمجة وخزائن بأبواب منزلقة وأثاثاً بمقاس مساحتك.",
+    heroAlt: "غرفة معيشة مضيئة في إسطنبول بأثاث حسب التصميم",
+    atolyeAlt: "قطعة تجهَّز في ورشة موبيليام غيلسين للأثاث",
+    imalatAlt: "تفصيل من صناعة الأثاث في ورشة إسطنبول",
     buton1: "اكتشف المجموعة",
     buton2: "ورشتنا",
     kolBaslik: "المجموعات",
@@ -328,10 +341,13 @@ export default function Home() {
       {/* 1. Hero Section */}
       <section className="relative flex h-screen w-full min-w-0 items-center overflow-hidden px-4 sm:px-6 md:px-16">
         <motion.div variants={fadeIn} initial="hidden" animate="show" className="absolute inset-0 -z-10">
-          <img 
-            src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?q=80&w=2000&auto=format&fit=crop" 
-            alt="Lüks Mobilya" 
-            className="h-full w-full object-cover object-center"
+          <Image
+            src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?q=80&w=2000&auto=format&fit=crop"
+            alt={t.heroAlt}
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-center"
           />
           <div className="absolute inset-0 bg-black/20"></div>
         </motion.div>
@@ -365,6 +381,10 @@ export default function Home() {
         </motion.div>
       </section>
 
+      <section className="bg-[#faf9f6] px-6 py-10 md:px-16">
+        <p className="mx-auto max-w-3xl text-center text-[16px] leading-relaxed text-[#52525b]">{t.yerelGiris}</p>
+      </section>
+
       {/* 2. Koleksiyonlar Slider */}
       <section id="koleksiyonlar" className="scroll-mt-28 pt-24 pb-12 bg-[#faf9f6] overflow-hidden">
         <motion.div 
@@ -389,8 +409,8 @@ export default function Home() {
           >
            {categories.map((cat) => (
               <Link href={cat.href} key={cat.id} className="flex-none w-[320px] md:w-[360px] snap-start bg-white p-4 rounded-[32px] shadow-sm hover:shadow-md transition-all duration-300 group flex flex-col">
-                <div className="w-full h-[240px] rounded-[24px] overflow-hidden bg-[#f4f2f0]">
-                  <img src={cat.img} alt={t[cat.key as keyof typeof t] as string} className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 pointer-events-none"/>
+                <div className="relative w-full h-[240px] rounded-[24px] overflow-hidden bg-[#f4f2f0]">
+                  <Image src={cat.img} alt={`${t[cat.key as keyof typeof t] as string} — İstanbul`} fill sizes="360px" className="object-cover object-center group-hover:scale-105 transition-transform duration-700 pointer-events-none"/>
                 </div>
                 <div className="py-5 text-center text-[#2a241e] font-medium text-[18px] tracking-wide group-hover:text-[#ba7e6a] transition-colors">
                   {t[cat.key as keyof typeof t] as string}
@@ -417,8 +437,8 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 md:gap-10">
             {t.paketler.map((paket, index) => (
               <motion.div variants={fadeUpItem} key={index} className="bg-white rounded-[32px] overflow-hidden shadow-[0_4px_24px_rgba(0,0,0,0.03)] border border-[#f0ece6] flex flex-col hover:shadow-xl transition-shadow duration-500">
-                <div className="h-[380px] w-full overflow-hidden bg-[#f4f2f0]">
-                  <img src={packageImages[index]} alt={paket.isim1} className="w-full h-full object-cover"/>
+                <div className="relative h-[380px] w-full overflow-hidden bg-[#f4f2f0]">
+                  <Image src={packageImages[index]} alt={`${paket.isim1} ${paket.isim2} — ${t.secKoleksiyonlar}`} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" />
                 </div>
                 <div className="p-10 flex flex-col flex-grow">
                   <div className="flex justify-between items-start mb-10">
@@ -493,10 +513,10 @@ export default function Home() {
               className="relative w-full h-[450px] md:h-[550px] lg:h-[600px] mt-10 lg:mt-0"
             >
               <div className="absolute top-0 right-0 rtl:right-auto rtl:left-0 w-[80%] h-[75%] rounded-[32px] overflow-hidden shadow-lg">
-               <img src="/images/hikayemiz2.jpg" alt="Hikayemiz Görsel 2" className="w-full h-full object-cover" />
+               <Image src="/images/hikayemiz2.jpg" alt={t.atolyeAlt} fill sizes="(max-width: 1024px) 80vw, 40vw" className="object-cover" />
               </div>
               <div className="absolute bottom-0 left-0 rtl:left-auto rtl:right-0 w-[60%] h-[65%] rounded-[32px] overflow-hidden border-[12px] border-[#faf9f6] shadow-2xl z-10">
-               <img src="/images/hikayemiz1.jpg" alt="Hikayemiz Görsel 1" className="w-full h-full object-cover" />
+               <Image src="/images/hikayemiz1.jpg" alt={t.imalatAlt} fill sizes="(max-width: 1024px) 60vw, 30vw" className="object-cover" />
               </div>
             </motion.div>
           </div>
@@ -529,7 +549,7 @@ export default function Home() {
                   className="bg-white p-5 rounded-[32px] shadow-[0_2px_12px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)] transition-all duration-300 group cursor-pointer flex flex-col border border-[#f0ece6] h-full"
                 >
                   <div className="w-full h-[260px] rounded-[20px] overflow-hidden bg-[#f4f2f0] mb-6 relative">
-                    <img src={urun.img} alt={urun.isim[lang as keyof typeof urun.isim]} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                    <Image src={urun.img} alt={urun.isim[lang as keyof typeof urun.isim]} fill sizes="(max-width: 1024px) 50vw, 25vw" className="object-cover group-hover:scale-105 transition-transform duration-700" />
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                       <div className="bg-[#25D366] text-white px-4 py-2 rounded-full font-medium flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                         <MessageCircle size={18} />

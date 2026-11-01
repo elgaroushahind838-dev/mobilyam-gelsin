@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from 'react';
+import Image from "next/image";
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useLanguage } from '../../../context/LanguageContext';
@@ -218,9 +219,9 @@ export default function ProductDetailPage() {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.3 }}
-                className="w-full h-[350px] md:h-[650px] bg-[#e8e4dc] rounded-[24px] overflow-hidden shadow-sm"
+                className="relative w-full h-[350px] md:h-[650px] bg-[#e8e4dc] rounded-[24px] overflow-hidden shadow-sm"
               >
-                <img src={mainImage} alt={productName} className="w-full h-full object-contain object-center" />
+                <Image src={mainImage} alt={productName} fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-contain object-center" />
               </motion.div>
             </AnimatePresence>
 
@@ -231,9 +232,9 @@ export default function ProductDetailPage() {
                   type="button"
                   aria-label={`${productName} ${index + 1}`}
                   onClick={() => setImageState({ slug, image: img })}
-                  className={`w-full h-[100px] md:h-[140px] rounded-[16px] overflow-hidden transition-all duration-300 ${mainImage === img ? 'ring-2 ring-offset-2 ring-[#2a241e]' : 'opacity-70 hover:opacity-100'}`}
+                  className={`relative w-full h-[100px] md:h-[140px] rounded-[16px] overflow-hidden transition-all duration-300 ${mainImage === img ? 'ring-2 ring-offset-2 ring-[#2a241e]' : 'opacity-70 hover:opacity-100'}`}
                 >
-                  <img src={img} alt="" className="w-full h-full object-cover" />
+                  <Image src={img} alt={`${productName} ${index + 1}`} fill sizes="120px" className="object-cover" />
                 </button>
               ))}
             </div>

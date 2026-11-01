@@ -2,10 +2,28 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { adminCookieName, verifySessionToken } from "@/lib/auth";
 
+function siteLang(request: NextRequest) {
+  const value = request.nextUrl.searchParams.get("lang")?.toLowerCase();
+  if (value === "en" || value === "ar" || value === "tr") return value;
+  return "tr";
+}
+
+function withSiteHeaders(request: NextRequest) {
+  const headers = new Headers(request.headers);
+  headers.set("x-site-lang", siteLang(request));
+  headers.set("x-pathname", request.nextUrl.pathname);
+  return headers;
+}
+
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  if (pathname.startsWith("/admin/giris")) return NextResponse.next();
-  if (pathname === "/api/admin/export" || pathname === "/api/admin/measurements/upcoming") return NextResponse.next();
+  const headers = withSiteHeaders(request);
+  const pass = () => NextResponse.next({ request: { headers } });
+  const isAdmin = pathname === "/admin" || pathname.startsWith("/admin/") || pathname.startsWith("/api/admin");
+  if (!isAdmin) return pass();
+
+  if (pathname.startsWith("/admin/giris")) return pass();
+  if (pathname === "/api/admin/export" || pathname === "/api/admin/measurements/upcoming") return pass();
 
   const ok = await verifySessionToken(request.cookies.get(adminCookieName())?.value);
   if (pathname === "/admin" || pathname === "/admin/") {
@@ -13,12 +31,12 @@ export async function proxy(request: NextRequest) {
       const url = request.nextUrl.clone();
       url.pathname = "/admin/giris";
       url.search = "";
-      return NextResponse.rewrite(url);
+      return NextResponse.rewrite(url, { request: { headers } });
     }
-    if (pathname === "/admin/") return NextResponse.next();
+    if (pathname === "/admin/") return pass();
   }
 
-  if (ok) return NextResponse.next();
+  if (ok) return pass();
 
   if (pathname.startsWith("/api/")) {
     return NextResponse.json({ error: "Giriş gerekli" }, { status: 401 });
@@ -31,5 +49,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin", "/admin/", "/admin/:path*", "/api/admin/:path*"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|icons/|images/|sw.js|manifest.webmanifest).*)"],
 };

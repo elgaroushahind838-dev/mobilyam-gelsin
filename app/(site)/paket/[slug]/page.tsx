@@ -1,5 +1,6 @@
 "use client";
 import { useState } from 'react';
+import Image from "next/image";
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useLanguage } from '../../../context/LanguageContext';
@@ -193,8 +194,8 @@ export default function PackageDetailPage() {
           <div className="w-full lg:col-span-7">
             <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-2" style={{ scrollbarWidth: 'none' }} onScroll={(e) => handleScroll(e, setBedSlide)}>
               {bedImages[selectedWood].map((img, idx) => (
-                <div key={idx} className="flex-none w-full h-[320px] md:h-[450px] snap-center rounded-[20px] overflow-hidden bg-[#e8e4dc]">
-                  <img src={img} className="w-full h-full object-cover" alt="Bed option"/>
+                <div key={idx} className="relative flex-none w-full h-[320px] md:h-[450px] snap-center rounded-[20px] overflow-hidden bg-[#e8e4dc]">
+                  <Image src={img} alt={`${currentPackage.name[lang as keyof typeof currentPackage.name]} — ${t.bolum1Baslik}`} fill sizes="(max-width: 1024px) 100vw, 60vw" className="object-cover" />
                 </div>
               ))}
             </div>
@@ -223,8 +224,8 @@ export default function PackageDetailPage() {
           <div className="w-full lg:col-span-7">
             <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-2" style={{ scrollbarWidth: 'none' }} onScroll={(e) => handleScroll(e, setSofaSlide)}>
               {sofaImages[selectedSofaColor].map((img, idx) => (
-                <div key={idx} className="flex-none w-full h-[320px] md:h-[450px] snap-center rounded-[20px] overflow-hidden bg-[#e8e4dc]">
-                  <img src={img} className="w-full h-full object-cover" alt="Sofa option"/>
+                <div key={idx} className="relative flex-none w-full h-[320px] md:h-[450px] snap-center rounded-[20px] overflow-hidden bg-[#e8e4dc]">
+                  <Image src={img} alt={`${currentPackage.name[lang as keyof typeof currentPackage.name]} — ${t.bolum2Baslik}`} fill sizes="(max-width: 1024px) 100vw, 60vw" className="object-cover" />
                 </div>
               ))}
             </div>
@@ -256,7 +257,7 @@ export default function PackageDetailPage() {
           <div className="relative lg:col-span-7">
             <div className="flex overflow-x-auto snap-x snap-mandatory gap-4" style={{ scrollbarWidth: 'none' }} onScroll={(e) => handleScroll(e, setDiningSlide)}>
               {currentPackage.images.dining.map((img, idx) => (
-                <div key={idx} className="flex-none w-full h-[320px] md:h-[450px] snap-center rounded-[20px] overflow-hidden bg-[#e8e4dc]"><img src={img} className="w-full h-full object-cover" alt="Dining room option"/></div>
+                <div key={idx} className="relative flex-none w-full h-[320px] md:h-[450px] snap-center rounded-[20px] overflow-hidden bg-[#e8e4dc]"><Image src={img} alt={`${currentPackage.name[lang as keyof typeof currentPackage.name]} — ${t.bolum3Baslik}`} fill sizes="(max-width: 1024px) 100vw, 60vw" className="object-cover" /></div>
               ))}
             </div>
             <div className="flex justify-center gap-2 mt-2">

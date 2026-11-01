@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import PwaRegister from "@/components/admin/PwaRegister";
 
 export const metadata: Metadata = {
+  robots: { index: false, follow: false },
   applicationName: "Mobilyam Yönetim",
   manifest: "/manifest.webmanifest",
   appleWebApp: {

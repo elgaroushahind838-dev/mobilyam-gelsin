@@ -3,7 +3,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState, useMemo, useEffect, useRef } from "react";
 import { useLanguage } from "../../../context/LanguageContext";
-import { TAG_COPY } from "@/lib/types";
+import { TAG_COPY, CATEGORY_COPY } from "@/lib/types";
+import { categoryIntro, seoLang } from "@/lib/seo-copy";
 import { useParams } from "next/navigation";
 import { ChevronRight, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -309,9 +310,13 @@ export default function CategoryPage() {
         </div>
 
         {/* TITLE */}
-        <h1 className="text-5xl md:text-[56px] font-serif text-[#2a241e] mb-12">
-          {t.baslik}
+        <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-[#8c7f73]">{t.baslik}</p>
+        <h1 className="text-5xl md:text-[56px] font-serif text-[#2a241e]">
+          {(CATEGORY_COPY[slug as keyof typeof CATEGORY_COPY] ?? { TR: t.baslik, EN: t.baslik, AR: t.baslik })[lang as "TR" | "EN" | "AR"]}
         </h1>
+        {categoryIntro(slug, seoLang(lang)) ? (
+          <p className="mt-4 mb-12 max-w-3xl text-[16px] leading-relaxed text-[#52525b]">{categoryIntro(slug, seoLang(lang))}</p>
+        ) : <div className="mb-12" />}
 
         {/* FILTER TAGS */}
         <div className="flex flex-wrap gap-3 mb-10">
@@ -430,7 +435,8 @@ export default function CategoryPage() {
                       src={urun.img}
                       alt={urun.name[lang as keyof typeof urun.name]}
                       fill
-                      className="object-center group-hover:scale-105 transition-transform duration-700"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                      className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
                     />
                   </div>
 
