@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState, useMemo, useEffect, useRef } from "react";
 import { useLanguage } from "../../../context/LanguageContext";
+import { TAG_COPY } from "@/lib/types";
 import { useParams } from "next/navigation";
 import { ChevronRight, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -26,7 +27,7 @@ const productsDB = [
     slug: "sardunya-ranza",
     categorySlug: "genc-odasi",
     tag: "Ranza",
-    name: { TR: "Sardunya Ranza", EN: "Artisan Walnut Table", AR: "طاولة أرتيزان جوز" },
+    name: { TR: "Sardunya Ranza", EN: "Sardunya Bunk Bed", AR: "سرير سردونيا بطابقين" },
     material: "MASİF CEVİZ",
     date: "2024-01-15",
     img: "/images/sardunya-ranza-on.jpeg",
@@ -36,7 +37,7 @@ const productsDB = [
     slug: "surgulu-dolap",
     categorySlug: "yatak-odasi",
     tag: "Gardırop",
-    name: { TR: "Sürgülü Dolap", EN: "Lumina TV Unit", AR: "وحدة تلفاز لومينا" },
+    name: { TR: "Sürgülü Dolap", EN: "Sliding-Door Wardrobe", AR: "خزانة بأبواب منزلقة" },
     material: "FIRÇALI METAL",
     date: "2024-04-10",
     img: "/images/surgulu-dolapon.jpeg",
@@ -46,7 +47,7 @@ const productsDB = [
     slug: "seher-4-kapili-dolap",
     categorySlug: "yatak-odasi",
     tag: "Gardırop",
-    name: { TR: "Seher 4 Kapılı Dolap", EN: "Aura Console", AR: "كونسول أورا" },
+    name: { TR: "Seher 4 Kapılı Dolap", EN: "Seher 4-Door Wardrobe", AR: "خزانة سحر بأربعة أبواب" },
     material: "MASİF AHŞAP",
     date: "2024-03-20",
     img: "/images/seher4kon.jpeg",
@@ -56,7 +57,7 @@ const productsDB = [
     slug: "3-kapili-dolap",
     categorySlug: "yatak-odasi",
     tag: "Gardırop",
-    name: { TR: "3 Kapılı Dolap", EN: "Nova Dining Set", AR: "طاولة طعام نوفا" },
+    name: { TR: "3 Kapılı Dolap", EN: "3-Door Wardrobe", AR: "خزانة بثلاثة أبواب" },
     material: "MASİF AHŞAP",
     date: "2024-02-15",
      img: "/images/3kdolap-on.jpeg",
@@ -66,7 +67,7 @@ const productsDB = [
     slug: "6-kapili-dolap",
     categorySlug: "yatak-odasi",
     tag: "Gardırop",
-    name: { TR: "6 Kapılı Dolap", EN: "Luna Bed Base", AR: "قاعدة سرير لونا" },
+    name: { TR: "6 Kapılı Dolap", EN: "6-Door Wardrobe", AR: "خزانة بستة أبواب" },
     material: "MASİF AHŞAP",
     date: "2024-03-20",
     img: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=800&auto=format&fit=crop",
@@ -76,7 +77,7 @@ const productsDB = [
     slug: "comfort-yatak",
     categorySlug: "yatak-odasi",
     tag: "Yatak",
-    name: { TR: "Comfort Yatak", EN: "Comfort Mattress", AR: "مرتبة كومفورت" },
+    name: { TR: "Comfort Yatak", EN: "Comfort Bed", AR: "سرير كومفورت" },
     material: "ORTHOPEDIC",
     date: "2024-04-01",
     img: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=800&auto=format&fit=crop",
@@ -106,7 +107,7 @@ const productsDB = [
     slug: "elegance-sifonyer",
     categorySlug: "yatak-odasi",
     tag: "Şifonir",
-    name: { TR: "Elegance Şifonyer", EN: "Elegance Dresser", AR: "خزانة إليغانس" },
+    name: { TR: "Elegance Şifonyer", EN: "Elegance Dresser", AR: "تسريحة إليغانس" },
     material: "MEŞE",
     date: "2024-03-05",
     img: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=800&auto=format&fit=crop",
@@ -116,7 +117,7 @@ const productsDB = [
     slug: "bella-makyaj-masasi",
     categorySlug: "yatak-odasi",
     tag: "Makyaj Masası",
-    name: { TR: "Bella Makyaj Masası", EN: "Bella Vanity Table", AR: "طاولة مكياج بيلا" },
+    name: { TR: "Bella Makyaj Masası", EN: "Bella Vanity Table", AR: "طاولة زينة بيلا" },
     material: "MEŞE",
     date: "2024-03-12",
     img: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=800&auto=format&fit=crop",
@@ -136,7 +137,7 @@ const productsDB = [
     slug: "office-calisma-masasi",
     categorySlug: "ofis",
     tag: "Masalar",
-    name: { TR: "Office Çalışma Masası", EN: "Office Desk", AR: "مكتب أوفيس" },
+    name: { TR: "Office Çalışma Masası", EN: "Office Desk", AR: "مكتب للعمل" },
     material: "MASİF AHŞAP",
     date: "2024-04-20",
     img: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=800&auto=format&fit=crop",
@@ -146,7 +147,7 @@ const productsDB = [
     slug: "modern-portmanto",
     categorySlug: "portmanto",
     tag: "Portmanto",
-    name: { TR: "Modern Portmanto", EN: "Modern Coat Rack", AR: "خزانة مدخل مودرن" },
+    name: { TR: "Modern Portmanto", EN: "Modern Hall Stand", AR: "وحدة مدخل حديثة" },
     material: "MEŞE",
     date: "2024-05-10",
     img: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=800&auto=format&fit=crop",
@@ -171,9 +172,9 @@ const translations = {
     anaSayfa: "Home",
     tumUrunler: "All Products",
     baslik: "Timeless Designs",
-    gosteriliyor: "PRODUCTS SHOWING",
+    gosteriliyor: "PRODUCTS SHOWN",
     sirala: "SORT BY",
-    incele: "View Details",
+    incele: "View",
     sortOptions: {
       newest: "Newest",
       oldest: "Oldest",
@@ -185,7 +186,7 @@ const translations = {
     baslik: "تصاميم خالدة",
     gosteriliyor: "منتج معروض",
     sirala: "ترتيب حسب",
-    incele: "عرض التفاصيل",
+    incele: "عرض",
     sortOptions: {
       newest: "الأحدث",
       oldest: "الأقدم",
@@ -335,7 +336,7 @@ export default function CategoryPage() {
                   : "bg-[#ece9e4] text-[#5a544c]"
               }`}
             >
-              {tag as string}
+              {(TAG_COPY[tag as string] ?? { TR: tag, EN: tag, AR: tag })[lang as "TR" | "EN" | "AR"]}
             </button>
           ))}
         </div>

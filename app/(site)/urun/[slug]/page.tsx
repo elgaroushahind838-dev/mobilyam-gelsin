@@ -29,13 +29,13 @@ const productsDB = {
 
   "sardunya-ranza": {
     categorySlug: "genc-odasi",
-    category: { TR: "Genç Odası", EN: "Bedroom", AR: "غرفة نوم" },
-    subCategory: { TR: "Ranza", EN: "Wardrobe", AR: "خزانة ملابس" },
-    name: { TR: "Sardunya Ranza", EN: "MARKA Wardrobe with 6 Doors and 3 Drawers", AR: "خزانة ماركا بستة أبواب وثلاثة أدراج" },
+    category: { TR: "Genç Odası", EN: "Youth Room", AR: "غرفة الشباب" },
+    subCategory: { TR: "Ranza", EN: "Bunk Bed", AR: "سرير بطابقين" },
+    name: { TR: "Sardunya Ranza", EN: "Sardunya Bunk Bed", AR: "سرير سردونيا بطابقين" },
     description: {
-      TR: "İstanbullu zanaatkarların elinden çıkan Luvia, doğanın en saf halini modern bir formla buluşturuyor. Masif ceviz ayakların mimari duruşu, seçkin İtalyan mermerinin zerafetiyle birleşerek yaşam alanınıza zamansız bir karakter katıyor.",
-      EN: "Handcrafted by Istanbul artisans, Luvia brings the purest form of nature together with a modern form. The architectural stance of solid walnut legs combines with the elegance of premium Italian marble.",
-      AR: "طاولة لوفيا المصنوعة يدوياً على أيدي حرفيي إسطنبول، تجمع بين أنقى أشكال الطبيعة والتصميم الحديث. الموقف المعماري لأرجل الجوز الصلب يتحد مع أناقة الرخام الإيطالي الفاخر."
+      TR: "Genç odaları için tasarlanan ranza. Güvenli kullanım ve geniş depolama alanı sunar.",
+      EN: "A bunk bed designed for youth rooms, with safe use and generous storage.",
+      AR: "سرير بطابقين مصمم لغرف الشباب، يجمع بين الاستخدام الآمن ومساحة تخزين واسعة.",
     },
     images: [
       "/images/sardunya-ranza-on.jpeg",
@@ -46,13 +46,13 @@ const productsDB = {
 
   "surgulu-dolap": {
     categorySlug: "yatak-odasi",
-    category: { TR: "Yatak Odası", EN: "Bedroom", AR: "غرفة نوم" },
+    category: { TR: "Yatak Odası", EN: "Bedroom", AR: "غرفة النوم" },
     subCategory: { TR: "Gardırop", EN: "Wardrobe", AR: "خزانة ملابس" },
-    name: { TR: "6 Kapılı 3 Çekmeceli MARKA Dolap", EN: "MARKA Wardrobe with 6 Doors and 3 Drawers", AR: "خزانة ماركا بستة أبواب وثلاثة أدراج" },
+    name: { TR: "Sürgülü Dolap", EN: "Sliding-Door Wardrobe", AR: "خزانة بأبواب منزلقة" },
     description: {
-      TR: "İstanbullu zanaatkarların elinden çıkan Luvia, doğanın en saf halini modern bir formla buluşturuyor. Masif ceviz ayakların mimari duruşu, seçkin İtalyan mermerinin zerafetiyle birleşerek yaşam alanınıza zamansız bir karakter katıyor.",
-      EN: "Handcrafted by Istanbul artisans, Luvia brings the purest form of nature together with a modern form. The architectural stance of solid walnut legs combines with the elegance of premium Italian marble.",
-      AR: "طاولة لوفيا المصنوعة يدوياً على أيدي حرفيي إسطنبول، تجمع بين أنقى أشكال الطبيعة والتصميم الحديث. الموقف المعماري لأرجل الجوز الصلب يتحد مع أناقة الرخام الإيطالي الفاخر."
+      TR: "Dar alanlarda kapı açmadan kullanım sağlayan sürgülü gardırop.",
+      EN: "A sliding-door wardrobe for narrow rooms, used without swinging the doors open.",
+      AR: "خزانة بأبواب منزلقة للمساحات الضيقة، تُستخدم دون الحاجة إلى فتح الأبواب للخارج.",
     },
     images: [
       "/images/surgulu-dolapon.jpeg",
@@ -65,11 +65,11 @@ const productsDB = {
     categorySlug: "yatak-odasi",
     category: { TR: "Yatak Odası", EN: "Bedroom", AR: "غرفة نوم" },
     subCategory: { TR: "Gardırop", EN: "Wardrobe", AR: "خزانة ملابس" },
-    name: { TR: "6 Kapılı 3 Çekmeceli MARKA Dolap", EN: "MARKA Wardrobe with 6 Doors and 3 Drawers", AR: "خزانة ماركا بستة أبواب وثلاثة أدراج" },
+    name: { TR: "Seher 4 Kapılı Dolap", EN: "Seher 4-Door Wardrobe", AR: "خزانة سحر بأربعة أبواب" },
     description: {
-      TR: "İstanbullu zanaatkarların elinden çıkan Luvia, doğanın en sah halini modern bir formla buluşturuyor. Masif ceviz ayakların mimari duruşu, seçkin İtalyan mermerinin zerafetiyle birleşerek yaşam alanınıza zamansız bir karakter katıyor.",
-      EN: "Handcrafted by Istanbul artisans, Luvia brings the purest form of nature together with a modern form. The architectural stance of solid walnut legs combines with the elegance of premium Italian marble.",
-      AR: "طاولة لوفيا المصنوعة يدوياً على أيدي حرفيي إسطنبول، تجمع بين أنقى أشكال الطبيعة والتصميم الحديث. الموقف المعماري لأرجل الجوز الصلب يتحد مع أناقة الرخام الإيطالي الفاخر."
+      TR: "Dört kapılı Seher dolap, yatak odasında sade bir görünüm ve düzenli depolama sunar.",
+      EN: "The four-door Seher wardrobe offers a calm look and tidy storage in the bedroom.",
+      AR: "تمنح خزانة سحر ذات الأربعة أبواب مظهراً هادئاً وتخزيناً منظماً في غرفة النوم.",
     },
     images: [
       "/images/seher4kon.jpeg",
@@ -82,11 +82,11 @@ const productsDB = {
     categorySlug: "yatak-odasi",
     category: { TR: "Yatak Odası", EN: "Bedroom", AR: "غرفة نوم" },
     subCategory: { TR: "Gardırop", EN: "Wardrobe", AR: "خزانة ملابس" },
-    name: { TR: "3 Kapılı Dolap", EN: "MARKA Wardrobe with 6 Doors and 3 Drawers", AR: "خزانة ماركا بستة أبواب وثلاثة أدراج" },
+    name: { TR: "3 Kapılı Dolap", EN: "3-Door Wardrobe", AR: "خزانة بثلاثة أبواب" },
     description: {
-      TR: "İstanbullu zanaatkarların elinden çıkan Luvia, doğanın en saf halini modern bir formla buluşturuyor. Masif ceviz ayakların mimari duruşu, seçkin İtalyan mermerinin zerafetiyle birleşerek yaşam alanınıza zamansız bir karakter katıyor.",
-      EN: "Handcrafted by Istanbul artisans, Luvia brings the purest form of nature together with a modern form. The architectural stance of solid walnut legs combines with the elegance of premium Italian marble.",
-      AR: "طاولة لوفيا المصنوعة يدوياً على أيدي حرفيي إسطنبول، تجمع بين أنقى أشكال الطبيعة والتصميم الحديث. الموقف المعماري لأرجل الجوز الصلب يتحد مع أناقة الرخام الإيطالي الفاخر."
+      TR: "Üç kapılı dolap, daha kompakt odalar için üretilen bir gardırop modelidir.",
+      EN: "A three-door wardrobe made for more compact rooms.",
+      AR: "خزانة بثلاثة أبواب، تُصنع للغرف الأكثر ضيقاً.",
     },
     images: [
       "/images/3kdolap-on.jpeg",
@@ -99,11 +99,11 @@ const productsDB = {
     categorySlug: "yatak-odasi",
     category: { TR: "Yatak Odası", EN: "Bedroom", AR: "غرفة نوم" },
     subCategory: { TR: "Gardırop", EN: "Wardrobe", AR: "خزانة ملابس" },
-    name: { TR: "6 Kapılı Dolap", EN: "MARKA Wardrobe with 6 Doors and 3 Drawers", AR: "خزانة ماركا بستة أبواب وثلاثة أدراج" },
+    name: { TR: "6 Kapılı Dolap", EN: "6-Door Wardrobe", AR: "خزانة بستة أبواب" },
     description: {
-      TR: "İstanbullu zanaatkarların elinden çıkan Luvia, doğanın en saf halini modern bir formla buluşturuyor. Masif ceviz ayakların mimari duruşu, seçkin İtalyan mermerinin zerafetiyle birleşerek yaşam alanınıza zamansız bir karakter katıyor.",
-      EN: "Handcrafted by Istanbul artisans, Luvia brings the purest form of nature together with a modern form. The architectural stance of solid walnut legs combines with the elegance of premium Italian marble.",
-      AR: "طاولة لوفيا المصنوعة يدوياً على أيدي حرفيي إسطنبول، تجمع بين أنقى أشكال الطبيعة والتصميم الحديث. الموقف المعماري لأرجل الجوز الصلب يتحد مع أناقة الرخام İtalyan الفاخر."
+      TR: "Altı kapılı dolap, geniş aileler için yüksek depolama kapasitesi sunar.",
+      EN: "A six-door wardrobe with high storage capacity for larger families.",
+      AR: "خزانة بستة أبواب توفر سعة تخزين كبيرة للعائلات.",
     },
     images: [
       "/images/seher4kon.jpeg",
@@ -121,7 +121,7 @@ const copy = {
   },
   EN: {
     home: "Home",
-    whatsapp: "Contact us on WhatsApp",
+    whatsapp: "Contact us via WhatsApp",
     message: (name: string) => `Hello, I would like information about ${name}.`,
   },
   AR: {
@@ -162,8 +162,8 @@ export default function ProductDetailPage() {
           missing: false,
           product: {
             categorySlug: item.categorySlug,
-            category: { TR: item.categoryLabel, EN: item.categoryLabel, AR: item.categoryLabel },
-            subCategory: { TR: item.tag, EN: item.tag, AR: item.tag },
+            category: item.category ?? { TR: item.categoryLabel, EN: item.categoryLabel, AR: item.categoryLabel },
+            subCategory: item.tagLabel ?? { TR: item.tag, EN: item.tag, AR: item.tag },
             name: item.name,
             description: item.description,
             images: item.images?.length ? item.images : [item.img],

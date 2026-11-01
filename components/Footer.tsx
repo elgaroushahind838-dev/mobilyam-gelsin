@@ -17,7 +17,6 @@ const footerTranslations = {
     fGizlilik: "Gizlilik Politikası",
     fWaSiparis: "WhatsApp Sipariş",
     fSosyal: "Sosyal medya",
-    fCopy: "© 2026 Mobilyam Gelsin. Tüm hakları saklıdır."
   },
   EN: {
     fHakkimizda: "The meeting point of modern design and traditional craftsmanship. We carefully produce every piece for you in our Istanbul workshop.",
@@ -30,7 +29,6 @@ const footerTranslations = {
     fGizlilik: "Privacy Policy",
     fWaSiparis: "WhatsApp Order",
     fSosyal: "Social media",
-    fCopy: "© 2026 Mobilyam Gelsin. All rights reserved."
   },
   AR: {
     fHakkimizda: "نقطة التقاء التصميم الحديث والحرفية التقليدية. ننتج كل قطعة بعناية من أجلك في ورشتنا في إسطنبول.",
@@ -38,12 +36,11 @@ const footerTranslations = {
     kolBaslik: "المجموعات",
     fUrunler: "المنتجات",
     fHakkimizdaLink: "من نحن",
-    fIletisim: "اتصل بنا",
+    fIletisim: "تواصل معنا",
     fDestek: "الدعم",
     fGizlilik: "سياسة الخصوصية",
     fWaSiparis: "طلب واتساب",
     fSosyal: "وسائل التواصل الاجتماعي",
-    fCopy: "© 2026 Mobilyam Gelsin. جميع الحقوق محفوظة."
   }
 };
 
@@ -155,10 +152,7 @@ export default function Footer() {
 
         </div>
 
-        <div className="pt-8 border-t border-white/10 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="text-white/60 text-[13px] tracking-wide text-center sm:text-left">
-            {t.fCopy}
-          </p>
+        <div className="pt-8 border-t border-white/10 flex justify-center sm:justify-end">
           <div className="flex items-center gap-6">
             {(['TR', 'EN', 'AR'] as const).map((l) => (
               <button 

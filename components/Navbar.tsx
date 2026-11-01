@@ -8,7 +8,7 @@ import { useLanguage } from '../app/context/LanguageContext';
 const translations = {
   TR: { koleksiyonlar: "Koleksiyonlar", hakkimizda: "Hakkımızda", iletisim: "İletişim" },
   EN: { koleksiyonlar: "Collections", hakkimizda: "About Us", iletisim: "Contact" },
-  AR: { koleksiyonlar: "المجموعات", hakkimizda: "من نحن", iletisim: "اتصل بنا" }
+  AR: { koleksiyonlar: "المجموعات", hakkimizda: "من نحن", iletisim: "تواصل معنا" }
 };
 
 const sectionHrefs: Record<string, string> = {

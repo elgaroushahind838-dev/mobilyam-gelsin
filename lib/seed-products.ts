@@ -1,13 +1,119 @@
-import type { Product } from "./types";
+import { CATEGORY_COPY, TAG_COPY, type Product } from "./types";
+
+const PRODUCT_COPY: Record<string, { nameEn: string; nameAr: string; descriptionEn: string; descriptionAr: string }> = {
+  "6-kapili-3-cekmeceli-marka-dolap": {
+    nameEn: "MARKA Wardrobe with 6 Doors and 3 Drawers",
+    nameAr: "خزانة ماركا بستة أبواب وثلاثة أدراج",
+    descriptionEn: "With its generous storage and functional design, the MARKA wardrobe brings order and elegance together in the bedroom.",
+    descriptionAr: "بفضل مساحتها الواسعة وتصميمها العملي، تجمع خزانة ماركا بين الترتيب والأناقة في غرفة النوم.",
+  },
+  "sardunya-ranza": {
+    nameEn: "Sardunya Bunk Bed",
+    nameAr: "سرير سردونيا بطابقين",
+    descriptionEn: "A bunk bed designed for youth rooms, with safe use and generous storage.",
+    descriptionAr: "سرير بطابقين مصمم لغرف الشباب، يجمع بين الاستخدام الآمن ومساحة تخزين واسعة.",
+  },
+  "surgulu-dolap": {
+    nameEn: "Sliding-Door Wardrobe",
+    nameAr: "خزانة بأبواب منزلقة",
+    descriptionEn: "A sliding-door wardrobe for narrow rooms, used without swinging the doors open.",
+    descriptionAr: "خزانة بأبواب منزلقة للمساحات الضيقة، تُستخدم دون الحاجة إلى فتح الأبواب للخارج.",
+  },
+  "seher-4-kapili-dolap": {
+    nameEn: "Seher 4-Door Wardrobe",
+    nameAr: "خزانة سحر بأربعة أبواب",
+    descriptionEn: "The four-door Seher wardrobe offers a calm look and tidy storage in the bedroom.",
+    descriptionAr: "تمنح خزانة سحر ذات الأربعة أبواب مظهراً هادئاً وتخزيناً منظماً في غرفة النوم.",
+  },
+  "3-kapili-dolap": {
+    nameEn: "3-Door Wardrobe",
+    nameAr: "خزانة بثلاثة أبواب",
+    descriptionEn: "A three-door wardrobe made for more compact rooms.",
+    descriptionAr: "خزانة بثلاثة أبواب، تُصنع للغرف الأكثر ضيقاً.",
+  },
+  "6-kapili-dolap": {
+    nameEn: "6-Door Wardrobe",
+    nameAr: "خزانة بستة أبواب",
+    descriptionEn: "A six-door wardrobe with high storage capacity for larger families.",
+    descriptionAr: "خزانة بستة أبواب توفر سعة تخزين كبيرة للعائلات.",
+  },
+  "comfort-yatak": {
+    nameEn: "Comfort Bed",
+    nameAr: "سرير كومفورت",
+    descriptionEn: "A comfort bed for the bedroom.",
+    descriptionAr: "سرير مريح لغرفة النوم.",
+  },
+  "royal-gardirop": {
+    nameEn: "Royal Wardrobe",
+    nameAr: "خزانة رويال",
+    descriptionEn: "A royal wardrobe with an oak finish.",
+    descriptionAr: "خزانة رويال بلمسة خشب البلوط.",
+  },
+  "soft-komodin": {
+    nameEn: "Soft Nightstand",
+    nameAr: "كومودينة سوفت",
+    descriptionEn: "A nightstand for the bedroom.",
+    descriptionAr: "كومودينة لغرفة النوم.",
+  },
+  "elegance-sifonyer": {
+    nameEn: "Elegance Dresser",
+    nameAr: "تسريحة إليغانس",
+    descriptionEn: "A dresser for the bedroom.",
+    descriptionAr: "تسريحة لغرفة النوم.",
+  },
+  "bella-makyaj-masasi": {
+    nameEn: "Bella Vanity Table",
+    nameAr: "طاولة زينة بيلا",
+    descriptionEn: "A vanity table for the bedroom.",
+    descriptionAr: "طاولة زينة لغرفة النوم.",
+  },
+  "kids-ranza": {
+    nameEn: "Kids Bunk Bed",
+    nameAr: "سرير أطفال بطابقين",
+    descriptionEn: "A bunk bed for children's and youth rooms.",
+    descriptionAr: "سرير بطابقين لغرف الأطفال والشباب.",
+  },
+  "office-calisma-masasi": {
+    nameEn: "Office Desk",
+    nameAr: "مكتب للعمل",
+    descriptionEn: "A desk for the study room.",
+    descriptionAr: "مكتب لغرفة العمل.",
+  },
+  "modern-portmanto": {
+    nameEn: "Modern Hall Stand",
+    nameAr: "وحدة مدخل حديثة",
+    descriptionEn: "A modern hall stand for the entryway.",
+    descriptionAr: "وحدة مدخل حديثة لبهو الدخول.",
+  },
+};
+
+function translated(product: Product) {
+  const known = PRODUCT_COPY[product.slug];
+  const unchanged = (value: string | undefined, source: string) => !value || value === source;
+  return {
+    name: {
+      TR: product.name,
+      EN: unchanged(product.nameEn, product.name) ? known?.nameEn || product.name : product.nameEn,
+      AR: unchanged(product.nameAr, product.name) ? known?.nameAr || product.name : product.nameAr,
+    },
+    description: {
+      TR: product.description,
+      EN: unchanged(product.descriptionEn, product.description) ? known?.descriptionEn || product.description : product.descriptionEn,
+      AR: unchanged(product.descriptionAr, product.description) ? known?.descriptionAr || product.description : product.descriptionAr,
+    },
+  };
+}
 
 const createdAt = "2024-05-01T09:00:00.000Z";
 
-function product(partial: Omit<Product, "nameEn" | "nameAr" | "descriptionEn" | "descriptionAr" | "createdAt"> & Partial<Product>): Product {
+function product(partial: Omit<Product, "nameEn" | "nameAr" | "descriptionEn" | "descriptionAr" | "createdAt" | "bestSeller" | "bestSellerOrder"> & Partial<Product>): Product {
   return {
     nameEn: partial.name,
     nameAr: partial.name,
     descriptionEn: partial.description,
     descriptionAr: partial.description,
+    bestSeller: false,
+    bestSellerOrder: 0,
     createdAt,
     ...partial,
   };
@@ -240,19 +346,26 @@ export const SEED_PRODUCTS: Product[] = [
 ];
 
 export function publicProduct(product: Product) {
+  const text = translated(product);
+  const category = CATEGORY_COPY[product.categorySlug as keyof typeof CATEGORY_COPY] ?? {
+    TR: product.categoryLabel,
+    EN: product.categoryLabel,
+    AR: product.categoryLabel,
+  };
+  const tag = TAG_COPY[product.tag] ?? { TR: product.tag, EN: product.tag, AR: product.tag };
   return {
     id: product.id,
     slug: product.slug,
     categorySlug: product.categorySlug,
     categoryLabel: product.categoryLabel,
+    category,
     tag: product.tag,
-    name: { TR: product.name, EN: product.nameEn || product.name, AR: product.nameAr || product.name },
-    description: {
-      TR: product.description,
-      EN: product.descriptionEn || product.description,
-      AR: product.descriptionAr || product.description,
-    },
+    tagLabel: tag,
+    name: text.name,
+    description: text.description,
     material: product.tag,
+    bestSeller: Boolean(product.bestSeller),
+    bestSellerOrder: Number(product.bestSellerOrder || 0),
     date: product.createdAt.slice(0, 10),
     img: product.images[0] || "",
     images: product.images,

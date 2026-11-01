@@ -22,7 +22,7 @@ const translations = {
     cPortmanto: "Portmanto",
     
     secKoleksiyonlar: "Düğün Paketleri",
-    stokta: "StoktaMevcut",
+    stokta: "Stokta Mevcut",
     detaylar: "Detayları İncele",
     whatsapp: "WhatsApp ile Sipariş",
     
@@ -65,7 +65,7 @@ const translations = {
     etiket: "NEW SEASON",
     baslik1: "Designed for",
     baslik2: "Your Space",
-    aciklama: "We design and build custom furniture and fitted wardrobes for your space.",
+    aciklama: "We design and produce custom furniture and fitted wardrobes for your living space.",
     buton1: "Discover Collection",
     buton2: "Our Workshop",
     kolBaslik: "Collections",
@@ -73,11 +73,11 @@ const translations = {
     cYemek: "Dining Room",
     cYatak: "Bedroom",
     cGenc: "Youth Room",
-    cOfis: "Office",
-    cPortmanto: "Entryway",
+    cOfis: "Study Room",
+    cPortmanto: "Hall Stand",
     
-    secKoleksiyonlar: "wedding packages",
-    stokta: "InStock",
+    secKoleksiyonlar: "Wedding Packages",
+    stokta: "In Stock",
     detaylar: "View Details",
     whatsapp: "Order via WhatsApp",
     
@@ -102,7 +102,6 @@ const translations = {
     hikayemizParagraf2: "Every piece is crafted with wood from sustainable forests and the meticulous work of our master artisans. Our goal is to create quiet, powerful designs that can be passed down for generations.",
     hikayemizStat1Sayi: "25+",
     hikayemizStat1Yazi: "Years of Experience",
-    hikayemizStat2Yazi: "Completed Projects",
 
     enCokTercih: "Most Preferred",
 
@@ -115,7 +114,7 @@ const translations = {
     iletisimKartBaslik: "Let's Design Your Dream Living Space Together",
     iletisimKartMetin: "Contact us to get detailed information about our collections or to meet with our design team for your custom projects.",
     whatsappHemen: "Get Info via WhatsApp Now",
-    elIsciligi: "100% Handcrafted"
+    elIsciligi: "100% Handmade"
   },
   AR: {
     etiket: "الموسم الجديد",
@@ -125,15 +124,15 @@ const translations = {
     buton1: "اكتشف المجموعة",
     buton2: "ورشتنا",
     kolBaslik: "المجموعات",
-    cOturma: "غرفة الجلوس",
+    cOturma: "غرفة المعيشة",
     cYemek: "غرفة الطعام",
     cYatak: "غرفة النوم",
     cGenc: "غرفة الشباب",
-    cOfis: "المكتب",
-    cPortmanto: "بورت مانتو",
+    cOfis: "غرفة المكتب",
+    cPortmanto: "وحدة المدخل",
     
-    secKoleksiyonlar: "حزم الزفاف",
-    stokta: "متوفر_بالمخزون",
+    secKoleksiyonlar: "باقات الزفاف",
+    stokta: "متوفر في المخزون",
     detaylar: "عرض التفاصيل",
     whatsapp: "اطلب عبر واتساب",
     
@@ -154,12 +153,10 @@ const translations = {
 
     hikayemizEtiket: "قصتنا",
     hikayemizBaslik: "ورشة حديثة في قلب إسطنبول",
-    hikayemizParagraf1: "تعتبر Mibilyam Gelsin تصميم الأثاث ليس مجرد شيء، بل أسلوب حياة. نتغذى على تراث التصميم الغني لإسطنبول ونتبنى فهماً عالمياً للحد الأدنى من التفاصيل (المينيماليزم).",
-    hikayemizParagraf2: "يتم تصنيع كل قطعة من أخشاب الغابات المستدامة والعمل الدقيق للحرفيين المهرة. هدفنا هو إنشاء تصميمات هادئة وقوية يمكن توارثها عبر الأجيال.",
+    hikayemizParagraf1: "ترى Mobilyam Gelsin تصميم الأثاث ليس مجرد قطعة، بل أسلوب حياة. نستلهم من تراث إسطنبول التصميمي الغني، ونتبنّى بساطة عالمية هادئة.",
+    hikayemizParagraf2: "تُصنع كل قطعة من أخشاب الغابات المستدامة، وبعمل دقيق من حرفيينا. هدفنا ابتكار تصاميم هادئة وقوية تُورَّث عبر الأجيال.",
     hikayemizStat1Sayi: "+25",
     hikayemizStat1Yazi: "سنوات من الخبرة",
-    hikayemizStat2Sayi: "+1200",
-    hikayemizStat2Yazi: "مشروع مكتمل",
 
     enCokTercih: "الأكثر تفضيلاً",
     iletisimBaslik: "ورشتنا",
@@ -167,43 +164,13 @@ const translations = {
     atolyeAdres1: "385. Sokak، حي يونس إمره",
     atolyeAdres2: "34510 إسنيورت، إسطنبول",
     haritadaAc: "افتح في خرائط Google",
-    bizeUlasin: "اتصل بنا",
+    bizeUlasin: "تواصل معنا",
     iletisimKartBaslik: "دعنا نصمم مساحة المعيشة التي تحلم بها معًا",
     iletisimKartMetin: "اتصل بنا للحصول على معلومات مفصلة حول مجموعاتنا أو لمقابلة فريق التصميم الخاص بنا لمشاريعك المخصصة.",
     whatsappHemen: "احصل على معلومات عبر واتساب الآن",
-    elIsciligi: "مصنوع يدوياً 100%"
+    elIsciligi: "صناعة يدوية 100%"
   }
 };
-
-interface Urun {
-  kategori: { TR: string; EN: string; AR: string; };
-  isim: { TR: string; EN: string; AR: string; };
-  img: string;
-  renkler?: string[];
-}
-
-const urunlerListesi: Urun[] = [
-  {
-    kategori: { TR: "Yatak Odası", EN: "Bedroom", AR: "غرفة النوم" },
-    isim: { TR: "Yüklüklü 4 Kapılı Roma Dolap", EN: "Roma 4-Door Wardrobe with Storage Unit", AR: "خزانة روما بأربعة أبواب مع وحدة تخزين علوية" },
-    img: "/images/cok-tercih1.jpeg"
-  },
-  {
-    kategori: { TR: "Genç Odası", EN: "Youth Room", AR: "غرفة الشباب" },
-    isim: { TR: "Marmaris Ranza", EN: "Marmaris Bunk Bed", AR: "سرير بطابقين مارماريس" },
-    img: "/images/cok-tercih2.jpeg"
-  },
-  {
-    kategori: { TR: "Oturma Odası", EN: "Living Room", AR: "غرفة المعيشة" },
-    isim: { TR: "Valery Koltuk Takımı", EN: "Valery Sofa Set", AR: "طقم كنب فاليري" },
-    img: "/images/cok-tercih3.jpeg"
-  },
-  {
-    kategori: { TR: "Portmanto", EN: "Hallway Coat Rack", AR: "وحدة تعليق الملابس عند المدخل" },
-    isim: { TR: "Nevin Portmanto", EN: "Nevin Hallway Coat Rack", AR: "وحدة تعليق نيفين للمدخل" },
-    img: "/images/cok-tercih4.jpeg"
-  }
-];
 
 const staggerContainer = {
   hidden: { opacity: 0 },
@@ -242,17 +209,25 @@ export default function Home() {
       .then((response) => (response.ok ? response.json() : null))
       .then((data) => {
         if (ignore || !Array.isArray(data?.products)) return;
-        setLiveProducts(data.products.slice(0, 4).map((product: {
-          slug: string;
-          categoryLabel: string;
-          name: { TR: string; EN: string; AR: string };
-          img: string;
-        }) => ({
-          slug: product.slug,
-          kategori: { TR: product.categoryLabel, EN: product.categoryLabel, AR: product.categoryLabel },
-          isim: product.name,
-          img: product.img,
-        })));
+        setLiveProducts(
+          data.products
+            .filter((product: { bestSeller?: boolean }) => product.bestSeller)
+            .sort((a: { bestSellerOrder?: number; name: { TR: string } }, b: { bestSellerOrder?: number; name: { TR: string } }) =>
+              (a.bestSellerOrder || 0) - (b.bestSellerOrder || 0) || a.name.TR.localeCompare(b.name.TR, "tr"),
+            )
+            .map((product: {
+              slug: string;
+              category?: { TR: string; EN: string; AR: string };
+              categoryLabel: string;
+              name: { TR: string; EN: string; AR: string };
+              img: string;
+            }) => ({
+              slug: product.slug,
+              kategori: product.category ?? { TR: product.categoryLabel, EN: product.categoryLabel, AR: product.categoryLabel },
+              isim: product.name,
+              img: product.img,
+            })),
+        );
       })
       .catch(() => undefined);
     return () => {
@@ -260,7 +235,7 @@ export default function Home() {
     };
   }, []);
 
-  const featured = liveProducts ?? urunlerListesi.map((urun) => ({ ...urun, slug: "" }));
+  const featured = liveProducts ?? [];
 
   useEffect(() => {
     const id = window.location.hash.replace("#", "");
@@ -529,7 +504,7 @@ export default function Home() {
       </section>
 
       {/* 5. En Çok Tercih Edilenler Bölümü */}
-      <section className="py-16 bg-[#faf9f6]">
+      {featured.length > 0 && <section className="py-16 bg-[#faf9f6]">
         <motion.div 
           variants={staggerContainer} 
           initial="hidden" 
@@ -585,7 +560,7 @@ export default function Home() {
             ))}
           </div>
         </motion.div>
-      </section>
+      </section>}
 
       {/* 6. İletişim / Showroom Konumları Bölümü */}
       <section id="magazalar" className="py-24 bg-[#faf9f6] overflow-hidden">

@@ -30,8 +30,12 @@ function sqlClient() {
         depth text NOT NULL DEFAULT '',
         height text NOT NULL DEFAULT '',
         images jsonb NOT NULL DEFAULT '[]'::jsonb,
+        best_seller boolean NOT NULL DEFAULT false,
+        best_seller_order integer NOT NULL DEFAULT 0,
         created_at timestamptz NOT NULL DEFAULT now()
       )`;
+      await sql`ALTER TABLE products ADD COLUMN IF NOT EXISTS best_seller boolean NOT NULL DEFAULT false`;
+      await sql`ALTER TABLE products ADD COLUMN IF NOT EXISTS best_seller_order integer NOT NULL DEFAULT 0`;
       await sql`CREATE TABLE IF NOT EXISTS orders (
         id text PRIMARY KEY,
         status text NOT NULL,
@@ -69,12 +73,12 @@ function sqlClient() {
         for (const item of SEED_PRODUCTS) {
           await sql`INSERT INTO products (
             id, slug, name, name_en, name_ar, description, description_en, description_ar,
-            price, price_amount, category_slug, category_label, tag, width, depth, height, images, created_at
+            price, price_amount, category_slug, category_label, tag, width, depth, height, images, best_seller, best_seller_order, created_at
           ) VALUES (
             ${item.id}, ${item.slug}, ${item.name}, ${item.nameEn}, ${item.nameAr},
             ${item.description}, ${item.descriptionEn}, ${item.descriptionAr},
             ${item.price}, ${item.priceAmount}, ${item.categorySlug}, ${item.categoryLabel}, ${item.tag},
-            ${item.width}, ${item.depth}, ${item.height}, ${JSON.stringify(item.images)}::jsonb, ${item.createdAt}
+            ${item.width}, ${item.depth}, ${item.height}, ${JSON.stringify(item.images)}::jsonb, ${Boolean(item.bestSeller)}, ${Number(item.bestSellerOrder || 0)}, ${item.createdAt}
           ) ON CONFLICT (id) DO NOTHING`;
         }
       }
@@ -104,6 +108,8 @@ function asProduct(row: Record<string, unknown>): Product {
     depth: String(row.depth ?? ""),
     height: String(row.height ?? ""),
     images,
+    bestSeller: row.best_seller === true || row.best_seller === "t" || row.best_seller === "true",
+    bestSellerOrder: Number(row.best_seller_order ?? 0),
     createdAt: new Date(String(row.created_at)).toISOString(),
   };
 }
@@ -171,12 +177,13 @@ export function createPostgresStore(): Store {
       const images = input.images.filter(Boolean);
       const rows = await sql`INSERT INTO products (
         id, slug, name, name_en, name_ar, description, description_en, description_ar,
-        price, price_amount, category_slug, category_label, tag, width, depth, height, images
+        price, price_amount, category_slug, category_label, tag, width, depth, height, images, best_seller, best_seller_order
       ) VALUES (
         ${id}, ${slug}, ${input.name}, ${input.nameEn}, ${input.nameAr},
         ${input.description}, ${input.descriptionEn}, ${input.descriptionAr},
         ${input.price}, ${input.priceAmount}, ${input.categorySlug}, ${input.categoryLabel}, ${input.tag},
-        ${input.width}, ${input.depth}, ${input.height}, ${JSON.stringify(images)}::jsonb
+        ${input.width}, ${input.depth}, ${input.height}, ${JSON.stringify(images)}::jsonb,
+        ${Boolean(input.bestSeller)}, ${Number(input.bestSellerOrder || 0)}
       ) RETURNING *`;
       return asProduct(rows[0] as Record<string, unknown>);
     },
@@ -191,7 +198,8 @@ export function createPostgresStore(): Store {
         description = ${input.description}, description_en = ${input.descriptionEn}, description_ar = ${input.descriptionAr},
         price = ${input.price}, price_amount = ${input.priceAmount}, category_slug = ${input.categorySlug},
         category_label = ${input.categoryLabel}, tag = ${input.tag}, width = ${input.width}, depth = ${input.depth},
-        height = ${input.height}, images = ${JSON.stringify(images)}::jsonb
+        height = ${input.height}, images = ${JSON.stringify(images)}::jsonb,
+        best_seller = ${Boolean(input.bestSeller)}, best_seller_order = ${Number(input.bestSellerOrder || 0)}
         WHERE id = ${id} RETURNING *`;
       return rows[0] ? asProduct(rows[0] as Record<string, unknown>) : null;
     },

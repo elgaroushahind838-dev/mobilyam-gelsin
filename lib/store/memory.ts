@@ -19,7 +19,11 @@ async function readData(): Promise<StoreData> {
     const raw = await readFile(filePath, "utf8");
     const parsed = JSON.parse(raw) as StoreData;
     return {
-      products: parsed.products ?? [],
+      products: (parsed.products ?? []).map((item) => ({
+        ...item,
+        bestSeller: Boolean(item.bestSeller),
+        bestSellerOrder: Number(item.bestSellerOrder ?? 0),
+      })),
       orders: (parsed.orders ?? []).map((item) => ({
         ...item,
         address: item.address ?? "",
