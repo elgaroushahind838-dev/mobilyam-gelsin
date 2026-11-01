@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import { useState, useEffect, type MouseEvent } from 'react';
 import Link from 'next/link';
 import { ChevronDown, Globe, Menu, X } from 'lucide-react';
@@ -50,10 +51,13 @@ export default function Navbar() {
         
         {/* Logo */}
         <div className="py-0 flex items-center"> 
-          <img 
-            src="/images/mobilyamlogo.png" 
-            alt="mobilyam"          
-           className="h-15 sm:h-20 md:h-28 lg:h-12 w-auto object-contain transition-all duration-300"
+          <Image
+            src="/images/mobilyamlogo.png"
+            alt="Mobilyam Gelsin"
+            width={220}
+            height={72}
+            priority
+            className="h-12 w-auto object-contain sm:h-16 lg:h-12"
           />
         </div>
 

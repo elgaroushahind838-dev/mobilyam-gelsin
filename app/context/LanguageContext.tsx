@@ -1,5 +1,6 @@
 "use client";
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { usePathname, useRouter } from "next/navigation";
 
 type Language = "TR" | "EN" | "AR";
 
@@ -10,14 +11,28 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [lang, setLang] = useState<Language>("TR");
+export function LanguageProvider({ initialLang = "TR", children }: { initialLang?: Language; children: ReactNode }) {
+  const [lang, setLangState] = useState<Language>(initialLang);
+  const router = useRouter();
+  const pathname = usePathname();
 
-  // تغيير اتجاه الصفحة بناءً على اللغة
   useEffect(() => {
-    document.documentElement.dir = lang === 'AR' ? 'rtl' : 'ltr';
+    setLangState(initialLang);
+  }, [initialLang]);
+
+  useEffect(() => {
+    document.documentElement.dir = lang === "AR" ? "rtl" : "ltr";
     document.documentElement.lang = lang.toLowerCase();
   }, [lang]);
+
+  function setLang(next: Language) {
+    setLangState(next);
+    const params = new URLSearchParams(window.location.search);
+    if (next === "TR") params.delete("lang");
+    else params.set("lang", next.toLowerCase());
+    const query = params.toString();
+    router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+  }
 
   return (
     <LanguageContext.Provider value={{ lang, setLang }}>

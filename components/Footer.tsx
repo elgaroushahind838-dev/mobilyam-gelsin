@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import { type MouseEvent } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -63,10 +64,9 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 mb-16">
           
           <div className="flex flex-col max-w-sm">
-            <Link href="/" className="text-3xl font-serif text-white mb-6"> <img 
-            src="/images/mobilyamlogo.png" 
-            alt="mobilyam"         
-          /></Link>
+            <Link href="/" className="mb-6 inline-block">
+              <Image src="/images/mobilyamlogo.png" alt="Mobilyam Gelsin" width={200} height={64} className="h-14 w-auto object-contain" />
+            </Link>
             <p className="text-white/80 text-[15px] leading-relaxed">
               {t.fHakkimizda}
             </p>
@@ -99,6 +99,7 @@ export default function Footer() {
                 <Mail size={20} className="text-white/80 group-hover:text-white transition-colors" />
                 info@mobilyam-gelsin.com
               </a>
+              <p className="text-sm text-white/80">385. Sokak, Yunus Emre Mahallesi, Esenyurt, İstanbul</p>
             </div>
           </div>
 
