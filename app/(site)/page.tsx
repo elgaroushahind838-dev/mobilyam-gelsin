@@ -480,6 +480,10 @@ export default function Home() {
                         {t.detaylar}
                       </Link>
                       <button 
+                        type="button"
+                        data-track="whatsapp"
+                        data-track-product={paket.slug}
+                        data-track-section="package"
                         onClick={() => sendWhatsApp(paket.name[lang === "EN" ? "en" : lang === "AR" ? "ar" : "tr"], paket.coverImage)}
                         className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#22c55e] px-4 py-4 text-center text-[15px] font-semibold leading-none tracking-wide text-white transition-colors hover:bg-[#1ca64e] sm:py-5 sm:text-[17px]"
                       >
@@ -560,6 +564,9 @@ export default function Home() {
             {featured.map((urun, index) => (
               <motion.div variants={fadeUpItem} key={urun.slug || index}>
                 <div 
+                  data-track-card={urun.slug}
+                  data-track-impression={urun.slug}
+                  data-track-section="bestseller"
                   onClick={() => {
                     if (urun.slug) {
                       window.location.href = `/urun/${urun.slug}`;
@@ -669,6 +676,9 @@ export default function Home() {
               </p>
               
               <button 
+                type="button"
+                data-track="whatsapp"
+                data-track-section="contact"
                 onClick={() => sendWhatsApp()} 
                 className="mb-8 flex w-full items-center justify-center gap-2 rounded-2xl bg-[#22c55e] px-3 py-4 text-center text-[13px] font-bold leading-none text-white shadow-sm transition-colors hover:bg-[#1ca64e] hover:shadow-md min-[380px]:text-[14px] min-[414px]:px-4 min-[414px]:text-[15px] sm:px-6 sm:py-5 sm:text-[16px]"
               >

@@ -440,7 +440,9 @@ export default function CategoryPage() {
               >
                 {/* تم تغليف الكرت بـ Link للذهاب لصفحة التفاصيل */}
                 <Link 
-                  href={`/urun/${urun.slug}`} 
+                  href={`/urun/${urun.slug}`}
+                  data-track-impression={urun.slug}
+                  data-track-section="catalog"
                   className="bg-[#f4f1eb] rounded-[24px] overflow-hidden flex flex-col group border border-[#e8e4dc] hover:shadow-xl transition-all h-full block cursor-pointer"
                 >
                   <div className="relative w-full h-[300px] overflow-hidden">

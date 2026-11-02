@@ -244,7 +244,7 @@ export default function PackageDetailPage() {
           </div>
 
           <div className="flex flex-col bg-[#f0ece6] p-5 md:p-6 rounded-[20px] lg:col-span-5 h-auto self-start">
-            <button onClick={sendConfigToWhatsApp} className="w-full bg-transparent border border-[#2a241e] text-[#2a241e] py-3 md:py-3.5 rounded-full font-bold text-[11px] tracking-widest uppercase hover:bg-[#2a241e] hover:text-white transition-all shadow-sm">
+            <button type="button" data-track="whatsapp" data-track-product={currentPackage.slug} data-track-section="package" onClick={sendConfigToWhatsApp} className="w-full bg-transparent border border-[#2a241e] text-[#2a241e] py-3 md:py-3.5 rounded-full font-bold text-[11px] tracking-widest uppercase hover:bg-[#2a241e] hover:text-white transition-all shadow-sm">
               <Download size={14} className="inline mr-2" /> {t.cizimIndir}
             </button>
           </div>
