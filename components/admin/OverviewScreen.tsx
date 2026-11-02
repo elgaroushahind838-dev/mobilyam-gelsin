@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { adminJson } from "./client";
+import ListSkeleton from "./ListSkeleton";
 
 type Summary = {
   activeOrders: number;
@@ -18,6 +19,8 @@ export default function OverviewScreen() {
       .then(setSummary)
       .catch((err: Error) => setError(err.message));
   }, []);
+
+  if (!summary && !error) return <ListSkeleton />;
 
   const cards = [
     { label: "Aktif sipariş", value: summary ? String(summary.activeOrders) : "—" },

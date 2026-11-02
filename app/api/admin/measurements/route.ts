@@ -1,17 +1,21 @@
 import { NextResponse } from "next/server";
 import { isStore, requireAdmin } from "@/lib/admin-api";
 import { measurementFromBody } from "@/lib/records";
+import { clampPage, searchText } from "@/lib/store/paging";
 
 export const dynamic = "force-dynamic";
 
-export async function GET() {
-  const store = await requireAdmin();
+export async function GET(request: Request) {
+  const store = await requireAdmin(request);
   if (!isStore(store)) return store;
-  return NextResponse.json({ measurements: await store.listMeasurements() });
+  const url = new URL(request.url);
+  if (!url.searchParams.has("limit")) return NextResponse.json({ measurements: await store.listMeasurements() });
+  const page = await store.listMeasurementsPage({ ...clampPage(url.searchParams.get("limit"), url.searchParams.get("offset")), q: searchText(url.searchParams.get("q")) });
+  return NextResponse.json(page);
 }
 
 export async function POST(request: Request) {
-  const store = await requireAdmin();
+  const store = await requireAdmin(request);
   if (!isStore(store)) return store;
   const body = await request.json().catch(() => ({}));
   const input = measurementFromBody(body);

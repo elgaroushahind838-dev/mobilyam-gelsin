@@ -1,5 +1,5 @@
 import { neon } from "@neondatabase/serverless";
-import { slugify } from "../format";
+import { monthKeyIstanbul, slugify } from "../format";
 import { SEED_PACKAGES } from "../seed-packages";
 import { inferSubtype, SEED_SUBTYPES } from "../subtypes";
 import { SEED_PRODUCTS } from "../seed-products";
@@ -80,6 +80,12 @@ function sqlClient() {
         content jsonb NOT NULL,
         created_at timestamptz NOT NULL DEFAULT now()
       )`;
+      await sql`CREATE INDEX IF NOT EXISTS orders_status_created_idx ON orders (status, created_at DESC)`;
+      await sql`CREATE INDEX IF NOT EXISTS orders_completed_at_idx ON orders (status, completed_at)`;
+      await sql`CREATE INDEX IF NOT EXISTS measurements_status_at_idx ON measurements (status, appointment_at)`;
+      await sql`CREATE INDEX IF NOT EXISTS products_created_idx ON products (created_at DESC)`;
+      await sql`CREATE INDEX IF NOT EXISTS products_category_idx ON products (category_slug)`;
+      await sql`CREATE INDEX IF NOT EXISTS packages_order_idx ON wedding_packages (display_order, created_at)`;
       await sql`CREATE TABLE IF NOT EXISTS product_subtypes (
         id text PRIMARY KEY,
         room_slug text NOT NULL,
@@ -90,6 +96,7 @@ function sqlClient() {
         display_order integer NOT NULL DEFAULT 0,
         UNIQUE (room_slug, slug)
       )`;
+      await sql`CREATE INDEX IF NOT EXISTS subtypes_room_order_idx ON product_subtypes (room_slug, display_order)`;
       for (const item of SEED_SUBTYPES) {
         await sql`INSERT INTO product_subtypes (id, room_slug, slug, label_tr, label_en, label_ar, display_order)
           VALUES (${item.id}, ${item.roomSlug}, ${item.slug}, ${item.label.tr}, ${item.label.en}, ${item.label.ar}, ${item.displayOrder})
@@ -245,6 +252,18 @@ export function createPostgresStore(): Store {
       const rows = await sql`SELECT * FROM products ORDER BY created_at DESC`;
       return rows.map((row) => asProduct(row as Record<string, unknown>));
     },
+    async listProductsPage({ limit, offset, q }) {
+      const sql = await sqlClient();
+      const like = `%${q}%`;
+      const [rows, count] = await Promise.all([
+        sql`SELECT * FROM products
+          WHERE (${q} = '' OR name ILIKE ${like} OR category_label ILIKE ${like} OR tag ILIKE ${like})
+          ORDER BY created_at DESC LIMIT ${limit} OFFSET ${offset}`,
+        sql`SELECT COUNT(*)::int AS count FROM products
+          WHERE (${q} = '' OR name ILIKE ${like} OR category_label ILIKE ${like} OR tag ILIKE ${like})`,
+      ]);
+      return { products: rows.map((row) => asProduct(row as Record<string, unknown>)), total: Number(count[0]?.count ?? 0) };
+    },
     async getProduct(idOrSlug) {
       const sql = await sqlClient();
       const rows = await sql`SELECT * FROM products WHERE id = ${idOrSlug} OR slug = ${idOrSlug} LIMIT 1`;
@@ -292,6 +311,20 @@ export function createPostgresStore(): Store {
       const sql = await sqlClient();
       const rows = await sql`SELECT * FROM orders ORDER BY created_at DESC`;
       return rows.map((row) => asOrder(row as Record<string, unknown>));
+    },
+    async listOrdersPage({ limit, offset, q, status }) {
+      const sql = await sqlClient();
+      const like = `%${q}%`;
+      const [rows, count] = await Promise.all([
+        sql`SELECT * FROM orders
+          WHERE (${status ?? null}::text IS NULL OR status = ${status ?? null})
+          AND (${q} = '' OR customer_name ILIKE ${like} OR phone ILIKE ${like} OR product ILIKE ${like})
+          ORDER BY created_at DESC LIMIT ${limit} OFFSET ${offset}`,
+        sql`SELECT COUNT(*)::int AS count FROM orders
+          WHERE (${status ?? null}::text IS NULL OR status = ${status ?? null})
+          AND (${q} = '' OR customer_name ILIKE ${like} OR phone ILIKE ${like} OR product ILIKE ${like})`,
+      ]);
+      return { orders: rows.map((row) => asOrder(row as Record<string, unknown>)), total: Number(count[0]?.count ?? 0) };
     },
     async createOrder(input: OrderInput) {
       const sql = await sqlClient();
@@ -417,6 +450,36 @@ export function createPostgresStore(): Store {
       const sql = await sqlClient();
       const rows = await sql`SELECT * FROM measurements ORDER BY appointment_at ASC`;
       return rows.map((row) => asMeasurement(row as Record<string, unknown>));
+    },
+    async listMeasurementsPage({ limit, offset, q }) {
+      const sql = await sqlClient();
+      const like = `%${q}%`;
+      const [rows, count] = await Promise.all([
+        sql`SELECT * FROM measurements
+          WHERE status <> 'done' AND status <> 'cancelled'
+          AND (${q} = '' OR customer_name ILIKE ${like} OR phone ILIKE ${like} OR address ILIKE ${like} OR notes ILIKE ${like})
+          ORDER BY appointment_at ASC LIMIT ${limit} OFFSET ${offset}`,
+        sql`SELECT COUNT(*)::int AS count FROM measurements
+          WHERE status <> 'done' AND status <> 'cancelled'
+          AND (${q} = '' OR customer_name ILIKE ${like} OR phone ILIKE ${like} OR address ILIKE ${like} OR notes ILIKE ${like})`,
+      ]);
+      return { measurements: rows.map((row) => asMeasurement(row as Record<string, unknown>)), total: Number(count[0]?.count ?? 0) };
+    },
+    async dashboardSummary() {
+      const sql = await sqlClient();
+      const month = monthKeyIstanbul();
+      const [active, pending, revenue] = await Promise.all([
+        sql`SELECT COUNT(*)::int AS count FROM orders WHERE status = 'active'`,
+        sql`SELECT COUNT(*)::int AS count FROM measurements WHERE status <> 'done' AND status <> 'cancelled'`,
+        sql`SELECT COALESCE(SUM(price_amount), 0)::int AS total FROM orders
+          WHERE status = 'completed' AND completed_at IS NOT NULL
+          AND to_char(completed_at AT TIME ZONE 'Europe/Istanbul', 'YYYY-MM') = ${month}`,
+      ]);
+      return {
+        activeOrders: Number(active[0]?.count ?? 0),
+        pendingMeasurements: Number(pending[0]?.count ?? 0),
+        monthRevenue: Number(revenue[0]?.total ?? 0),
+      };
     },
     async createMeasurement(input: MeasurementInput) {
       const sql = await sqlClient();

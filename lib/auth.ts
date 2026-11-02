@@ -1,5 +1,7 @@
+import { deleteAdminSession, saveAdminSession, sessionIsActive } from "./security-store";
+
 const COOKIE = "mg_admin";
-const MAX_AGE_SECONDS = 60 * 60 * 24 * 14;
+const MAX_AGE_SECONDS = 60 * 60 * 24 * 30;
 
 export function adminCookieName() {
   return COOKIE;
@@ -17,36 +19,63 @@ function bytesToBase64Url(bytes: ArrayBuffer): string {
 }
 
 async function hmac(value: string, secret: string): Promise<string> {
-  const key = await crypto.subtle.importKey(
-    "raw",
-    new TextEncoder().encode(secret),
-    { name: "HMAC", hash: "SHA-256" },
-    false,
-    ["sign"],
-  );
+  const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
   const signature = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(value));
   return bytesToBase64Url(signature);
 }
 
+function signaturesMatch(expected: string, actual: string): boolean {
+  if (expected.length !== actual.length) return false;
+  let mismatch = 0;
+  for (let i = 0; i < expected.length; i += 1) mismatch |= expected.charCodeAt(i) ^ actual.charCodeAt(i);
+  return mismatch === 0;
+}
+
+type VerifiedToken = { kind: "legacy"; exp: number } | { kind: "session"; id: string; exp: number };
+
+async function readVerified(token: string | undefined | null): Promise<VerifiedToken | null> {
+  const secret = sessionSecret();
+  if (!token || !secret) return null;
+  const parts = token.split(".");
+  if (parts.length === 2) {
+    const [payload, signature] = parts;
+    if (!payload || !signature) return null;
+    const expected = await hmac(payload, secret);
+    if (!signaturesMatch(expected, signature)) return null;
+    const exp = Number(payload);
+    if (!Number.isFinite(exp) || exp <= Date.now()) return null;
+    return { kind: "legacy", exp };
+  }
+  if (parts.length !== 3) return null;
+  const [id, expText, signature] = parts;
+  if (!id || !expText || !signature || !/^[a-f0-9]{32}$/.test(id)) return null;
+  const expected = await hmac(`${id}.${expText}`, secret);
+  if (!signaturesMatch(expected, signature)) return null;
+  const exp = Number(expText);
+  if (!Number.isFinite(exp) || exp <= Date.now()) return null;
+  return { kind: "session", id, exp };
+}
+
 export async function createSessionToken(): Promise<string> {
   const exp = Date.now() + MAX_AGE_SECONDS * 1000;
-  const payload = String(exp);
-  const signature = await hmac(payload, sessionSecret());
+  const secret = sessionSecret();
+  const id = crypto.randomUUID().replace(/-/g, "");
+  const saved = await saveAdminSession(id, exp);
+  const payload = saved ? `${id}.${exp}` : String(exp);
+  const signature = await hmac(payload, secret);
   return `${payload}.${signature}`;
 }
 
 export async function verifySessionToken(token: string | undefined | null): Promise<boolean> {
-  const secret = sessionSecret();
-  if (!token || !secret) return false;
-  const [payload, signature] = token.split(".");
-  if (!payload || !signature) return false;
-  const expected = await hmac(payload, secret);
-  if (expected.length !== signature.length) return false;
-  let mismatch = 0;
-  for (let i = 0; i < expected.length; i += 1) mismatch |= expected.charCodeAt(i) ^ signature.charCodeAt(i);
-  if (mismatch !== 0) return false;
-  const exp = Number(payload);
-  return Number.isFinite(exp) && exp > Date.now();
+  const parsed = await readVerified(token);
+  if (!parsed) return false;
+  if (parsed.kind === "legacy") return true;
+  return sessionIsActive(parsed.id);
+}
+
+export async function revokeSessionToken(token: string | undefined | null): Promise<void> {
+  const parsed = await readVerified(token);
+  if (parsed?.kind === "session") await deleteAdminSession(parsed.id);
 }
 
 export function sessionCookieOptions() {

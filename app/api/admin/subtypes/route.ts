@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { isStore, requireAdmin } from "@/lib/admin-api";
 import { slugify } from "@/lib/format";
+import { schemaError, subtypeSchema } from "@/lib/schemas";
 import type { L10n } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -13,16 +14,18 @@ function labelFrom(body: Record<string, unknown>): L10n | string {
 }
 
 export async function GET(request: Request) {
-  const store = await requireAdmin();
+  const store = await requireAdmin(request);
   if (!isStore(store)) return store;
   const room = new URL(request.url).searchParams.get("room") || undefined;
   return NextResponse.json({ subtypes: await store.listSubtypes(room) });
 }
 
 export async function POST(request: Request) {
-  const store = await requireAdmin();
+  const store = await requireAdmin(request);
   if (!isStore(store)) return store;
   const body = await request.json().catch(() => ({}));
+  const invalid = schemaError(subtypeSchema, body);
+  if (invalid) return NextResponse.json({ error: invalid }, { status: 400 });
   const label = labelFrom(body);
   if (typeof label === "string") return NextResponse.json({ error: label }, { status: 400 });
   const roomSlug = String(body.roomSlug ?? "").trim();

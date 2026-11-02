@@ -1,6 +1,7 @@
 import { mkdir, readFile, writeFile } from "fs/promises";
 import path from "path";
-import { slugify } from "../format";
+import { monthKeyIstanbul, slugify } from "../format";
+import { matchesQuery } from "./paging";
 import { SEED_PACKAGES } from "../seed-packages";
 import { inferSubtype, SEED_SUBTYPES } from "../subtypes";
 import { SEED_PRODUCTS } from "../seed-products";
@@ -69,6 +70,10 @@ export function createFileStore(): Store {
       const data = await readData();
       return [...data.products].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
     },
+    async listProductsPage({ limit, offset, q }) {
+      const products = (await this.listProducts()).filter((item) => matchesQuery(`${item.name} ${item.categoryLabel} ${item.tag}`, q));
+      return { products: products.slice(offset, offset + limit), total: products.length };
+    },
     async getProduct(idOrSlug) {
       const data = await readData();
       return data.products.find((item) => item.id === idOrSlug || item.slug === idOrSlug) ?? null;
@@ -119,6 +124,10 @@ export function createFileStore(): Store {
     async listOrders() {
       const data = await readData();
       return [...data.orders].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+    },
+    async listOrdersPage({ limit, offset, q, status }) {
+      const orders = (await this.listOrders()).filter((item) => (!status || item.status === status) && matchesQuery(`${item.customerName} ${item.phone} ${item.product}`, q));
+      return { orders: orders.slice(offset, offset + limit), total: orders.length };
     },
     async createOrder(input: OrderInput) {
       return withLock(async () => {
@@ -270,6 +279,24 @@ export function createFileStore(): Store {
     async listMeasurements() {
       const data = await readData();
       return [...data.measurements].sort((a, b) => a.appointmentAt.localeCompare(b.appointmentAt));
+    },
+    async listMeasurementsPage({ limit, offset, q }) {
+      const measurements = (await this.listMeasurements()).filter(
+        (item) => item.status !== "done" && item.status !== "cancelled" && matchesQuery(`${item.customerName} ${item.phone} ${item.address} ${item.notes}`, q),
+      );
+      return { measurements: measurements.slice(offset, offset + limit), total: measurements.length };
+    },
+    async dashboardSummary() {
+      const data = await readData();
+      const month = monthKeyIstanbul();
+      const monthRevenue = data.orders
+        .filter((order) => order.status === "completed" && order.completedAt && monthKeyIstanbul(new Date(order.completedAt)) === month)
+        .reduce((sum, order) => sum + order.priceAmount, 0);
+      return {
+        activeOrders: data.orders.filter((order) => order.status === "active").length,
+        pendingMeasurements: data.measurements.filter((item) => item.status !== "done" && item.status !== "cancelled").length,
+        monthRevenue,
+      };
     },
     async createMeasurement(input: MeasurementInput) {
       return withLock(async () => {
