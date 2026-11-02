@@ -1,5 +1,6 @@
-import { parsePriceAmount } from "./format";
+import { parsePriceAmount, slugify } from "./format";
 import { CATEGORIES } from "./types";
+import type { L10n, WeddingPackage } from "./types";
 import type { MeasurementInput, OrderInput, ProductInput } from "./store/types";
 
 export function orderFromBody(body: Record<string, unknown>, fallbackDate: string): OrderInput | string {
@@ -32,6 +33,70 @@ export function measurementFromBody(body: Record<string, unknown>): MeasurementI
   return { customerName, phone, address, appointmentAt: date.toISOString(), notes };
 }
 
+function l10n(value: unknown, fallback = ""): L10n {
+  const record = value && typeof value === "object" ? (value as Record<string, unknown>) : {};
+  return {
+    tr: String(record.tr ?? fallback).trim(),
+    en: String(record.en ?? record.tr ?? fallback).trim(),
+    ar: String(record.ar ?? record.tr ?? fallback).trim(),
+  };
+}
+
+function l10nList(value: unknown): L10n[] {
+  if (!Array.isArray(value)) return [];
+  return value.map((item) => l10n(item)).filter((item) => item.tr || item.en || item.ar);
+}
+
+function colorList(value: unknown): { color: string; name: L10n }[] {
+  if (!Array.isArray(value)) return [];
+  return value
+    .map((item) => {
+      const record = item && typeof item === "object" ? (item as Record<string, unknown>) : {};
+      return { color: String(record.color ?? "#8c7f73"), name: l10n(record.name, "Renk") };
+    })
+    .filter((item) => item.name.tr || item.name.en || item.name.ar);
+}
+
+function imageList(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  return value.map((item) => String(item ?? "").trim()).filter(Boolean);
+}
+
+export function packageFromBody(body: Record<string, unknown>): Omit<WeddingPackage, "id" | "createdAt"> | string {
+  const name = l10n(body.name);
+  if (!name.tr) return "Türkçe paket adı gerekli.";
+  const images = body.images && typeof body.images === "object" ? (body.images as Record<string, unknown>) : {};
+  const bed = imageList(images.bed);
+  const sofa = imageList(images.sofa);
+  const dining = imageList(images.dining);
+  const coverImage = String(body.coverImage ?? bed[0] ?? sofa[0] ?? dining[0] ?? "").trim();
+  if (!coverImage || !bed.length || !sofa.length || !dining.length) return "Kapak ve üç bölüm için en az bir görsel gerekli.";
+  return {
+    slug: slugify(String(body.slug ?? name.tr)),
+    active: body.active !== false,
+    displayOrder: Number.isFinite(Number(body.displayOrder)) ? Number(body.displayOrder) : 0,
+    cardLine1: l10n(body.cardLine1, name.tr),
+    cardLine2: l10n(body.cardLine2, "Paket"),
+    name,
+    description: l10n(body.description),
+    bedroomTitle: l10n(body.bedroomTitle, "Yatak Odası Takımı"),
+    bedroomDescription: l10n(body.bedroomDescription),
+    livingTitle: l10n(body.livingTitle, "Oturma Grubu"),
+    livingDescription: l10n(body.livingDescription),
+    diningTitle: l10n(body.diningTitle, "Yemek Odası"),
+    diningDescription: l10n(body.diningDescription),
+    included: l10nList(body.included),
+    tabletop: l10n(body.tabletop),
+    chairs: l10n(body.chairs),
+    expert: l10n(body.expert),
+    fabrics: l10nList(body.fabrics),
+    woods: colorList(body.woods),
+    sofaColors: colorList(body.sofaColors),
+    coverImage,
+    images: { bed, sofa, dining },
+  };
+}
+
 export function productFromBody(
   body: Record<string, unknown>,
   existing?: {
@@ -43,6 +108,7 @@ export function productFromBody(
     height?: string;
     bestSeller?: boolean;
     bestSellerOrder?: number;
+    subtypeSlug?: string | null;
   },
 ): ProductInput | string {
   const name = String(body.name ?? "").trim();
@@ -51,9 +117,15 @@ export function productFromBody(
   const category = CATEGORIES.find((item) => item.slug === categorySlug);
   if (!name || !description || !category) return "Ad, açıklama ve koleksiyon gerekli.";
   const existingImages = existing?.images ?? [];
+  const postedImages = Array.isArray(body.images) ? body.images.map((item) => String(item ?? "").trim()).filter(Boolean) : [];
   const imageUrl = String(body.imageUrl ?? "").trim();
-  const images = imageUrl ? [imageUrl, ...existingImages.filter((item) => item !== imageUrl)] : existingImages;
-  if (!images.filter(Boolean).length) return "Bir ürün fotoğrafı yükleyin veya görsel adresi yazın.";
+  const images = postedImages.length
+    ? postedImages
+    : imageUrl
+      ? [imageUrl, ...existingImages.filter((item) => item !== imageUrl)]
+      : existingImages;
+  if (!images.filter(Boolean).length) return "En az bir ürün fotoğrafı yükleyin.";
+  const subtypeSlug = body.subtypeSlug === null || body.subtypeSlug === "" ? null : String(body.subtypeSlug ?? existing?.subtypeSlug ?? "").trim() || null;
   return {
     name,
     nameEn: String(body.nameEn ?? name),
@@ -66,6 +138,7 @@ export function productFromBody(
     categorySlug: category.slug,
     categoryLabel: category.label,
     tag: String(body.tag ?? category.label).trim() || category.label,
+    subtypeSlug,
     width: existing?.width ?? "",
     depth: existing?.depth ?? "",
     height: existing?.height ?? "",

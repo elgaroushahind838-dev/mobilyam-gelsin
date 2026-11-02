@@ -1,8 +1,10 @@
 import { mkdir, readFile, writeFile } from "fs/promises";
 import path from "path";
 import { slugify } from "../format";
+import { SEED_PACKAGES } from "../seed-packages";
+import { inferSubtype, SEED_SUBTYPES } from "../subtypes";
 import { SEED_PRODUCTS } from "../seed-products";
-import type { Measurement, Order, Product, StoreData } from "../types";
+import type { Measurement, Order, Product, ProductSubtype, StoreData, WeddingPackage } from "../types";
 import type { MeasurementInput, OrderInput, ProductInput, Store } from "./types";
 
 const filePath = path.join(process.cwd(), "data", "local-store.json");
@@ -21,9 +23,12 @@ async function readData(): Promise<StoreData> {
     return {
       products: (parsed.products ?? []).map((item) => ({
         ...item,
+        images: Array.isArray(item.images) ? item.images : [],
+        subtypeSlug: item.subtypeSlug === undefined ? inferSubtype(item.categorySlug, item.tag) : item.subtypeSlug,
         bestSeller: Boolean(item.bestSeller),
         bestSellerOrder: Number(item.bestSellerOrder ?? 0),
       })),
+      subtypes: parsed.subtypes ?? SEED_SUBTYPES.map((item) => ({ ...item })),
       orders: (parsed.orders ?? []).map((item) => ({
         ...item,
         address: item.address ?? "",
@@ -34,9 +39,10 @@ async function readData(): Promise<StoreData> {
         appointmentAt: item.appointmentAt,
         status: item.status === "done" || item.status === "cancelled" ? item.status : "scheduled",
       })),
+      packages: parsed.packages ?? SEED_PACKAGES.map((item) => ({ ...item })),
     };
   } catch {
-    const seeded: StoreData = { products: SEED_PRODUCTS, orders: [], measurements: [] };
+    const seeded: StoreData = { products: SEED_PRODUCTS, orders: [], measurements: [], packages: SEED_PACKAGES, subtypes: SEED_SUBTYPES };
     await writeData(seeded);
     return seeded;
   }
@@ -165,6 +171,100 @@ export function createFileStore(): Store {
         data.orders = data.orders.filter((item) => item.id !== id);
         await writeData(data);
         return data.orders.length < before;
+      });
+    },
+    async listSubtypes(roomSlug) {
+      const data = await readData();
+      return (data.subtypes ?? []).filter((item) => !roomSlug || item.roomSlug === roomSlug).sort((a, b) => a.displayOrder - b.displayOrder);
+    },
+    async createSubtype(input) {
+      return withLock(async () => {
+        const data = await readData();
+        const subtypes = data.subtypes ?? [];
+        const item: ProductSubtype = { ...input, id: crypto.randomUUID() };
+        data.subtypes = [...subtypes, item];
+        await writeData(data);
+        return item;
+      });
+    },
+    async updateSubtype(id, input) {
+      return withLock(async () => {
+        const data = await readData();
+        const subtypes = data.subtypes ?? [];
+        const index = subtypes.findIndex((item) => item.id === id);
+        if (index < 0) return null;
+        subtypes[index] = { ...subtypes[index], ...input, id };
+        data.subtypes = subtypes;
+        await writeData(data);
+        return subtypes[index];
+      });
+    },
+    async deleteSubtype(id) {
+      return withLock(async () => {
+        const data = await readData();
+        const subtypes = data.subtypes ?? [];
+        const target = subtypes.find((item) => item.id === id);
+        if (!target) return false;
+        data.subtypes = subtypes.filter((item) => item.id !== id);
+        data.products = data.products.map((item) => item.subtypeSlug === target.slug && item.categorySlug === target.roomSlug ? { ...item, subtypeSlug: null } : item);
+        await writeData(data);
+        return true;
+      });
+    },
+    async listPackages() {
+      const data = await readData();
+      return [...(data.packages ?? [])].sort((a, b) => a.displayOrder - b.displayOrder || a.name.tr.localeCompare(b.name.tr, "tr"));
+    },
+    async getPackage(idOrSlug) {
+      const data = await readData();
+      return (data.packages ?? []).find((item) => item.id === idOrSlug || item.slug === idOrSlug) ?? null;
+    },
+    async createPackage(input) {
+      return withLock(async () => {
+        const data = await readData();
+        const packages = data.packages ?? [];
+        const base = input.slug || slugify(input.name.tr || "paket");
+        let slug = base;
+        let n = 2;
+        while (packages.some((item) => item.slug === slug)) {
+          slug = `${base}-${n}`;
+          n += 1;
+        }
+        const item: WeddingPackage = { ...input, slug, id: crypto.randomUUID(), createdAt: new Date().toISOString() };
+        data.packages = [...packages, item];
+        await writeData(data);
+        return item;
+      });
+    },
+    async updatePackage(id, input) {
+      return withLock(async () => {
+        const data = await readData();
+        const packages = data.packages ?? [];
+        const index = packages.findIndex((item) => item.id === id);
+        if (index < 0) return null;
+        const current = packages[index];
+        let slug = input.slug || current.slug;
+        let n = 2;
+        while (packages.some((item) => item.slug === slug && item.id !== id)) {
+          slug = `${input.slug || current.slug}-${n}`;
+          n += 1;
+        }
+        const next: WeddingPackage = { ...current, ...input, slug, id: current.id, createdAt: current.createdAt };
+        packages[index] = next;
+        data.packages = packages;
+        await writeData(data);
+        return next;
+      });
+    },
+    async deletePackage(id) {
+      return withLock(async () => {
+        const data = await readData();
+        const packages = data.packages ?? [];
+        const next = packages.filter((item) => item.id !== id);
+        if (next.length === packages.length) return false;
+        data.packages = next;
+        await writeData(data);
+        return true;
       });
     },
     async listMeasurements() {

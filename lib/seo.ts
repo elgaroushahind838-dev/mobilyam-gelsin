@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { SEED_PRODUCTS } from "./seed-products";
 import { absoluteUrl, NAP, pageCopy, seoLang, SITE_URL, type SeoLang } from "./seo-copy";
+import { subtypeSeo } from "./subtypes";
 import { getStore } from "./store";
 import { CATEGORY_COPY } from "./types";
 
@@ -12,21 +13,31 @@ export async function catalogProducts() {
   }
 }
 
-export async function metadataFor(pathname: string, langValue: string | null): Promise<Metadata> {
+export async function metadataFor(pathname: string, langValue: string | null, subtype = ""): Promise<Metadata> {
   const lang = seoLang(langValue);
   const product = await productFromPath(pathname);
-  const copy = pageCopy(pathname, lang, product?.name, product?.description);
-  const canonical = absoluteUrl(pathname || "/", lang);
+  const wedding = await packageFromPath(pathname);
+  const focused = subtype ? subtypeSeo(subtype) : null;
+  const copy = focused
+    ? focused[lang]
+    : wedding
+    ? {
+        title: `${wedding.name[lang]} | Düğün Paketi Mobilya İstanbul | Mobilyam Gelsin`,
+        description: wedding.description[lang] || wedding.bedroomDescription[lang],
+      }
+    : pageCopy(pathname, lang, product?.name, product?.description);
+  const extra = subtype ? { tur: subtype } : undefined;
+  const canonical = absoluteUrl(pathname || "/", lang, extra);
   return {
     title: copy.title,
     description: copy.description,
     alternates: {
       canonical,
       languages: {
-        tr: absoluteUrl(pathname || "/", "tr"),
-        en: absoluteUrl(pathname || "/", "en"),
-        ar: absoluteUrl(pathname || "/", "ar"),
-        "x-default": absoluteUrl(pathname || "/", "tr"),
+        tr: absoluteUrl(pathname || "/", "tr", extra),
+        en: absoluteUrl(pathname || "/", "en", extra),
+        ar: absoluteUrl(pathname || "/", "ar", extra),
+        "x-default": absoluteUrl(pathname || "/", "tr", extra),
       },
     },
     openGraph: {
@@ -74,6 +85,17 @@ export async function structuredData(pathname: string, langValue: string | null)
   const product = await productSchema(pathname);
   if (product) blocks.push(product);
   return blocks;
+}
+
+async function packageFromPath(pathname: string) {
+  const match = pathname.match(/^\/paket\/([^/]+)\/?$/);
+  if (!match) return null;
+  try {
+    const item = await getStore().getPackage(match[1]);
+    return item?.active ? item : null;
+  } catch {
+    return null;
+  }
 }
 
 async function productFromPath(pathname: string) {

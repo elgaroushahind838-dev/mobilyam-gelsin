@@ -1,4 +1,4 @@
-import type { Measurement, Order, Product } from "../types";
+import type { Measurement, Order, Product, ProductSubtype, WeddingPackage } from "../types";
 
 export type OrderInput = Omit<Order, "id" | "createdAt" | "completedAt" | "status" | "address" | "notes"> & {
   status?: Order["status"];
@@ -23,6 +23,15 @@ export interface Store {
   updateOrder(id: string, input: Partial<OrderInput> & { status?: Order["status"] }): Promise<Order | null>;
   completeOrder(id: string): Promise<Order | null>;
   deleteOrder(id: string): Promise<boolean>;
+  listSubtypes(roomSlug?: string): Promise<ProductSubtype[]>;
+  createSubtype(input: Omit<ProductSubtype, "id">): Promise<ProductSubtype>;
+  updateSubtype(id: string, input: Omit<ProductSubtype, "id">): Promise<ProductSubtype | null>;
+  deleteSubtype(id: string): Promise<boolean>;
+  listPackages(): Promise<WeddingPackage[]>;
+  getPackage(idOrSlug: string): Promise<WeddingPackage | null>;
+  createPackage(input: Omit<WeddingPackage, "id" | "createdAt">): Promise<WeddingPackage>;
+  updatePackage(id: string, input: Omit<WeddingPackage, "id" | "createdAt">): Promise<WeddingPackage | null>;
+  deletePackage(id: string): Promise<boolean>;
   listMeasurements(): Promise<Measurement[]>;
   createMeasurement(input: MeasurementInput): Promise<Measurement>;
   updateMeasurement(id: string, input: MeasurementInput): Promise<Measurement | null>;

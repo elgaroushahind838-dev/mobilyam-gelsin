@@ -6,7 +6,7 @@ import { jsonLdScript, metadataFor, structuredData } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
   const h = await headers();
-  return metadataFor(h.get("x-pathname") || "/", h.get("x-site-lang"));
+  return metadataFor(h.get("x-pathname") || "/", h.get("x-site-lang"), h.get("x-subtype") || "");
 }
 
 export default async function SiteLayout({ children }: { children: React.ReactNode }) {

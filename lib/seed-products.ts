@@ -1,3 +1,4 @@
+import { inferSubtype } from "./subtypes";
 import { CATEGORY_COPY, TAG_COPY, type Product } from "./types";
 
 const PRODUCT_COPY: Record<string, { nameEn: string; nameAr: string; descriptionEn: string; descriptionAr: string }> = {
@@ -106,7 +107,7 @@ function translated(product: Product) {
 
 const createdAt = "2024-05-01T09:00:00.000Z";
 
-function product(partial: Omit<Product, "nameEn" | "nameAr" | "descriptionEn" | "descriptionAr" | "createdAt" | "bestSeller" | "bestSellerOrder"> & Partial<Product>): Product {
+function product(partial: Omit<Product, "nameEn" | "nameAr" | "descriptionEn" | "descriptionAr" | "createdAt" | "bestSeller" | "bestSellerOrder" | "subtypeSlug"> & Partial<Product>): Product {
   return {
     nameEn: partial.name,
     nameAr: partial.name,
@@ -114,6 +115,7 @@ function product(partial: Omit<Product, "nameEn" | "nameAr" | "descriptionEn" | 
     descriptionAr: partial.description,
     bestSeller: false,
     bestSellerOrder: 0,
+    subtypeSlug: inferSubtype(partial.categorySlug, partial.tag),
     createdAt,
     ...partial,
   };
@@ -366,6 +368,7 @@ export function publicProduct(product: Product) {
     material: product.tag,
     bestSeller: Boolean(product.bestSeller),
     bestSellerOrder: Number(product.bestSellerOrder || 0),
+    subtypeSlug: product.subtypeSlug,
     date: product.createdAt.slice(0, 10),
     img: product.images[0] || "",
     images: product.images,

@@ -48,6 +48,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
               );
             })}
           </nav>
+          <Link href="/admin/urunler?sekme=paketler" className={`mt-2 rounded-xl px-3 py-2.5 text-sm font-medium ${pathname.includes("sekme=paketler") ? "bg-[#2a241e] text-white" : "hover:bg-white"}`}>Düğün Paketleri</Link>
           <button type="button" onClick={logout} className="mt-auto text-left text-sm font-medium text-[#8c7f73]">Çıkış yap</button>
         </aside>
         <main className="min-w-0 flex-1 px-4 py-5 pb-[calc(76px+env(safe-area-inset-bottom)+20px)] md:px-8 md:py-8 md:pb-10">{children}</main>

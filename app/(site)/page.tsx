@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { CheckCircle2, MessageCircle, MapPin, BadgeCheck } from 'lucide-react';
 import { motion } from 'framer-motion';
+import type { WeddingPackage } from "@/lib/types";
 
 const translations = {
   TR: {
@@ -215,6 +216,7 @@ export default function Home() {
   const { lang } = useLanguage();
   const t = translations[lang as keyof typeof translations];
   const [liveProducts, setLiveProducts] = useState<LiveProduct[] | null>(null);
+  const [packages, setPackages] = useState<WeddingPackage[] | null>(null);
 
   useEffect(() => {
     let ignore = false;
@@ -241,6 +243,19 @@ export default function Home() {
               img: product.img,
             })),
         );
+      })
+      .catch(() => undefined);
+    return () => {
+      ignore = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    let ignore = false;
+    fetch("/api/catalog/packages", { cache: "no-store" })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data) => {
+        if (!ignore && Array.isArray(data?.packages)) setPackages(data.packages);
       })
       .catch(() => undefined);
     return () => {
@@ -435,15 +450,21 @@ export default function Home() {
           </motion.h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 md:gap-10">
-            {t.paketler.map((paket, index) => (
-              <motion.div variants={fadeUpItem} key={index} className="bg-white rounded-[32px] overflow-hidden shadow-[0_4px_24px_rgba(0,0,0,0.03)] border border-[#f0ece6] flex flex-col hover:shadow-xl transition-shadow duration-500">
+            {(packages ?? t.paketler.map((paket, index) => ({
+              slug: paket.isim1.toLowerCase(),
+              cardLine1: { tr: paket.isim1, en: paket.isim1, ar: paket.isim1 },
+              cardLine2: { tr: paket.isim2, en: paket.isim2, ar: paket.isim2 },
+              coverImage: packageImages[index],
+              name: { tr: `${paket.isim1} ${paket.isim2}`, en: `${paket.isim1} ${paket.isim2}`, ar: `${paket.isim1} ${paket.isim2}` },
+            }))).map((paket) => (
+              <motion.div variants={fadeUpItem} key={paket.slug} className="bg-white rounded-[32px] overflow-hidden shadow-[0_4px_24px_rgba(0,0,0,0.03)] border border-[#f0ece6] flex flex-col hover:shadow-xl transition-shadow duration-500">
                 <div className="relative h-[380px] w-full overflow-hidden bg-[#f4f2f0]">
-                  <Image src={packageImages[index]} alt={`${paket.isim1} ${paket.isim2} — ${t.secKoleksiyonlar}`} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" />
+                  <Image src={paket.coverImage} alt={`${paket.name[lang === "EN" ? "en" : lang === "AR" ? "ar" : "tr"]} — ${t.secKoleksiyonlar}`} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" />
                 </div>
                 <div className="p-10 flex flex-col flex-grow">
                   <div className="flex justify-between items-start mb-10">
                     <h3 className="text-[36px] font-serif text-[#241a0e] leading-[1.15]">
-                      {paket.isim1}<br/>{paket.isim2}
+                      {paket.cardLine1[lang === "EN" ? "en" : lang === "AR" ? "ar" : "tr"]}<br/>{paket.cardLine2[lang === "EN" ? "en" : lang === "AR" ? "ar" : "tr"]}
                     </h3>
                     <div className="flex items-center gap-1.5 text-[#0fa153] pt-2">
                       <CheckCircle2 size={16} className="fill-[#0fa153] text-white" />
@@ -453,13 +474,13 @@ export default function Home() {
                   <div className="mt-auto">
                     <div className="flex flex-col gap-4">
                       <Link 
-                        href={`/paket/${paket.isim1.toLowerCase()}`}
+                        href={`/paket/${paket.slug}`}
                         className="w-full bg-[#241a0e] text-[#f9f8f4] py-5 rounded-2xl font-semibold text-[17px] tracking-wide hover:bg-[#382b1c] transition-colors flex items-center justify-center"
                       >
                         {t.detaylar}
                       </Link>
                       <button 
-                        onClick={() => sendWhatsApp(`${paket.isim1} ${paket.isim2}`, packageImages[index])}
+                        onClick={() => sendWhatsApp(paket.name[lang === "EN" ? "en" : lang === "AR" ? "ar" : "tr"], paket.coverImage)}
                         className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#22c55e] px-4 py-4 text-center text-[15px] font-semibold leading-none tracking-wide text-white transition-colors hover:bg-[#1ca64e] sm:py-5 sm:text-[17px]"
                       >
                         <MessageCircle size={20} className="shrink-0 fill-white" aria-hidden="true" />

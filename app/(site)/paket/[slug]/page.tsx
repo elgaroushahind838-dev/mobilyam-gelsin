@@ -1,38 +1,11 @@
 "use client";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from "next/image";
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useLanguage } from '../../../context/LanguageContext';
-import { CheckCircle2, Layers, Users, ChevronRight, Download } from 'lucide-react';
-import { motion } from 'framer-motion';
-
-const packageData = {
-  "ekonomik": {
-    name: { TR: "Ekonomik Düğün Paketi", EN: "Economic Wedding Package", AR: "باقة الزفاف الاقتصادية" },
-    images: {
-      bed: ["/images/kutu.jpeg", "https://images.unsplash.com/photo-1540518614846-7eded433c457?q=80&w=800&auto=format&fit=crop", "https://images.unsplash.com/photo-1505692952047-1a78307da8f2?q=80&w=800&auto=format&fit=crop"],
-      sofa: ["https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?q=80&w=800&auto=format&fit=crop", "https://images.unsplash.com/photo-1532453288672-3a27e9be9efd?q=80&w=800&auto=format&fit=crop", "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=800&auto=format&fit=crop"],
-      dining: ["https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=800&auto=format&fit=crop", "https://images.unsplash.com/photo-1604578762246-41134e37f9cc?q=80&w=800&auto=format&fit=crop", "https://images.unsplash.com/photo-1524758631624-e2822e304c36?q=80&w=800&auto=format&fit=crop"]
-    }
-  },
-  "standart": {
-    name: { TR: "Standart Düğün Paketi", EN: "Standard Wedding Package", AR: "باقة الزفاف القياسية" },
-    images: {
-      bed: ["https://images.unsplash.com/photo-1554995207-c18c203602cb?q=80&w=800&auto=format&fit=crop", "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?q=80&w=800&auto=format&fit=crop", "https://images.unsplash.com/photo-1505692952047-1a78307da8f2?q=80&w=800&auto=format&fit=crop"],
-      sofa: ["https://images.unsplash.com/photo-1540574163026-643ea20d25b5?q=80&w=800&auto=format&fit=crop", "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=800&auto=format&fit=crop", "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?q=80&w=800&auto=format&fit=crop"],
-      dining: ["https://images.unsplash.com/photo-1604578762246-41134e37f9cc?q=80&w=800&auto=format&fit=crop", "https://images.unsplash.com/photo-1617806118233-18e1c094f094?q=80&w=800&auto=format&fit=crop", "https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=800&auto=format&fit=crop"]
-    }
-  },
-  "premium": {
-    name: { TR: "Premium Düğün Paketi", EN: "Premium Wedding Package", AR: "باقة الزفاف البريميوم" },
-    images: {
-      bed: ["https://images.unsplash.com/photo-1505693314120-0d443867891c?q=80&w=800&auto=format&fit=crop", "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?q=80&w=800&auto=format&fit=crop", "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?q=80&w=800&auto=format&fit=crop"],
-      sofa: ["https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=800&auto=format&fit=crop", "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=800&auto=format&fit=crop", "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?q=80&w=800&auto=format&fit=crop"],
-      dining: ["https://images.unsplash.com/photo-1617806118233-18e1c094f094?q=80&w=800&auto=format&fit=crop", "https://images.unsplash.com/photo-1513506003901-1e6a229e9d15?q=80&w=800&auto=format&fit=crop", "https://images.unsplash.com/photo-1604578762246-41134e37f9cc?q=80&w=800&auto=format&fit=crop"]
-    }
-  }
-};
+import { Layers, Users, ChevronRight, Download } from 'lucide-react';
+import type { L10n, WeddingPackage } from "@/lib/types";
 
 const translations = {
   TR: {
@@ -125,9 +98,27 @@ export default function PackageDetailPage() {
   const { lang } = useLanguage();
   const t = translations[lang as keyof typeof translations];
   const params = useParams();
-  const slug = (params.slug as string) || "premium";
+  const slug = (params.slug as string) || "";
+  const locale: keyof L10n = lang === "EN" ? "en" : lang === "AR" ? "ar" : "tr";
+  const [currentPackage, setCurrentPackage] = useState<WeddingPackage | null>(null);
+  const [missing, setMissing] = useState(false);
 
-  const currentPackage = packageData[slug as keyof typeof packageData] || packageData["premium"];
+  useEffect(() => {
+    let ignore = false;
+    fetch(`/api/catalog/packages/${slug}`, { cache: "no-store" })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data) => {
+        if (ignore) return;
+        if (!data?.package) setMissing(true);
+        else setCurrentPackage(data.package);
+      })
+      .catch(() => {
+        if (!ignore) setMissing(true);
+      });
+    return () => {
+      ignore = true;
+    };
+  }, [slug]);
 
   const [selectedWood, setSelectedWood] = useState(0);
   const [selectedFabric, setSelectedFabric] = useState(1);
@@ -137,20 +128,15 @@ export default function PackageDetailPage() {
   const [sofaSlide, setSofaSlide] = useState(0);
   const [diningSlide, setDiningSlide] = useState(0);
 
-  const woodColors = ["#4a3728", "#8c7f73", "#d2b48c"];
-  const woodNamesByLang = {
-    TR: ["Koyu Ceviz", "Açık Meşe", "Doğal Ahşap"],
-    EN: ["Dark Walnut", "Light Oak", "Natural Wood"],
-    AR: ["جوز داكن", "بلوط فاتح", "خشب طبيعي"],
-  };
-  const woodNames = woodNamesByLang[lang as keyof typeof woodNamesByLang] ?? woodNamesByLang.TR;
-  const sofaColors = ["#eacbd2", "#dcdde1", "#8ba1b5", "#2d4a5a", "#fdf3d0", "#849021", "#556b2f", "#1f3b2a"];
-  const sofaColorNamesByLang = {
-    TR: ["Gül Kurusu", "Açık Gri", "Buz Mavisi", "Lacivert", "Krem", "Hardal", "Ada Çayı", "Zümrüt Yeşil"],
-    EN: ["Dusty Rose", "Light Gray", "Ice Blue", "Navy", "Cream", "Mustard", "Sage", "Emerald"],
-    AR: ["وردي ترابي", "رمادي فاتح", "أزرق ثلجي", "كحلي", "كريمي", "خردلي", "أخضر مريمية", "أخضر زمردي"],
-  };
-  const sofaColorNames = sofaColorNamesByLang[lang as keyof typeof sofaColorNamesByLang] ?? sofaColorNamesByLang.TR;
+  if (!currentPackage) {
+    return <main className="min-h-screen bg-[#faf9f6] px-6 pt-32"><h1 className="font-serif text-4xl">{missing ? "Paket bulunamadı" : "Yükleniyor"}</h1></main>;
+  }
+
+  const woodColors = currentPackage.woods.map((item) => item.color);
+  const woodNames = currentPackage.woods.map((item) => item.name[locale]);
+  const sofaColors = currentPackage.sofaColors.map((item) => item.color);
+  const sofaColorNames = currentPackage.sofaColors.map((item) => item.name[locale]);
+  const fabricNames = currentPackage.fabrics.map((item) => item[locale]);
 
   const bedImages = woodColors.map((_, idx) => {
     const base = currentPackage.images.bed;
@@ -171,7 +157,7 @@ export default function PackageDetailPage() {
 
   const sendConfigToWhatsApp = () => {
     const phoneNumber = "905514835322";
-    const text = `${t.waMesaj}\n\n📦 *${t.paketler}:* ${currentPackage.name[lang as keyof typeof currentPackage.name]}\n🛏️ *${t.bolum1Baslik}:* ${woodNames[selectedWood]} / ${t.kumaslar[selectedFabric]}\n🛋️ *${t.bolum2Baslik}:* ${sofaColorNames[selectedSofaColor]}`;
+    const text = `${t.waMesaj}\n\n📦 *${t.paketler}:* ${currentPackage.name[locale]}\n🛏️ *${currentPackage.bedroomTitle[locale]}:* ${woodNames[selectedWood] || ""} / ${fabricNames[selectedFabric] || ""}\n🛋️ *${currentPackage.livingTitle[locale]}:* ${sofaColorNames[selectedSofaColor] || ""}`;
     window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(text)}`, '_blank');
   };
 
@@ -183,9 +169,10 @@ export default function PackageDetailPage() {
         <div className="flex items-center gap-2 text-[12px] font-medium text-[#8c7f73] mb-2">
           <Link href="/" className="hover:text-[#2a241e] transition-colors">{t.anaSayfa}</Link>
           <ChevronRight size={14} className="rtl:rotate-180" />
-          <span className="text-[#2a241e] font-bold">{currentPackage.name[lang as keyof typeof currentPackage.name]}</span>
+          <span className="text-[#2a241e] font-bold">{currentPackage.name[locale]}</span>
         </div>
-        <h1 className="text-3xl md:text-5xl font-serif text-[#2a241e]">{currentPackage.name[lang as keyof typeof currentPackage.name]}</h1>
+        <h1 className="text-3xl md:text-5xl font-serif text-[#2a241e]">{currentPackage.name[locale]}</h1>
+        {currentPackage.description[locale] && currentPackage.description[locale] !== currentPackage.bedroomDescription[locale] ? <p className="mt-3 max-w-2xl text-[#52525b]">{currentPackage.description[locale]}</p> : null}
       </div>
 
       {/* BÖLÜM 01: YATAK ODASI */}
@@ -195,7 +182,7 @@ export default function PackageDetailPage() {
             <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-2" style={{ scrollbarWidth: 'none' }} onScroll={(e) => handleScroll(e, setBedSlide)}>
               {bedImages[selectedWood].map((img, idx) => (
                 <div key={idx} className="relative flex-none w-full h-[320px] md:h-[450px] snap-center rounded-[20px] overflow-hidden bg-[#e8e4dc]">
-                  <Image src={img} alt={`${currentPackage.name[lang as keyof typeof currentPackage.name]} — ${t.bolum1Baslik}`} fill sizes="(max-width: 1024px) 100vw, 60vw" className="object-cover" />
+                  <Image src={img} alt={`${currentPackage.name[locale]} — ${currentPackage.bedroomTitle[locale]}`} fill sizes="(max-width: 1024px) 100vw, 60vw" className="object-cover" />
                 </div>
               ))}
             </div>
@@ -206,8 +193,25 @@ export default function PackageDetailPage() {
 
           <div className="flex flex-col bg-[#f0ece6] p-5 md:p-7 rounded-[20px] lg:col-span-5">
             <span className="text-[10px] font-bold tracking-[0.2em] text-[#8c7f73] uppercase mb-1">{t.bolum1Tag}</span>
-            <h2 className="text-2xl md:text-3xl font-serif text-[#2a241e] mb-1.5">{t.bolum1Baslik}</h2>
-            <p className="text-[#52525b] text-[13px] leading-relaxed mb-4">{t.bolum1Aciklama}</p>
+            <h2 className="text-2xl md:text-3xl font-serif text-[#2a241e] mb-1.5">{currentPackage.bedroomTitle[locale]}</h2>
+            <p className="text-[#52525b] text-[13px] leading-relaxed mb-4">{currentPackage.bedroomDescription[locale]}</p>
+            {currentPackage.included.length > 0 && (
+              <ul className="mb-4 space-y-1 text-sm text-[#2a241e]">
+                {currentPackage.included.map((item) => <li key={item.tr}>{t.dahil}: {item[locale]}</li>)}
+              </ul>
+            )}
+            <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#8c7f73]">{t.ahsapSecenek}</p>
+            <div className="mb-4 flex flex-wrap gap-2">
+              {currentPackage.woods.map((item, index) => (
+                <button key={item.color + item.name.tr} type="button" onClick={() => setSelectedWood(index)} className={`h-8 w-8 rounded-full border ${selectedWood === index ? "ring-2 ring-[#2a241e]" : ""}`} style={{ background: item.color }} aria-label={item.name[locale]} />
+              ))}
+            </div>
+            <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#8c7f73]">{t.kumasDoku}</p>
+            <div className="flex flex-wrap gap-2">
+              {fabricNames.map((name, index) => (
+                <button key={name} type="button" onClick={() => setSelectedFabric(index)} className={`rounded-full px-3 py-1 text-xs font-semibold ${selectedFabric === index ? "bg-[#2a241e] text-white" : "bg-white text-[#2a241e]"}`}>{name}</button>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -216,8 +220,13 @@ export default function PackageDetailPage() {
       <section className="py-10 max-w-[1200px] mx-auto px-6 md:px-10 border-t border-[#e8e4dc]">
         <div className="mb-5">
           <span className="text-[10px] font-bold tracking-[0.2em] text-[#8c7f73] uppercase mb-1 block">{t.bolum2Tag}</span>
-          <h2 className="text-2xl md:text-3xl font-serif text-[#2a241e] mb-1">{t.bolum2Baslik}</h2>
-          <p className="text-[#52525b] text-[13px] max-w-lg">{t.bolum2Aciklama}</p>
+          <h2 className="text-2xl md:text-3xl font-serif text-[#2a241e] mb-1">{currentPackage.livingTitle[locale]}</h2>
+          <p className="text-[#52525b] text-[13px] max-w-lg">{currentPackage.livingDescription[locale]}</p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {currentPackage.sofaColors.map((item, index) => (
+              <button key={item.color + item.name.tr} type="button" onClick={() => setSelectedSofaColor(index)} className={`h-8 w-8 rounded-full border ${selectedSofaColor === index ? "ring-2 ring-[#2a241e]" : ""}`} style={{ background: item.color }} aria-label={item.name[locale]} />
+            ))}
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
@@ -225,7 +234,7 @@ export default function PackageDetailPage() {
             <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-2" style={{ scrollbarWidth: 'none' }} onScroll={(e) => handleScroll(e, setSofaSlide)}>
               {sofaImages[selectedSofaColor].map((img, idx) => (
                 <div key={idx} className="relative flex-none w-full h-[320px] md:h-[450px] snap-center rounded-[20px] overflow-hidden bg-[#e8e4dc]">
-                  <Image src={img} alt={`${currentPackage.name[lang as keyof typeof currentPackage.name]} — ${t.bolum2Baslik}`} fill sizes="(max-width: 1024px) 100vw, 60vw" className="object-cover" />
+                  <Image src={img} alt={`${currentPackage.name[locale]} — ${currentPackage.livingTitle[locale]}`} fill sizes="(max-width: 1024px) 100vw, 60vw" className="object-cover" />
                 </div>
               ))}
             </div>
@@ -247,17 +256,18 @@ export default function PackageDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
           <div className="flex flex-col lg:col-span-5">
             <span className="text-[10px] font-bold tracking-[0.2em] text-[#8c7f73] uppercase mb-1">{t.bolum3Tag}</span>
-            <h2 className="text-2xl md:text-3xl font-serif text-[#2a241e] mb-2">{t.bolum3Baslik}</h2>
-            <p className="text-[#52525b] text-[13px] mb-6">{t.bolum3Aciklama}</p>
+            <h2 className="text-2xl md:text-3xl font-serif text-[#2a241e] mb-2">{currentPackage.diningTitle[locale]}</h2>
+            <p className="text-[#52525b] text-[13px] mb-6">{currentPackage.diningDescription[locale]}</p>
             <div className="grid grid-cols-2 gap-3 mb-4">
-              <div className="bg-[#f0ece6] p-4 rounded-[15px]"><Layers className="text-[#8c7f73] mb-2" size={16}/><h4 className="text-[10px] font-bold text-[#2a241e] uppercase">{t.tablaSecimi}</h4><p className="text-[11px] text-[#52525b]">{t.tablaDetay}</p></div>
-              <div className="bg-[#f0ece6] p-4 rounded-[15px]"><Users className="text-[#8c7f73] mb-2" size={16}/><h4 className="text-[10px] font-bold text-[#2a241e] uppercase">{t.sandalyeAdedi}</h4><p className="text-[11px] text-[#52525b]">{t.sandalyeDetay}</p></div>
+              <div className="bg-[#f0ece6] p-4 rounded-[15px]"><Layers className="text-[#8c7f73] mb-2" size={16}/><h4 className="text-[10px] font-bold text-[#2a241e] uppercase">{t.tablaSecimi}</h4><p className="text-[11px] text-[#52525b]">{currentPackage.tabletop[locale]}</p></div>
+              <div className="bg-[#f0ece6] p-4 rounded-[15px]"><Users className="text-[#8c7f73] mb-2" size={16}/><h4 className="text-[10px] font-bold text-[#2a241e] uppercase">{t.sandalyeAdedi}</h4><p className="text-[11px] text-[#52525b]">{currentPackage.chairs[locale]}</p></div>
+              <div className="col-span-2 bg-[#f0ece6] p-4 rounded-[15px]"><h4 className="text-[10px] font-bold text-[#2a241e] uppercase">{t.uzmanDestegi}</h4><p className="text-[11px] text-[#52525b]">{currentPackage.expert[locale]}</p></div>
             </div>
           </div>
           <div className="relative lg:col-span-7">
             <div className="flex overflow-x-auto snap-x snap-mandatory gap-4" style={{ scrollbarWidth: 'none' }} onScroll={(e) => handleScroll(e, setDiningSlide)}>
               {currentPackage.images.dining.map((img, idx) => (
-                <div key={idx} className="relative flex-none w-full h-[320px] md:h-[450px] snap-center rounded-[20px] overflow-hidden bg-[#e8e4dc]"><Image src={img} alt={`${currentPackage.name[lang as keyof typeof currentPackage.name]} — ${t.bolum3Baslik}`} fill sizes="(max-width: 1024px) 100vw, 60vw" className="object-cover" /></div>
+                <div key={idx} className="relative flex-none w-full h-[320px] md:h-[450px] snap-center rounded-[20px] overflow-hidden bg-[#e8e4dc]"><Image src={img} alt={`${currentPackage.name[locale]} — ${currentPackage.diningTitle[locale]}`} fill sizes="(max-width: 1024px) 100vw, 60vw" className="object-cover" /></div>
               ))}
             </div>
             <div className="flex justify-center gap-2 mt-2">

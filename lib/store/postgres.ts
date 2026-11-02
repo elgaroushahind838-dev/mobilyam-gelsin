@@ -1,7 +1,9 @@
 import { neon } from "@neondatabase/serverless";
 import { slugify } from "../format";
+import { SEED_PACKAGES } from "../seed-packages";
+import { inferSubtype, SEED_SUBTYPES } from "../subtypes";
 import { SEED_PRODUCTS } from "../seed-products";
-import type { Measurement, Order, Product } from "../types";
+import type { Measurement, Order, Product, ProductSubtype, WeddingPackage } from "../types";
 import type { MeasurementInput, OrderInput, ProductInput, Store } from "./types";
 
 type Query = (strings: TemplateStringsArray, ...values: unknown[]) => Promise<Record<string, unknown>[]>;
@@ -30,10 +32,12 @@ function sqlClient() {
         depth text NOT NULL DEFAULT '',
         height text NOT NULL DEFAULT '',
         images jsonb NOT NULL DEFAULT '[]'::jsonb,
+        subtype_slug text,
         best_seller boolean NOT NULL DEFAULT false,
         best_seller_order integer NOT NULL DEFAULT 0,
         created_at timestamptz NOT NULL DEFAULT now()
       )`;
+      await sql`ALTER TABLE products ADD COLUMN IF NOT EXISTS subtype_slug text`;
       await sql`ALTER TABLE products ADD COLUMN IF NOT EXISTS best_seller boolean NOT NULL DEFAULT false`;
       await sql`ALTER TABLE products ADD COLUMN IF NOT EXISTS best_seller_order integer NOT NULL DEFAULT 0`;
       await sql`CREATE TABLE IF NOT EXISTS orders (
@@ -68,6 +72,43 @@ function sqlClient() {
         created_at timestamptz NOT NULL DEFAULT now()
       )`;
       await sql`ALTER TABLE measurements ADD COLUMN IF NOT EXISTS status text NOT NULL DEFAULT 'scheduled'`;
+      await sql`CREATE TABLE IF NOT EXISTS wedding_packages (
+        id text PRIMARY KEY,
+        slug text UNIQUE NOT NULL,
+        active boolean NOT NULL DEFAULT true,
+        display_order integer NOT NULL DEFAULT 0,
+        content jsonb NOT NULL,
+        created_at timestamptz NOT NULL DEFAULT now()
+      )`;
+      await sql`CREATE TABLE IF NOT EXISTS product_subtypes (
+        id text PRIMARY KEY,
+        room_slug text NOT NULL,
+        slug text NOT NULL,
+        label_tr text NOT NULL,
+        label_en text NOT NULL,
+        label_ar text NOT NULL,
+        display_order integer NOT NULL DEFAULT 0,
+        UNIQUE (room_slug, slug)
+      )`;
+      for (const item of SEED_SUBTYPES) {
+        await sql`INSERT INTO product_subtypes (id, room_slug, slug, label_tr, label_en, label_ar, display_order)
+          VALUES (${item.id}, ${item.roomSlug}, ${item.slug}, ${item.label.tr}, ${item.label.en}, ${item.label.ar}, ${item.displayOrder})
+          ON CONFLICT (room_slug, slug) DO NOTHING`;
+      }
+      const rooms = ["yatak-odasi", "genc-odasi", "ofis", "portmanto"] as const;
+      for (const room of rooms) {
+        const rows = await sql`SELECT id, tag FROM products WHERE subtype_slug IS NULL AND category_slug = ${room}`;
+        for (const row of rows) {
+          const guessed = inferSubtype(room, String(row.tag ?? ""));
+          if (guessed) await sql`UPDATE products SET subtype_slug = ${guessed} WHERE id = ${row.id} AND subtype_slug IS NULL`;
+        }
+      }
+      for (const item of SEED_PACKAGES) {
+        const content = packageContent(item);
+        await sql`INSERT INTO wedding_packages (id, slug, active, display_order, content, created_at)
+          VALUES (${item.id}, ${item.slug}, ${item.active}, ${item.displayOrder}, ${JSON.stringify(content)}::jsonb, ${item.createdAt})
+          ON CONFLICT (slug) DO NOTHING`;
+      }
       const count = await sql`SELECT COUNT(*)::int AS count FROM products`;
       if (Number(count[0]?.count ?? 0) === 0) {
         for (const item of SEED_PRODUCTS) {
@@ -82,6 +123,13 @@ function sqlClient() {
           ) ON CONFLICT (id) DO NOTHING`;
         }
       }
+      for (const room of rooms) {
+        const rows = await sql`SELECT id, tag FROM products WHERE subtype_slug IS NULL AND category_slug = ${room}`;
+        for (const row of rows) {
+          const guessed = inferSubtype(room, String(row.tag ?? ""));
+          if (guessed) await sql`UPDATE products SET subtype_slug = ${guessed} WHERE id = ${row.id} AND subtype_slug IS NULL`;
+        }
+      }
       return sql;
     })();
   }
@@ -89,7 +137,11 @@ function sqlClient() {
 }
 
 function asProduct(row: Record<string, unknown>): Product {
-  const images = Array.isArray(row.images) ? (row.images as string[]) : [];
+  const images = Array.isArray(row.images)
+    ? (row.images as string[])
+    : typeof row.images === "string" && row.images
+      ? [row.images]
+      : [];
   return {
     id: String(row.id),
     slug: String(row.slug),
@@ -104,6 +156,7 @@ function asProduct(row: Record<string, unknown>): Product {
     categorySlug: String(row.category_slug),
     categoryLabel: String(row.category_label),
     tag: String(row.tag ?? ""),
+    subtypeSlug: row.subtype_slug ? String(row.subtype_slug) : null,
     width: String(row.width ?? ""),
     depth: String(row.depth ?? ""),
     height: String(row.height ?? ""),
@@ -130,6 +183,33 @@ function asOrder(row: Record<string, unknown>): Order {
     address: String(row.address ?? ""),
     notes: String(row.notes ?? ""),
     completedAt: row.completed_at ? new Date(String(row.completed_at)).toISOString() : null,
+    createdAt: new Date(String(row.created_at)).toISOString(),
+  };
+}
+
+function packageContent(item: WeddingPackage) {
+  const { id, slug, active, displayOrder, createdAt, ...content } = item;
+  return content;
+}
+
+function asSubtype(row: Record<string, unknown>): ProductSubtype {
+  return {
+    id: String(row.id),
+    roomSlug: String(row.room_slug),
+    slug: String(row.slug),
+    label: { tr: String(row.label_tr), en: String(row.label_en), ar: String(row.label_ar) },
+    displayOrder: Number(row.display_order ?? 0),
+  };
+}
+
+function asPackage(row: Record<string, unknown>): WeddingPackage {
+  const content = (typeof row.content === "string" ? JSON.parse(row.content) : row.content) as Omit<WeddingPackage, "id" | "slug" | "active" | "displayOrder" | "createdAt">;
+  return {
+    ...content,
+    id: String(row.id),
+    slug: String(row.slug),
+    active: row.active === true || row.active === "t" || row.active === "true",
+    displayOrder: Number(row.display_order ?? 0),
     createdAt: new Date(String(row.created_at)).toISOString(),
   };
 }
@@ -177,11 +257,11 @@ export function createPostgresStore(): Store {
       const images = input.images.filter(Boolean);
       const rows = await sql`INSERT INTO products (
         id, slug, name, name_en, name_ar, description, description_en, description_ar,
-        price, price_amount, category_slug, category_label, tag, width, depth, height, images, best_seller, best_seller_order
+        price, price_amount, category_slug, category_label, tag, subtype_slug, width, depth, height, images, best_seller, best_seller_order
       ) VALUES (
         ${id}, ${slug}, ${input.name}, ${input.nameEn}, ${input.nameAr},
         ${input.description}, ${input.descriptionEn}, ${input.descriptionAr},
-        ${input.price}, ${input.priceAmount}, ${input.categorySlug}, ${input.categoryLabel}, ${input.tag},
+        ${input.price}, ${input.priceAmount}, ${input.categorySlug}, ${input.categoryLabel}, ${input.tag}, ${input.subtypeSlug},
         ${input.width}, ${input.depth}, ${input.height}, ${JSON.stringify(images)}::jsonb,
         ${Boolean(input.bestSeller)}, ${Number(input.bestSellerOrder || 0)}
       ) RETURNING *`;
@@ -197,7 +277,7 @@ export function createPostgresStore(): Store {
         slug = ${slug}, name = ${input.name}, name_en = ${input.nameEn}, name_ar = ${input.nameAr},
         description = ${input.description}, description_en = ${input.descriptionEn}, description_ar = ${input.descriptionAr},
         price = ${input.price}, price_amount = ${input.priceAmount}, category_slug = ${input.categorySlug},
-        category_label = ${input.categoryLabel}, tag = ${input.tag}, width = ${input.width}, depth = ${input.depth},
+        category_label = ${input.categoryLabel}, tag = ${input.tag}, subtype_slug = ${input.subtypeSlug}, width = ${input.width}, depth = ${input.depth},
         height = ${input.height}, images = ${JSON.stringify(images)}::jsonb,
         best_seller = ${Boolean(input.bestSeller)}, best_seller_order = ${Number(input.bestSellerOrder || 0)}
         WHERE id = ${id} RETURNING *`;
@@ -248,6 +328,89 @@ export function createPostgresStore(): Store {
     async deleteOrder(id) {
       const sql = await sqlClient();
       const rows = await sql`DELETE FROM orders WHERE id = ${id} RETURNING id`;
+      return rows.length > 0;
+    },
+    async listSubtypes(roomSlug) {
+      const sql = await sqlClient();
+      const rows = roomSlug
+        ? await sql`SELECT * FROM product_subtypes WHERE room_slug = ${roomSlug} ORDER BY display_order ASC`
+        : await sql`SELECT * FROM product_subtypes ORDER BY room_slug ASC, display_order ASC`;
+      return rows.map((row) => asSubtype(row as Record<string, unknown>));
+    },
+    async createSubtype(input) {
+      const sql = await sqlClient();
+      const id = crypto.randomUUID();
+      const rows = await sql`INSERT INTO product_subtypes (id, room_slug, slug, label_tr, label_en, label_ar, display_order)
+        VALUES (${id}, ${input.roomSlug}, ${input.slug}, ${input.label.tr}, ${input.label.en}, ${input.label.ar}, ${input.displayOrder})
+        RETURNING *`;
+      return asSubtype(rows[0] as Record<string, unknown>);
+    },
+    async updateSubtype(id, input) {
+      const sql = await sqlClient();
+      const rows = await sql`UPDATE product_subtypes SET
+        room_slug = ${input.roomSlug}, slug = ${input.slug}, label_tr = ${input.label.tr}, label_en = ${input.label.en},
+        label_ar = ${input.label.ar}, display_order = ${input.displayOrder}
+        WHERE id = ${id} RETURNING *`;
+      return rows[0] ? asSubtype(rows[0] as Record<string, unknown>) : null;
+    },
+    async deleteSubtype(id) {
+      const sql = await sqlClient();
+      const current = await sql`SELECT room_slug, slug FROM product_subtypes WHERE id = ${id} LIMIT 1`;
+      if (!current[0]) return false;
+      await sql`UPDATE products SET subtype_slug = NULL WHERE category_slug = ${current[0].room_slug} AND subtype_slug = ${current[0].slug}`;
+      const rows = await sql`DELETE FROM product_subtypes WHERE id = ${id} RETURNING id`;
+      return rows.length > 0;
+    },
+    async listPackages() {
+      const sql = await sqlClient();
+      const rows = await sql`SELECT * FROM wedding_packages ORDER BY display_order ASC, created_at ASC`;
+      return rows.map((row) => asPackage(row as Record<string, unknown>));
+    },
+    async getPackage(idOrSlug) {
+      const sql = await sqlClient();
+      const rows = await sql`SELECT * FROM wedding_packages WHERE id = ${idOrSlug} OR slug = ${idOrSlug} LIMIT 1`;
+      return rows[0] ? asPackage(rows[0] as Record<string, unknown>) : null;
+    },
+    async createPackage(input) {
+      const sql = await sqlClient();
+      const id = crypto.randomUUID();
+      let slug = input.slug || slugify(input.name.tr || "paket");
+      let n = 2;
+      for (;;) {
+        const existing = await sql`SELECT id FROM wedding_packages WHERE slug = ${slug} LIMIT 1`;
+        if (!existing[0]) break;
+        slug = `${input.slug || slugify(input.name.tr || "paket")}-${n}`;
+        n += 1;
+      }
+      const item: WeddingPackage = { ...input, id, slug, createdAt: new Date().toISOString() };
+      const rows = await sql`INSERT INTO wedding_packages (id, slug, active, display_order, content)
+        VALUES (${item.id}, ${item.slug}, ${item.active}, ${item.displayOrder}, ${JSON.stringify(packageContent(item))}::jsonb)
+        RETURNING *`;
+      return asPackage(rows[0] as Record<string, unknown>);
+    },
+    async updatePackage(id, input) {
+      const sql = await sqlClient();
+      const currentRows = await sql`SELECT * FROM wedding_packages WHERE id = ${id} LIMIT 1`;
+      if (!currentRows[0]) return null;
+      const current = asPackage(currentRows[0] as Record<string, unknown>);
+      let slug = input.slug || current.slug;
+      let n = 2;
+      for (;;) {
+        const existing = await sql`SELECT id FROM wedding_packages WHERE slug = ${slug} AND id <> ${id} LIMIT 1`;
+        if (!existing[0]) break;
+        slug = `${input.slug || current.slug}-${n}`;
+        n += 1;
+      }
+      const next: WeddingPackage = { ...current, ...input, id, slug, createdAt: current.createdAt };
+      const rows = await sql`UPDATE wedding_packages SET
+        slug = ${next.slug}, active = ${next.active}, display_order = ${next.displayOrder},
+        content = ${JSON.stringify(packageContent(next))}::jsonb
+        WHERE id = ${id} RETURNING *`;
+      return rows[0] ? asPackage(rows[0] as Record<string, unknown>) : null;
+    },
+    async deletePackage(id) {
+      const sql = await sqlClient();
+      const rows = await sql`DELETE FROM wedding_packages WHERE id = ${id} RETURNING id`;
       return rows.length > 0;
     },
     async listMeasurements() {
