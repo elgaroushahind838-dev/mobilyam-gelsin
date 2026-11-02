@@ -2,15 +2,16 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Archive, ClipboardList, LayoutDashboard, Ruler, Sofa } from "lucide-react";
+import { Archive, BarChart3, ClipboardList, LayoutDashboard, Ruler, Sofa } from "lucide-react";
 import { adminJson } from "./client";
 
 const links = [
-  { href: "/admin/", label: "Özet", icon: LayoutDashboard },
-  { href: "/admin/aktif", label: "Aktif", icon: ClipboardList },
-  { href: "/admin/olcu", label: "Ölçü", icon: Ruler },
-  { href: "/admin/arsiv", label: "Arşiv", icon: Archive },
-  { href: "/admin/urunler", label: "Ürünler", icon: Sofa },
+  { href: "/admin/", label: "Özet", short: "Özet", icon: LayoutDashboard },
+  { href: "/admin/aktif", label: "Aktif", short: "Aktif", icon: ClipboardList },
+  { href: "/admin/olcu", label: "Ölçü", short: "Ölçü", icon: Ruler },
+  { href: "/admin/arsiv", label: "Arşiv", short: "Arşiv", icon: Archive },
+  { href: "/admin/urunler", label: "Ürünler", short: "Ürünler", icon: Sofa },
+  { href: "/admin/istatistik", label: "İstatistikler", short: "İstatistik", icon: BarChart3 },
 ];
 
 function isCurrent(pathname: string, href: string) {
@@ -54,7 +55,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
         <main className="min-w-0 flex-1 px-4 py-5 pb-[calc(76px+env(safe-area-inset-bottom)+20px)] md:px-8 md:py-8 md:pb-10">{children}</main>
       </div>
       <nav aria-label="Bölümler" className="fixed inset-x-0 bottom-0 z-20 border-t border-[#efeae3] bg-white pb-[env(safe-area-inset-bottom)] md:hidden">
-        <div className="grid h-[76px] grid-cols-5">
+        <div className="grid h-[76px] grid-cols-6">
           {links.map((link) => {
             const active = isCurrent(pathname, link.href);
             const Icon = link.icon;
@@ -65,8 +66,8 @@ export default function Shell({ children }: { children: React.ReactNode }) {
                 aria-current={active ? "page" : undefined}
                 className={`flex h-full flex-col items-center justify-center gap-1.5 px-0.5 ${active ? "text-[#2a241e]" : "text-[#8c7f73]"}`}
               >
-                <Icon size={26} strokeWidth={1.75} aria-hidden="true" />
-                <span className="text-[13px] font-semibold leading-none">{link.label}</span>
+                <Icon size={22} strokeWidth={1.75} aria-hidden="true" />
+                <span className="text-center text-[11px] font-semibold leading-none">{link.short}</span>
               </Link>
             );
           })}

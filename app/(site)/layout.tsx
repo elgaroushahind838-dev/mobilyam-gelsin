@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { headers } from "next/headers";
+import CatalogTracker from "@/components/CatalogTracker";
 import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
 import { jsonLdScript, metadataFor, structuredData } from "@/lib/seo";
@@ -20,6 +23,9 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
       <Navbar />
       {children}
       <Footer />
+      <CatalogTracker />
+      <Analytics />
+      <SpeedInsights />
     </>
   );
 }
