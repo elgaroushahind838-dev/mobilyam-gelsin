@@ -27,10 +27,15 @@ export function uiLang(lang: SeoLang): "TR" | "EN" | "AR" {
   return "TR";
 }
 
-export function absoluteUrl(pathname: string, lang: SeoLang): string {
+export function absoluteUrl(pathname: string, lang: SeoLang, query?: Record<string, string>): string {
   const path = pathname.startsWith("/") ? pathname : `/${pathname}`;
   const url = new URL(path, SITE_URL);
   url.search = "";
+  if (query) {
+    for (const [key, value] of Object.entries(query)) {
+      if (value) url.searchParams.set(key, value);
+    }
+  }
   if (lang !== "tr") url.searchParams.set("lang", lang);
   return url.toString();
 }

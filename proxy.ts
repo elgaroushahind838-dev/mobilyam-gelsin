@@ -12,6 +12,7 @@ function withSiteHeaders(request: NextRequest) {
   const headers = new Headers(request.headers);
   headers.set("x-site-lang", siteLang(request));
   headers.set("x-pathname", request.nextUrl.pathname);
+  headers.set("x-subtype", request.nextUrl.searchParams.get("tur") || "");
   return headers;
 }
 

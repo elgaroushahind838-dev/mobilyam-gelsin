@@ -5,7 +5,8 @@ import { useState, useMemo, useEffect, useRef } from "react";
 import { useLanguage } from "../../../context/LanguageContext";
 import { TAG_COPY, CATEGORY_COPY } from "@/lib/types";
 import { categoryIntro, seoLang } from "@/lib/seo-copy";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
+import type { ProductSubtype } from "@/lib/types";
 import { ChevronRight, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -202,7 +203,9 @@ export default function CategoryPage() {
 
   const slug = params?.slug as string;
 
-  const [activeTag, setActiveTag] = useState(ALL_PRODUCTS);
+  const searchParams = useSearchParams();
+  const activeSubtype = searchParams.get("tur") || ALL_PRODUCTS;
+  const [subtypes, setSubtypes] = useState<ProductSubtype[]>([]);
   const [sortBy, setSortBy] = useState("newest");
   const [isSortOpen, setIsSortOpen] = useState(false);
   const [catalog, setCatalog] = useState(productsDB);
@@ -218,6 +221,7 @@ export default function CategoryPage() {
           slug: string;
           categorySlug: string;
           tag: string;
+          subtypeSlug?: string | null;
           name: { TR: string; EN: string; AR: string };
           material?: string;
           date: string;
@@ -227,6 +231,7 @@ export default function CategoryPage() {
           slug: product.slug,
           categorySlug: product.categorySlug,
           tag: product.tag,
+          subtypeSlug: product.subtypeSlug ?? null,
           name: product.name,
           material: product.material || product.tag,
           date: product.date,
@@ -238,6 +243,19 @@ export default function CategoryPage() {
       ignore = true;
     };
   }, []);
+
+  useEffect(() => {
+    let ignore = false;
+    fetch(`/api/catalog/subtypes?room=${slug}`, { cache: "no-store" })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data) => {
+        if (!ignore && Array.isArray(data?.subtypes)) setSubtypes(data.subtypes);
+      })
+      .catch(() => undefined);
+    return () => {
+      ignore = true;
+    };
+  }, [slug]);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -265,17 +283,12 @@ export default function CategoryPage() {
     return catalog.filter((p) => p.categorySlug === slug);
   }, [slug, catalog]);
 
-  // UNIQUE TAGS
-  const uniqueTags = useMemo(() => {
-    return [...new Set(categoryProducts.map((p) => p.tag))];
-  }, [categoryProducts]);
-
   // FILTER + SORT
   const displayedProducts = useMemo(() => {
     const filtered =
-      activeTag === ALL_PRODUCTS
+      activeSubtype === ALL_PRODUCTS
         ? [...categoryProducts]
-        : categoryProducts.filter((p) => p.tag === activeTag);
+        : categoryProducts.filter((p) => "subtypeSlug" in p && p.subtypeSlug === activeSubtype);
 
     return filtered.sort((a, b) => {
       if (sortBy === "oldest") {
@@ -283,7 +296,7 @@ export default function CategoryPage() {
       }
       return new Date(b.date).getTime() - new Date(a.date).getTime();
     });
-  }, [activeTag, categoryProducts, sortBy]);
+  }, [activeSubtype, categoryProducts, sortBy]);
 
   if (!slug) return null;
 
@@ -320,29 +333,29 @@ export default function CategoryPage() {
 
         {/* FILTER TAGS */}
         <div className="flex flex-wrap gap-3 mb-10">
-          <button
-            onClick={() => setActiveTag(ALL_PRODUCTS)}
+          <Link
+            href={`/kategori/${slug}`}
             className={`px-6 py-2.5 rounded-full text-[14px] font-medium transition-all ${
-              activeTag === ALL_PRODUCTS
+              activeSubtype === ALL_PRODUCTS
                 ? "bg-[#5a544c] text-white"
                 : "bg-[#ece9e4] text-[#5a544c]"
             }`}
           >
             {t.tumUrunler}
-          </button>
+          </Link>
 
-          {uniqueTags.map((tag) => (
-            <button
-              key={tag as string}
-              onClick={() => setActiveTag(tag as string)}
+          {subtypes.map((item) => (
+            <Link
+              key={item.id}
+              href={`/kategori/${slug}?tur=${item.slug}`}
               className={`px-6 py-2.5 rounded-full text-[14px] font-medium transition-all ${
-                activeTag === tag
+                activeSubtype === item.slug
                   ? "bg-[#5a544c] text-white"
                   : "bg-[#ece9e4] text-[#5a544c]"
               }`}
             >
-              {(TAG_COPY[tag as string] ?? { TR: tag, EN: tag, AR: tag })[lang as "TR" | "EN" | "AR"]}
-            </button>
+              {item.label[lang === "EN" ? "en" : lang === "AR" ? "ar" : "tr"]}
+            </Link>
           ))}
         </div>
 
