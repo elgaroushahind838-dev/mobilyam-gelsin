@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { adminCookieName, verifySessionToken } from "@/lib/auth";
+import { applySecurityHeaders } from "@/lib/security-headers";
 
 function siteLang(request: NextRequest) {
   const value = request.nextUrl.searchParams.get("lang")?.toLowerCase();
@@ -19,7 +20,7 @@ function withSiteHeaders(request: NextRequest) {
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const headers = withSiteHeaders(request);
-  const pass = () => NextResponse.next({ request: { headers } });
+  const pass = () => applySecurityHeaders(NextResponse.next({ request: { headers } }));
   const isAdmin = pathname === "/admin" || pathname.startsWith("/admin/") || pathname.startsWith("/api/admin");
   if (!isAdmin) return pass();
 
@@ -32,7 +33,7 @@ export async function proxy(request: NextRequest) {
       const url = request.nextUrl.clone();
       url.pathname = "/admin/giris";
       url.search = "";
-      return NextResponse.rewrite(url, { request: { headers } });
+      return applySecurityHeaders(NextResponse.rewrite(url, { request: { headers } }));
     }
     if (pathname === "/admin/") return pass();
   }
@@ -40,13 +41,13 @@ export async function proxy(request: NextRequest) {
   if (ok) return pass();
 
   if (pathname.startsWith("/api/")) {
-    return NextResponse.json({ error: "Giriş gerekli" }, { status: 401 });
+    return applySecurityHeaders(NextResponse.json({ error: "Giriş gerekli" }, { status: 401 }));
   }
 
   const url = request.nextUrl.clone();
   url.pathname = "/admin/giris";
   url.searchParams.set("next", pathname);
-  return NextResponse.redirect(url);
+  return applySecurityHeaders(NextResponse.redirect(url));
 }
 
 export const config = {

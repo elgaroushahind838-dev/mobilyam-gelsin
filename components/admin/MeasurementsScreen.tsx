@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import type { Measurement } from "@/lib/types";
 import { formatWhen, mapsLink, whatsAppLink } from "@/lib/format";
-import { adminJson, dangerClass, fieldClass, ghostClass, primaryClass } from "./client";
+import ListSkeleton from "./ListSkeleton";
+import { ADMIN_PAGE_SIZE, adminJson, adminPageUrl, dangerClass, fieldClass, ghostClass, primaryClass } from "./client";
 
 const empty = { customerName: "", phone: "", address: "", appointmentAt: "", notes: "" };
 
@@ -16,6 +17,8 @@ function toInput(value: string) {
 
 export default function MeasurementsScreen() {
   const [items, setItems] = useState<Measurement[]>([]);
+  const [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
   const [form, setForm] = useState(empty);
   const [editing, setEditing] = useState<string | null>(null);
@@ -24,35 +27,34 @@ export default function MeasurementsScreen() {
   const [error, setError] = useState("");
   const [open, setOpen] = useState(false);
 
-  function load() {
-    return adminJson<{ measurements: Measurement[] }>("/api/admin/measurements").then((data) => {
-      setItems(data.measurements);
+  function load(offset = 0, needle = query, append = false) {
+    return adminJson<{ measurements: Measurement[]; total: number }>(adminPageUrl("/api/admin/measurements", { limit: ADMIN_PAGE_SIZE, offset, q: needle.trim() })).then((data) => {
+      setItems((current) => (append ? [...current, ...data.measurements] : data.measurements));
+      setTotal(data.total);
+      setLoading(false);
     });
   }
 
   useEffect(() => {
     let ignore = false;
-    adminJson<{ measurements: Measurement[] }>("/api/admin/measurements")
-      .then((data) => {
-        if (!ignore) setItems(data.measurements);
-      })
-      .catch((err: Error) => {
-        if (!ignore) setError(err.message);
-      });
+    const handle = setTimeout(() => {
+      adminJson<{ measurements: Measurement[]; total: number }>(adminPageUrl("/api/admin/measurements", { limit: ADMIN_PAGE_SIZE, offset: 0, q: query.trim() }))
+        .then((data) => {
+          if (ignore) return;
+          setItems(data.measurements);
+          setTotal(data.total);
+          setLoading(false);
+        })
+        .catch((err: Error) => {
+          if (!ignore) setError(err.message);
+          if (!ignore) setLoading(false);
+        });
+    }, query ? 250 : 0);
     return () => {
       ignore = true;
+      clearTimeout(handle);
     };
-  }, []);
-
-  const pending = useMemo(
-    () => items.filter((item) => item.status !== "done" && item.status !== "cancelled"),
-    [items],
-  );
-  const visible = useMemo(() => {
-    const needle = query.trim().toLocaleLowerCase("tr");
-    if (!needle) return pending;
-    return pending.filter((item) => `${item.customerName} ${item.phone} ${item.address} ${item.notes}`.toLocaleLowerCase("tr").includes(needle));
-  }, [pending, query]);
+  }, [query]);
 
   async function save(event: React.FormEvent) {
     event.preventDefault();
@@ -108,7 +110,7 @@ export default function MeasurementsScreen() {
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="font-serif text-3xl">Ölçü Alınacak Müşteriler</h1>
-          <p className="mt-1 text-sm text-[#6b625a]">{pending.length} randevu</p>
+          <p className="mt-1 text-sm text-[#6b625a]">{total} randevu</p>
         </div>
         <button type="button" className={primaryClass} onClick={() => { setOpen(true); setEditing(null); setForm(empty); }}>Yeni kayıt</button>
       </div>
@@ -128,8 +130,9 @@ export default function MeasurementsScreen() {
         </form>
       )}
       <div className="mt-4 grid gap-3">
-        {visible.length === 0 && <p className="rounded-3xl bg-white px-4 py-8 text-center text-sm text-[#6b625a]">Randevu yok.</p>}
-        {visible.map((item) => (
+        {loading && items.length === 0 && <ListSkeleton />}
+        {!loading && items.length === 0 && <p className="rounded-3xl bg-white px-4 py-8 text-center text-sm text-[#6b625a]">Randevu yok.</p>}
+        {items.map((item) => (
           <article key={item.id} className="rounded-3xl border border-[#efeae3] bg-white p-4">
             <h2 className="text-lg font-semibold">{item.customerName}</h2>
             <p className="text-sm text-[#6b625a]">{item.phone}</p>
@@ -146,6 +149,11 @@ export default function MeasurementsScreen() {
           </article>
         ))}
       </div>
+      {items.length < total && (
+        <button type="button" className={`${ghostClass} mt-4 w-full`} onClick={() => load(items.length, query, true).catch((err: Error) => setError(err.message))}>
+          Daha fazla göster
+        </button>
+      )}
       {promote && (
         <div className="fixed inset-0 z-30 bg-[#2a241e]/45" onClick={() => setPromote(null)}>
           <form

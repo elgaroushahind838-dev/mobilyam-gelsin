@@ -1,9 +1,12 @@
 import { parsePriceAmount, slugify } from "./format";
+import { isSafeMediaUrl, measurementSchema, orderSchema, packageSchema, productSchema, schemaError } from "./schemas";
 import { CATEGORIES } from "./types";
 import type { L10n, WeddingPackage } from "./types";
 import type { MeasurementInput, OrderInput, ProductInput } from "./store/types";
 
 export function orderFromBody(body: Record<string, unknown>, fallbackDate: string): OrderInput | string {
+  const invalid = schemaError(orderSchema, body);
+  if (invalid) return invalid;
   const customerName = String(body.customerName ?? "").trim();
   const phone = String(body.phone ?? "").trim();
   const product = String(body.product ?? "").trim();
@@ -22,6 +25,8 @@ export function orderFromBody(body: Record<string, unknown>, fallbackDate: strin
 }
 
 export function measurementFromBody(body: Record<string, unknown>): MeasurementInput | string {
+  const invalid = schemaError(measurementSchema, body);
+  if (invalid) return invalid;
   const customerName = String(body.customerName ?? "").trim();
   const phone = String(body.phone ?? "").trim();
   const address = String(body.address ?? "").trim();
@@ -59,17 +64,20 @@ function colorList(value: unknown): { color: string; name: L10n }[] {
 
 function imageList(value: unknown): string[] {
   if (!Array.isArray(value)) return [];
-  return value.map((item) => String(item ?? "").trim()).filter(Boolean);
+  return value.map((item) => String(item ?? "").trim()).filter(isSafeMediaUrl);
 }
 
 export function packageFromBody(body: Record<string, unknown>): Omit<WeddingPackage, "id" | "createdAt"> | string {
+  const invalid = schemaError(packageSchema, body);
+  if (invalid) return invalid;
   const name = l10n(body.name);
   if (!name.tr) return "Türkçe paket adı gerekli.";
   const images = body.images && typeof body.images === "object" ? (body.images as Record<string, unknown>) : {};
   const bed = imageList(images.bed);
   const sofa = imageList(images.sofa);
   const dining = imageList(images.dining);
-  const coverImage = String(body.coverImage ?? bed[0] ?? sofa[0] ?? dining[0] ?? "").trim();
+  const requestedCover = String(body.coverImage ?? "").trim();
+  const coverImage = (isSafeMediaUrl(requestedCover) ? requestedCover : "") || bed[0] || sofa[0] || dining[0] || "";
   if (!coverImage || !bed.length || !sofa.length || !dining.length) return "Kapak ve üç bölüm için en az bir görsel gerekli.";
   return {
     slug: slugify(String(body.slug ?? name.tr)),
@@ -111,19 +119,22 @@ export function productFromBody(
     subtypeSlug?: string | null;
   },
 ): ProductInput | string {
+  const invalid = schemaError(productSchema, body);
+  if (invalid) return invalid;
   const name = String(body.name ?? "").trim();
   const description = String(body.description ?? "").trim();
   const categorySlug = String(body.categorySlug ?? "").trim();
   const category = CATEGORIES.find((item) => item.slug === categorySlug);
   if (!name || !description || !category) return "Ad, açıklama ve koleksiyon gerekli.";
   const existingImages = existing?.images ?? [];
-  const postedImages = Array.isArray(body.images) ? body.images.map((item) => String(item ?? "").trim()).filter(Boolean) : [];
+  const postedImages = Array.isArray(body.images) ? body.images.map((item) => String(item ?? "").trim()).filter(isSafeMediaUrl) : [];
   const imageUrl = String(body.imageUrl ?? "").trim();
+  const safeImageUrl = isSafeMediaUrl(imageUrl) ? imageUrl : "";
   const images = postedImages.length
     ? postedImages
-    : imageUrl
-      ? [imageUrl, ...existingImages.filter((item) => item !== imageUrl)]
-      : existingImages;
+    : safeImageUrl
+      ? [safeImageUrl, ...existingImages.filter((item) => item !== safeImageUrl && isSafeMediaUrl(item))]
+      : existingImages.filter(isSafeMediaUrl);
   if (!images.filter(Boolean).length) return "En az bir ürün fotoğrafı yükleyin.";
   const subtypeSlug = body.subtypeSlug === null || body.subtypeSlug === "" ? null : String(body.subtypeSlug ?? existing?.subtypeSlug ?? "").trim() || null;
   return {

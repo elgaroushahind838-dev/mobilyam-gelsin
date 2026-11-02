@@ -1,3 +1,13 @@
+export const ADMIN_PAGE_SIZE = 30;
+
+export function adminPageUrl(path: string, params: Record<string, string | number | undefined>) {
+  const url = new URL(path, "http://local");
+  for (const [key, value] of Object.entries(params)) {
+    if (value !== undefined && value !== "") url.searchParams.set(key, String(value));
+  }
+  return `${url.pathname}${url.search}`;
+}
+
 export async function adminJson<T>(url: string, init?: RequestInit): Promise<T> {
   const headers = new Headers(init?.headers);
   if (init?.body && !(init.body instanceof FormData) && !headers.has("Content-Type")) {

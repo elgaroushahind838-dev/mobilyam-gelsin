@@ -1,10 +1,15 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { adminCookieName, verifySessionToken } from "./auth";
+import { rejectCrossSite } from "./csrf";
 import { getStore, StoreUnavailable } from "./store";
 import type { Store } from "./store/types";
 
-export async function requireAdmin(): Promise<Store | NextResponse> {
+export async function requireAdmin(request?: Request): Promise<Store | NextResponse> {
+  if (request) {
+    const blocked = rejectCrossSite(request);
+    if (blocked) return blocked;
+  }
   const jar = await cookies();
   const ok = await verifySessionToken(jar.get(adminCookieName())?.value);
   if (!ok) return NextResponse.json({ error: "Giriş gerekli" }, { status: 401 });

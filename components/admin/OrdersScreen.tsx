@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import type { Order } from "@/lib/types";
 import { formatWhen, todayIstanbul, whatsAppLink } from "@/lib/format";
-import { adminJson, dangerClass, fieldClass, ghostClass, primaryClass } from "./client";
+import ListSkeleton from "./ListSkeleton";
+import { ADMIN_PAGE_SIZE, adminJson, adminPageUrl, dangerClass, fieldClass, ghostClass, primaryClass } from "./client";
 
 const empty = { customerName: "", phone: "", product: "", price: "", orderDate: "" };
 
@@ -32,37 +33,43 @@ function StageTrack({ current }: { current: "active" | "completed" }) {
 
 export default function OrdersScreen({ status }: { status: "active" | "completed" }) {
   const [orders, setOrders] = useState<Order[]>([]);
+  const [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
   const [form, setForm] = useState(empty);
   const [editing, setEditing] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [open, setOpen] = useState(false);
 
-  function load() {
-    return adminJson<{ orders: Order[] }>(`/api/admin/orders?status=${status}`).then((data) => {
-      setOrders(data.orders);
+  function load(offset = 0, needle = query, append = false) {
+    setLoading(!append);
+    return adminJson<{ orders: Order[]; total: number }>(adminPageUrl("/api/admin/orders", { status, limit: ADMIN_PAGE_SIZE, offset, q: needle.trim() })).then((data) => {
+      setOrders((current) => (append ? [...current, ...data.orders] : data.orders));
+      setTotal(data.total);
+      setLoading(false);
     });
   }
 
   useEffect(() => {
     let ignore = false;
-    adminJson<{ orders: Order[] }>(`/api/admin/orders?status=${status}`)
-      .then((data) => {
-        if (!ignore) setOrders(data.orders);
-      })
-      .catch((err: Error) => {
-        if (!ignore) setError(err.message);
-      });
+    const handle = setTimeout(() => {
+      adminJson<{ orders: Order[]; total: number }>(adminPageUrl("/api/admin/orders", { status, limit: ADMIN_PAGE_SIZE, offset: 0, q: query.trim() }))
+        .then((data) => {
+          if (ignore) return;
+          setOrders(data.orders);
+          setTotal(data.total);
+          setLoading(false);
+        })
+        .catch((err: Error) => {
+          if (!ignore) setError(err.message);
+          if (!ignore) setLoading(false);
+        });
+    }, query ? 250 : 0);
     return () => {
       ignore = true;
+      clearTimeout(handle);
     };
-  }, [status]);
-
-  const visible = useMemo(() => {
-    const needle = query.trim().toLocaleLowerCase("tr");
-    if (!needle) return orders;
-    return orders.filter((order) => `${order.customerName} ${order.phone} ${order.product}`.toLocaleLowerCase("tr").includes(needle));
-  }, [orders, query]);
+  }, [status, query]);
 
   function reset() {
     setForm({ ...empty, orderDate: todayIstanbul() });
@@ -104,7 +111,7 @@ export default function OrdersScreen({ status }: { status: "active" | "completed
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="font-serif text-3xl">{status === "active" ? "Aktif Siparişler" : "Tamamlanan Siparişler"}</h1>
-          <p className="mt-1 text-sm text-[#6b625a]">{orders.length} kayıt</p>
+          <p className="mt-1 text-sm text-[#6b625a]">{total} kayıt</p>
         </div>
         <button type="button" className={primaryClass} onClick={() => { setOpen(true); setForm({ ...empty, orderDate: todayIstanbul() }); setEditing(null); }}>Yeni kayıt</button>
       </div>
@@ -124,8 +131,9 @@ export default function OrdersScreen({ status }: { status: "active" | "completed
         </form>
       )}
       <div className="mt-4 grid gap-3">
-        {visible.length === 0 && <p className="rounded-3xl bg-white px-4 py-8 text-center text-sm text-[#6b625a]">Kayıt yok.</p>}
-        {visible.map((order) => (
+        {loading && orders.length === 0 && <ListSkeleton />}
+        {!loading && orders.length === 0 && <p className="rounded-3xl bg-white px-4 py-8 text-center text-sm text-[#6b625a]">Kayıt yok.</p>}
+        {orders.map((order) => (
           <article key={order.id} className="rounded-3xl border border-[#efeae3] bg-white p-4">
             <StageTrack current={status} />
             <div className="flex flex-wrap items-start justify-between gap-2">
@@ -152,6 +160,11 @@ export default function OrdersScreen({ status }: { status: "active" | "completed
           </article>
         ))}
       </div>
+      {orders.length < total && (
+        <button type="button" className={`${ghostClass} mt-4 w-full`} onClick={() => load(orders.length, query, true).catch((err: Error) => setError(err.message))}>
+          Daha fazla göster
+        </button>
+      )}
     </div>
   );
 }

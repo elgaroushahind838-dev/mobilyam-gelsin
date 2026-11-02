@@ -1,10 +1,14 @@
 "use client";
 
-import { Suspense, useEffect, useMemo, useState } from "react";
+import dynamic from "next/dynamic";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import PackagesScreen from "./PackagesScreen";
 import { CATEGORIES, type Product, type ProductSubtype } from "@/lib/types";
-import { adminJson, dangerClass, fieldClass, ghostClass, primaryClass } from "./client";
+import AdminImage from "./AdminImage";
+import ListSkeleton from "./ListSkeleton";
+import { ADMIN_PAGE_SIZE, adminJson, adminPageUrl, dangerClass, fieldClass, ghostClass, primaryClass } from "./client";
+
+const PackagesScreen = dynamic(() => import("./PackagesScreen"), { loading: () => <ListSkeleton /> });
 
 const empty = {
   name: "",
@@ -21,6 +25,8 @@ function ProductsBody() {
   const [section, setSection] = useState(tab);
   useEffect(() => setSection(tab), [tab]);
   const [products, setProducts] = useState<Product[]>([]);
+  const [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
   const [form, setForm] = useState(empty);
   const [editing, setEditing] = useState<string | null>(null);
@@ -34,25 +40,34 @@ function ProductsBody() {
     return adminJson<{ subtypes: ProductSubtype[] }>(`/api/admin/subtypes?room=${room}`).then((data) => setSubtypes(data.subtypes));
   }
 
-  function load() {
-    return adminJson<{ products: Product[] }>("/api/admin/products").then((data) => {
-      setProducts(data.products);
+  function load(offset = 0, needle = query, append = false) {
+    return adminJson<{ products: Product[]; total: number }>(adminPageUrl("/api/admin/products", { limit: ADMIN_PAGE_SIZE, offset, q: needle.trim() })).then((data) => {
+      setProducts((current) => (append ? [...current, ...data.products] : data.products));
+      setTotal(data.total);
+      setLoading(false);
     });
   }
 
   useEffect(() => {
     let ignore = false;
-    adminJson<{ products: Product[] }>("/api/admin/products")
-      .then((data) => {
-        if (!ignore) setProducts(data.products);
-      })
-      .catch((err: Error) => {
-        if (!ignore) setError(err.message);
-      });
+    const handle = setTimeout(() => {
+      adminJson<{ products: Product[]; total: number }>(adminPageUrl("/api/admin/products", { limit: ADMIN_PAGE_SIZE, offset: 0, q: query.trim() }))
+        .then((data) => {
+          if (ignore) return;
+          setProducts(data.products);
+          setTotal(data.total);
+          setLoading(false);
+        })
+        .catch((err: Error) => {
+          if (!ignore) setError(err.message);
+          if (!ignore) setLoading(false);
+        });
+    }, query ? 250 : 0);
     return () => {
       ignore = true;
+      clearTimeout(handle);
     };
-  }, []);
+  }, [query]);
 
   useEffect(() => {
     let ignore = false;
@@ -62,11 +77,6 @@ function ProductsBody() {
     };
   }, [form.categorySlug]);
 
-  const visible = useMemo(() => {
-    const needle = query.trim().toLocaleLowerCase("tr");
-    if (!needle) return products;
-    return products.filter((product) => `${product.name} ${product.categoryLabel} ${product.tag}`.toLocaleLowerCase("tr").includes(needle));
-  }, [products, query]);
 
   async function uploadMany(files: FileList | File[]) {
     setUploading(true);
@@ -199,7 +209,7 @@ function ProductsBody() {
           <div className="flex flex-wrap gap-3 md:col-span-2">
             {form.images.map((url, index) => (
               <div key={url} className="w-28">
-                <img src={url} alt="" className="h-24 w-28 rounded-2xl object-cover" />
+                <AdminImage src={url} sizes="112px" className="h-24 w-28 rounded-2xl" />
                 <div className="mt-1 flex flex-wrap gap-1 text-[11px]">
                   <button type="button" className={ghostClass} onClick={() => moveImage(index, -1)}>↑</button>
                   <button type="button" className={ghostClass} onClick={() => moveImage(index, 1)}>↓</button>
@@ -226,9 +236,11 @@ function ProductsBody() {
         </form>
       )}
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        {visible.map((product) => (
+        {loading && products.length === 0 && <ListSkeleton />}
+        {!loading && products.length === 0 && <p className="rounded-3xl bg-white px-4 py-8 text-center text-sm text-[#6b625a]">Ürün yok.</p>}
+        {products.map((product) => (
           <article key={product.id} className="overflow-hidden rounded-3xl border border-[#efeae3] bg-white">
-            <img src={product.images[0]} alt="" className="h-40 w-full object-cover" />
+            <AdminImage src={product.images[0]} sizes="(max-width: 640px) 100vw, 360px" className="h-40 w-full" />
             <div className="p-4">
               <p className="text-xs font-bold uppercase tracking-wide text-[#8c7f73]">{product.categoryLabel}</p>
               <h2 className="mt-1 text-lg font-semibold">{product.name}</h2>
@@ -265,6 +277,11 @@ function ProductsBody() {
           </article>
         ))}
       </div>
+      {products.length < total && (
+        <button type="button" className={`${ghostClass} mt-4 w-full`} onClick={() => load(products.length, query, true).catch((err: Error) => setError(err.message))}>
+          Daha fazla göster
+        </button>
+      )}
       </>}
     </div>
   );

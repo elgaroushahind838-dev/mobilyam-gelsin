@@ -1,21 +1,17 @@
 import { NextResponse } from "next/server";
 import { isStore, requireAdmin } from "@/lib/admin-api";
-import { formatLira, monthKeyIstanbul } from "@/lib/format";
+import { formatLira } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
 
-export async function GET() {
-  const store = await requireAdmin();
+export async function GET(request: Request) {
+  const store = await requireAdmin(request);
   if (!isStore(store)) return store;
-  const [orders, measurements] = await Promise.all([store.listOrders(), store.listMeasurements()]);
-  const month = monthKeyIstanbul();
-  const monthRevenue = orders
-    .filter((order) => order.status === "completed" && order.completedAt && monthKeyIstanbul(new Date(order.completedAt)) === month)
-    .reduce((sum, order) => sum + order.priceAmount, 0);
+  const summary = await store.dashboardSummary();
   return NextResponse.json({
-    activeOrders: orders.filter((order) => order.status === "active").length,
-    pendingMeasurements: measurements.filter((item) => item.status !== "done" && item.status !== "cancelled").length,
-    monthRevenue,
-    monthRevenueLabel: formatLira(monthRevenue),
+    activeOrders: summary.activeOrders,
+    pendingMeasurements: summary.pendingMeasurements,
+    monthRevenue: summary.monthRevenue,
+    monthRevenueLabel: formatLira(summary.monthRevenue),
   });
 }
