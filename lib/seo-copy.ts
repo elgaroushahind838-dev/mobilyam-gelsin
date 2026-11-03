@@ -156,12 +156,12 @@ const PACKAGES: Record<string, Copy> = {
       description: "İstanbul’da ekonomik çeyiz ve düğün paketi: yatak odası takımı, oturma grubu ve yemek odası. Atölyemizde üretilir.",
     },
     en: {
-      title: "Economic Wedding Furniture Package in Istanbul | Mobilyam Gelsin",
-      description: "A wedding furniture package with bedroom, living, and dining pieces, made in Istanbul.",
+      title: "Economy Wedding Furniture Package in Istanbul | Mobilyam Gelsin",
+      description: "An economy bridal package in Istanbul: a bedroom set, a seating group, and a dining room, made in our workshop.",
     },
     ar: {
       title: "باقة أثاث زفاف اقتصادية في إسطنبول | Mobilyam Gelsin",
-      description: "باقة زفاف تشمل غرفة النوم والجلوس والطعام، تُصنع في إسطنبول.",
+      description: "باقة جهاز وزفاف اقتصادية في إسطنبول: طقم غرفة نوم وطقم جلوس وغرفة طعام، تُصنع في ورشتنا.",
     },
   },
   standart: {
@@ -171,11 +171,11 @@ const PACKAGES: Record<string, Copy> = {
     },
     en: {
       title: "Standard Wedding Furniture Package in Istanbul | Mobilyam Gelsin",
-      description: "A standard bridal furniture package made in our Istanbul workshop.",
+      description: "A standard wedding furniture package in Istanbul. We prepare the bedroom, seating, and dining room together.",
     },
     ar: {
       title: "باقة أثاث زفاف قياسية في إسطنبول | Mobilyam Gelsin",
-      description: "باقة أثاث زفاف قياسية من ورشة إسطنبول.",
+      description: "باقة زفاف قياسية في إسطنبول. نجهّز غرفة النوم والجلوس والطعام معاً.",
     },
   },
   premium: {
@@ -185,11 +185,11 @@ const PACKAGES: Record<string, Copy> = {
     },
     en: {
       title: "Premium Wedding Furniture Package in Istanbul | Mobilyam Gelsin",
-      description: "A premium custom wedding package, produced in Istanbul.",
+      description: "A premium bridal package in Istanbul. A custom bedroom, seating group, and dining room, made in our workshop.",
     },
     ar: {
       title: "باقة أثاث زفاف مميزة في إسطنبول | Mobilyam Gelsin",
-      description: "باقة زفاف بتصميم خاص، تُنتج في إسطنبول.",
+      description: "باقة جهاز مميزة في إسطنبول. غرفة نوم بتصميم خاص وطقم جلوس وغرفة طعام، تُصنع في ورشتنا.",
     },
   },
 };

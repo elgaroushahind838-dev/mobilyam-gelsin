@@ -5,37 +5,37 @@ const text = (tr: string, en: string, ar: string): L10n => ({ tr, en, ar });
 const shared = {
   description: text(
     "Dinginliği yansıtan, fonksiyonel ve zarif parçalar.",
-    "Functional and elegant pieces reflecting serenity.",
-    "قطع عملية وأنيقة تعكس الهدوء والسكينة.",
+    "Functional, elegant pieces that reflect a sense of calm.",
+    "قطع عملية وأنيقة تعكس الهدوء.",
   ),
   bedroomTitle: text("Yatak Odası Takımı", "Bedroom Set", "طقم غرفة النوم"),
   bedroomDescription: text(
     "Dinginliği yansıtan, fonksiyonel ve zarif parçalar.",
-    "Functional and elegant pieces reflecting serenity.",
-    "قطع عملية وأنيقة تعكس الهدوء والسكينة.",
+    "Functional, elegant pieces that reflect a sense of calm.",
+    "قطع عملية وأنيقة تعكس الهدوء.",
   ),
   livingTitle: text("Oturma Grubu", "Living Room Group", "طقم الجلوس"),
   livingDescription: text(
     "Konforun en yalın hali, fırınlanmış iskelet yapısı.",
-    "The purest form of comfort, kiln-dried frame.",
+    "Comfort in its simplest form, with a kiln-dried frame.",
     "الراحة في أبسط صورها، بهيكل خشب مجفف في الفرن.",
   ),
   diningTitle: text("Yemek Odası", "Dining Room", "غرفة الطعام"),
   diningDescription: text(
     "Mermer ve masif meşenin kusursuz uyumu.",
-    "Perfect harmony of marble and solid oak.",
+    "The perfect match of marble and solid oak.",
     "التناغم المثالي بين الرخام والبلوط الصلب.",
   ),
   included: [
     text("Karyola (160x200)", "Bed Frame (160x200)", "هيكل سرير (160x200)"),
-    text("2 Adet Komodin", "2 Nightstands", "2 كومودينو"),
-    text("6 Kapılı Dolap", "6-Door Wardrobe", "خزانة بـ 6 أبواب"),
+    text("2 Adet Komodin", "2 nightstands", "كومودينتان"),
+    text("6 Kapılı Dolap", "6-door wardrobe", "خزانة بستة أبواب"),
   ],
   tabletop: text("Carrara Mermer veya Doğal Meşe", "Carrara Marble or Natural Oak", "رخام كرارا أو بلوط طبيعي"),
   chairs: text("6 veya 8 Kişilik Seçenekler", "6 or 8 Person Options", "خيارات لـ 6 أو 8 أشخاص"),
   expert: text(
     "İç mimarlarımız konfigürasyon yapabilir.",
-    "Our interior designers can configure this.",
+    "Our interior architects can set up the configuration.",
     "يمكن لمصممينا الداخليين إعداد هذا التكوين.",
   ),
   fabrics: [
@@ -89,9 +89,9 @@ export const SEED_PACKAGES: WeddingPackage[] = [
     id: "pkg-ekonomik",
     slug: "ekonomik",
     displayOrder: 0,
-    cardLine1: text("Ekonomik", "Economic", "الباقة"),
+    cardLine1: text("Ekonomik", "Economy", "الباقة"),
     cardLine2: text("Paket", "Package", "الاقتصادية"),
-    name: text("Ekonomik Düğün Paketi", "Economic Wedding Package", "باقة الزفاف الاقتصادية"),
+    name: text("Ekonomik Düğün Paketi", "Economy Wedding Package", "باقة الزفاف الاقتصادية"),
     coverImage: "/images/oturma-odasi.jpg",
     images: {
       bed: ["/images/kutu.jpeg", "https://images.unsplash.com/photo-1540518614846-7eded433c457?q=80&w=800&auto=format&fit=crop", "https://images.unsplash.com/photo-1505692952047-1a78307da8f2?q=80&w=800&auto=format&fit=crop"],

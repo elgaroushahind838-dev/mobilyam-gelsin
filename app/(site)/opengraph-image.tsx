@@ -22,7 +22,7 @@ export default function OpenGraphImage() {
         <div style={{ fontSize: 28, letterSpacing: 4, color: "#8c7f73" }}>İSTANBUL</div>
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <div style={{ fontSize: 76, lineHeight: 1.05 }}>Mobilyam Gelsin</div>
-          <div style={{ fontSize: 34, color: "#4d453e" }}>Gömme dolap · Gardırop · Özel tasarım mobilya</div>
+          <div style={{ fontSize: 34, color: "#4d453e" }}>Evinize göre dolap ve mobilya</div>
         </div>
         <div style={{ fontSize: 24, color: "#8c7f73" }}>Esenyurt atölyesi · +90 551 483 53 22</div>
       </div>

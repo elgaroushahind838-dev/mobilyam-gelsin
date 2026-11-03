@@ -175,7 +175,7 @@ const translations = {
     tumUrunler: "All Products",
     baslik: "Timeless Designs",
     gosteriliyor: "PRODUCTS SHOWN",
-    sirala: "SORT BY",
+    sirala: "SORT",
     incele: "View",
     sortOptions: {
       newest: "Newest",
@@ -186,9 +186,9 @@ const translations = {
     anaSayfa: "الرئيسية",
     tumUrunler: "كل المنتجات",
     baslik: "تصاميم خالدة",
-    gosteriliyor: "منتج معروض",
-    sirala: "ترتيب حسب",
-    incele: "عرض",
+    gosteriliyor: "منتجات معروضة",
+    sirala: "ترتيب",
+    incele: "اطّلع",
     sortOptions: {
       newest: "الأحدث",
       oldest: "الأقدم",
