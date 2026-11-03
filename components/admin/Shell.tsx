@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Archive, BarChart3, ClipboardList, LayoutDashboard, Ruler, Sofa } from "lucide-react";
+import { Archive, BarChart3, ClipboardList, LayoutDashboard, MessageCircle, Ruler, Sofa } from "lucide-react";
 import { adminJson } from "./client";
 
 const links = [
@@ -12,6 +12,7 @@ const links = [
   { href: "/admin/arsiv", label: "Arşiv", short: "Arşiv", icon: Archive },
   { href: "/admin/urunler", label: "Ürünler", short: "Ürünler", icon: Sofa },
   { href: "/admin/istatistik", label: "İstatistikler", short: "İstatistik", icon: BarChart3 },
+  { href: "/admin/whatsapp", label: "WhatsApp", short: "WhatsApp", icon: MessageCircle },
 ];
 
 function isCurrent(pathname: string, href: string) {
@@ -55,7 +56,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
         <main className="min-w-0 flex-1 px-4 py-5 pb-[calc(76px+env(safe-area-inset-bottom)+20px)] md:px-8 md:py-8 md:pb-10">{children}</main>
       </div>
       <nav aria-label="Bölümler" className="fixed inset-x-0 bottom-0 z-20 border-t border-[#efeae3] bg-white pb-[env(safe-area-inset-bottom)] md:hidden">
-        <div className="grid h-[76px] grid-cols-6">
+        <div className="grid h-[76px] grid-cols-7">
           {links.map((link) => {
             const active = isCurrent(pathname, link.href);
             const Icon = link.icon;

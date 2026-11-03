@@ -134,7 +134,11 @@ export default function MeasurementsScreen() {
         {!loading && items.length === 0 && <p className="rounded-3xl bg-white px-4 py-8 text-center text-sm text-[#6b625a]">Randevu yok.</p>}
         {items.map((item) => (
           <article key={item.id} className="rounded-3xl border border-[#efeae3] bg-white p-4">
-            <h2 className="text-lg font-semibold">{item.customerName}</h2>
+            <div className="flex flex-wrap items-center gap-2">
+              <h2 className="text-lg font-semibold">{item.customerName}</h2>
+              {item.origin === "whatsapp" && <span className="rounded-full bg-[#e7f8ef] px-2 py-0.5 text-[11px] font-semibold text-[#128C7E]">WhatsApp&apos;tan</span>}
+              {item.needsReview && <span className="rounded-full bg-[#fff4e5] px-2 py-0.5 text-[11px] font-semibold text-[#9a5b12]">İncele</span>}
+            </div>
             <p className="text-sm text-[#6b625a]">{item.phone}</p>
             <p className="mt-2 text-sm">{item.address}</p>
             <p className="mt-1 text-xs text-[#8c7f73]">{formatWhen(item.appointmentAt)}</p>

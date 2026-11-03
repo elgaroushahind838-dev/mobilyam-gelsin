@@ -1,5 +1,6 @@
 import { neon } from "@neondatabase/serverless";
 import { monthKeyIstanbul, slugify } from "../format";
+import { listToText, lockEditedFields, textToList } from "../measurement-fields";
 import { SEED_PACKAGES } from "../seed-packages";
 import { inferSubtype, SEED_SUBTYPES } from "../subtypes";
 import { SEED_PRODUCTS } from "../seed-products";
@@ -72,6 +73,10 @@ function sqlClient() {
         created_at timestamptz NOT NULL DEFAULT now()
       )`;
       await sql`ALTER TABLE measurements ADD COLUMN IF NOT EXISTS status text NOT NULL DEFAULT 'scheduled'`;
+      await sql`ALTER TABLE measurements ADD COLUMN IF NOT EXISTS origin text NOT NULL DEFAULT 'manual'`;
+      await sql`ALTER TABLE measurements ADD COLUMN IF NOT EXISTS needs_review boolean NOT NULL DEFAULT false`;
+      await sql`ALTER TABLE measurements ADD COLUMN IF NOT EXISTS locked_fields text NOT NULL DEFAULT ''`;
+      await sql`ALTER TABLE measurements ADD COLUMN IF NOT EXISTS whatsapp_owned text NOT NULL DEFAULT ''`;
       await sql`CREATE TABLE IF NOT EXISTS wedding_packages (
         id text PRIMARY KEY,
         slug text UNIQUE NOT NULL,
@@ -231,6 +236,10 @@ function asMeasurement(row: Record<string, unknown>): Measurement {
     notes: String(row.notes ?? ""),
     status: row.status === "done" || row.status === "cancelled" ? row.status : "scheduled",
     createdAt: new Date(String(row.created_at)).toISOString(),
+    origin: row.origin === "whatsapp" ? "whatsapp" : "manual",
+    needsReview: row.needs_review === true || row.needs_review === "t" || row.needs_review === "true",
+    lockedFields: textToList(row.locked_fields),
+    whatsappOwned: textToList(row.whatsapp_owned),
   };
 }
 
@@ -494,21 +503,28 @@ export function createPostgresStore(): Store {
       const id = crypto.randomUUID();
       const status = input.status ?? "scheduled";
       const rows = await sql`INSERT INTO measurements (
-        id, customer_name, phone, address, appointment_at, notes, status
+        id, customer_name, phone, address, appointment_at, notes, status, origin, needs_review, locked_fields, whatsapp_owned
       ) VALUES (
-        ${id}, ${input.customerName}, ${input.phone}, ${input.address}, ${input.appointmentAt}, ${input.notes}, ${status}
+        ${id}, ${input.customerName}, ${input.phone}, ${input.address}, ${input.appointmentAt}, ${input.notes}, ${status},
+        ${input.origin ?? "manual"}, ${Boolean(input.needsReview)}, ${listToText(input.lockedFields)}, ${listToText(input.whatsappOwned)}
       ) RETURNING *`;
       return asMeasurement(rows[0] as Record<string, unknown>);
     },
     async updateMeasurement(id, input) {
       const sql = await sqlClient();
-      const current = await sql`SELECT status FROM measurements WHERE id = ${id} LIMIT 1`;
-      if (!current[0]) return null;
-      const stored = current[0].status === "done" || current[0].status === "cancelled" ? current[0].status : "scheduled";
-      const status = input.status ?? stored;
+      const currentRows = await sql`SELECT * FROM measurements WHERE id = ${id} LIMIT 1`;
+      if (!currentRows[0]) return null;
+      const current = asMeasurement(currentRows[0] as Record<string, unknown>);
+      const fromWhatsapp = Boolean(input.fromWhatsapp);
+      const lockedFields = fromWhatsapp ? (current.lockedFields ?? []) : lockEditedFields(current, input);
+      const status = input.status ?? current.status;
       const rows = await sql`UPDATE measurements SET
         customer_name = ${input.customerName}, phone = ${input.phone}, address = ${input.address},
-        appointment_at = ${input.appointmentAt}, notes = ${input.notes}, status = ${status}
+        appointment_at = ${input.appointmentAt}, notes = ${input.notes}, status = ${status},
+        origin = ${input.origin ?? current.origin ?? "manual"},
+        needs_review = ${input.needsReview !== undefined ? input.needsReview : fromWhatsapp ? Boolean(current.needsReview) : false},
+        locked_fields = ${listToText(lockedFields)},
+        whatsapp_owned = ${listToText(input.whatsappOwned ?? current.whatsappOwned)}
         WHERE id = ${id} RETURNING *`;
       return rows[0] ? asMeasurement(rows[0] as Record<string, unknown>) : null;
     },

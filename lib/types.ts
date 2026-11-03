@@ -50,6 +50,10 @@ export type Measurement = {
   notes: string;
   status: MeasurementStatus;
   createdAt: string;
+  origin?: "manual" | "whatsapp";
+  needsReview?: boolean;
+  lockedFields?: string[];
+  whatsappOwned?: string[];
 };
 
 export type L10n = { tr: string; en: string; ar: string };

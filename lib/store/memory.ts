@@ -1,6 +1,7 @@
 import { mkdir, readFile, writeFile } from "fs/promises";
 import path from "path";
 import { monthKeyIstanbul, slugify } from "../format";
+import { lockEditedFields } from "../measurement-fields";
 import { matchesQuery } from "./paging";
 import { SEED_PACKAGES } from "../seed-packages";
 import { inferSubtype, SEED_SUBTYPES } from "../subtypes";
@@ -307,9 +308,15 @@ export function createFileStore(): Store {
     async createMeasurement(input: MeasurementInput) {
       return withLock(async () => {
         const data = await readData();
+        const fields = { ...input };
+        delete fields.fromWhatsapp;
         const item: Measurement = {
-          ...input,
+          ...fields,
           status: input.status ?? "scheduled",
+          origin: input.origin ?? "manual",
+          needsReview: Boolean(input.needsReview),
+          lockedFields: input.lockedFields ?? [],
+          whatsappOwned: input.whatsappOwned ?? [],
           id: crypto.randomUUID(),
           createdAt: new Date().toISOString(),
         };
@@ -323,7 +330,19 @@ export function createFileStore(): Store {
         const data = await readData();
         const index = data.measurements.findIndex((item) => item.id === id);
         if (index < 0) return null;
-        data.measurements[index] = { ...data.measurements[index], ...input, id };
+        const current = data.measurements[index];
+        const fromWhatsapp = Boolean(input.fromWhatsapp);
+        const rest = { ...input };
+        delete rest.fromWhatsapp;
+        data.measurements[index] = {
+          ...current,
+          ...rest,
+          id,
+          origin: input.origin ?? current.origin ?? "manual",
+          needsReview: input.needsReview !== undefined ? input.needsReview : fromWhatsapp ? Boolean(current.needsReview) : false,
+          lockedFields: fromWhatsapp ? (current.lockedFields ?? []) : lockEditedFields(current, input),
+          whatsappOwned: input.whatsappOwned ?? current.whatsappOwned ?? [],
+        };
         await writeData(data);
         return data.measurements[index];
       });
