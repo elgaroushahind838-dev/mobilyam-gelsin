@@ -1,6 +1,6 @@
 import { neon } from "@neondatabase/serverless";
 import { monthKeyIstanbul, slugify } from "../format";
-import { listToText, lockEditedFields, textToList } from "../measurement-fields";
+import { listToText, lockEditedFields, lockOrderFields, textToList } from "../measurement-fields";
 import { SEED_PACKAGES } from "../seed-packages";
 import { inferSubtype, SEED_SUBTYPES } from "../subtypes";
 import { SEED_PRODUCTS } from "../seed-products";
@@ -57,6 +57,11 @@ function sqlClient() {
       )`;
       await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS address text NOT NULL DEFAULT ''`;
       await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS notes text NOT NULL DEFAULT ''`;
+      await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS origin text NOT NULL DEFAULT 'manual'`;
+      await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS needs_review boolean NOT NULL DEFAULT false`;
+      await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS review_reason text NOT NULL DEFAULT ''`;
+      await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS locked_fields text NOT NULL DEFAULT ''`;
+      await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS whatsapp_owned text NOT NULL DEFAULT ''`;
       await sql`ALTER TABLE products ALTER COLUMN price DROP NOT NULL`;
       await sql`ALTER TABLE products ALTER COLUMN price_amount DROP NOT NULL`;
       await sql`ALTER TABLE products ALTER COLUMN width DROP NOT NULL`;
@@ -77,6 +82,7 @@ function sqlClient() {
       await sql`ALTER TABLE measurements ADD COLUMN IF NOT EXISTS needs_review boolean NOT NULL DEFAULT false`;
       await sql`ALTER TABLE measurements ADD COLUMN IF NOT EXISTS locked_fields text NOT NULL DEFAULT ''`;
       await sql`ALTER TABLE measurements ADD COLUMN IF NOT EXISTS whatsapp_owned text NOT NULL DEFAULT ''`;
+      await sql`ALTER TABLE measurements ADD COLUMN IF NOT EXISTS review_reason text NOT NULL DEFAULT ''`;
       await sql`CREATE TABLE IF NOT EXISTS wedding_packages (
         id text PRIMARY KEY,
         slug text UNIQUE NOT NULL,
@@ -196,6 +202,11 @@ function asOrder(row: Record<string, unknown>): Order {
     notes: String(row.notes ?? ""),
     completedAt: row.completed_at ? new Date(String(row.completed_at)).toISOString() : null,
     createdAt: new Date(String(row.created_at)).toISOString(),
+    origin: row.origin === "whatsapp" ? "whatsapp" : "manual",
+    needsReview: row.needs_review === true || row.needs_review === "t" || row.needs_review === "true",
+    reviewReason: String(row.review_reason ?? ""),
+    lockedFields: textToList(row.locked_fields),
+    whatsappOwned: textToList(row.whatsapp_owned),
   };
 }
 
@@ -238,6 +249,7 @@ function asMeasurement(row: Record<string, unknown>): Measurement {
     createdAt: new Date(String(row.created_at)).toISOString(),
     origin: row.origin === "whatsapp" ? "whatsapp" : "manual",
     needsReview: row.needs_review === true || row.needs_review === "t" || row.needs_review === "true",
+    reviewReason: String(row.review_reason ?? ""),
     lockedFields: textToList(row.locked_fields),
     whatsappOwned: textToList(row.whatsapp_owned),
   };
@@ -349,10 +361,12 @@ export function createPostgresStore(): Store {
       const status = input.status ?? "active";
       const completedAt = status === "completed" ? new Date().toISOString() : null;
       const rows = await sql`INSERT INTO orders (
-        id, status, customer_name, phone, product, price, price_amount, order_date, address, notes, completed_at
+        id, status, customer_name, phone, product, price, price_amount, order_date, address, notes, completed_at,
+        origin, needs_review, review_reason, locked_fields, whatsapp_owned
       ) VALUES (
         ${id}, ${status}, ${input.customerName}, ${input.phone}, ${input.product}, ${input.price},
-        ${input.priceAmount}, ${input.orderDate}, ${input.address ?? ""}, ${input.notes ?? ""}, ${completedAt}
+        ${input.priceAmount}, ${input.orderDate}, ${input.address ?? ""}, ${input.notes ?? ""}, ${input.completedAt ?? completedAt},
+        ${input.origin ?? "manual"}, ${Boolean(input.needsReview)}, ${input.reviewReason ?? ""}, ${listToText(input.lockedFields)}, ${listToText(input.whatsappOwned)}
       ) RETURNING *`;
       return asOrder(rows[0] as Record<string, unknown>);
     },
@@ -361,18 +375,26 @@ export function createPostgresStore(): Store {
       const currentRows = await sql`SELECT * FROM orders WHERE id = ${id} LIMIT 1`;
       if (!currentRows[0]) return null;
       const current = asOrder(currentRows[0] as Record<string, unknown>);
-      const next = { ...current, ...input, id: current.id, createdAt: current.createdAt };
+      const fromWhatsapp = Boolean(input.fromWhatsapp);
+      const status = input.status ?? current.status;
+      const completedAt = input.completedAt !== undefined ? input.completedAt : status === "completed" && !current.completedAt ? new Date().toISOString() : current.completedAt;
       const rows = await sql`UPDATE orders SET
-        status = ${next.status}, customer_name = ${next.customerName}, phone = ${next.phone},
-        product = ${next.product}, price = ${next.price}, price_amount = ${next.priceAmount},
-        order_date = ${next.orderDate}, address = ${next.address}, notes = ${next.notes},
-        completed_at = ${next.completedAt}
+        status = ${status}, customer_name = ${input.customerName ?? current.customerName}, phone = ${input.phone ?? current.phone},
+        product = ${input.product ?? current.product}, price = ${input.price ?? current.price},
+        price_amount = ${input.priceAmount ?? current.priceAmount}, order_date = ${input.orderDate ?? current.orderDate},
+        address = ${input.address ?? current.address}, notes = ${input.notes ?? current.notes},
+        completed_at = ${completedAt},
+        origin = ${input.origin ?? current.origin ?? "manual"},
+        needs_review = ${input.needsReview !== undefined ? input.needsReview : fromWhatsapp ? Boolean(current.needsReview) : false},
+        review_reason = ${input.reviewReason !== undefined ? input.reviewReason : fromWhatsapp ? (current.reviewReason ?? "") : ""},
+        locked_fields = ${listToText(fromWhatsapp ? current.lockedFields : lockOrderFields(current, input))},
+        whatsapp_owned = ${listToText(input.whatsappOwned ?? current.whatsappOwned)}
         WHERE id = ${id} RETURNING *`;
       return rows[0] ? asOrder(rows[0] as Record<string, unknown>) : null;
     },
     async completeOrder(id) {
       const sql = await sqlClient();
-      const rows = await sql`UPDATE orders SET status = 'completed', completed_at = now() WHERE id = ${id} RETURNING *`;
+      const rows = await sql`UPDATE orders SET status = 'completed', completed_at = now(), needs_review = false, review_reason = '' WHERE id = ${id} RETURNING *`;
       return rows[0] ? asOrder(rows[0] as Record<string, unknown>) : null;
     },
     async deleteOrder(id) {
@@ -503,10 +525,10 @@ export function createPostgresStore(): Store {
       const id = crypto.randomUUID();
       const status = input.status ?? "scheduled";
       const rows = await sql`INSERT INTO measurements (
-        id, customer_name, phone, address, appointment_at, notes, status, origin, needs_review, locked_fields, whatsapp_owned
+        id, customer_name, phone, address, appointment_at, notes, status, origin, needs_review, locked_fields, whatsapp_owned, review_reason
       ) VALUES (
         ${id}, ${input.customerName}, ${input.phone}, ${input.address}, ${input.appointmentAt}, ${input.notes}, ${status},
-        ${input.origin ?? "manual"}, ${Boolean(input.needsReview)}, ${listToText(input.lockedFields)}, ${listToText(input.whatsappOwned)}
+        ${input.origin ?? "manual"}, ${Boolean(input.needsReview)}, ${listToText(input.lockedFields)}, ${listToText(input.whatsappOwned)}, ${input.reviewReason ?? ""}
       ) RETURNING *`;
       return asMeasurement(rows[0] as Record<string, unknown>);
     },
@@ -523,6 +545,7 @@ export function createPostgresStore(): Store {
         appointment_at = ${input.appointmentAt}, notes = ${input.notes}, status = ${status},
         origin = ${input.origin ?? current.origin ?? "manual"},
         needs_review = ${input.needsReview !== undefined ? input.needsReview : fromWhatsapp ? Boolean(current.needsReview) : false},
+        review_reason = ${input.reviewReason !== undefined ? input.reviewReason : fromWhatsapp ? (current.reviewReason ?? "") : ""},
         locked_fields = ${listToText(lockedFields)},
         whatsapp_owned = ${listToText(input.whatsappOwned ?? current.whatsappOwned)}
         WHERE id = ${id} RETURNING *`;

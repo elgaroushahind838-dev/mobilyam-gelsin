@@ -1,15 +1,23 @@
 import type { Measurement, Order, Product, ProductSubtype, WeddingPackage } from "../types";
 
-export type OrderInput = Omit<Order, "id" | "createdAt" | "completedAt" | "status" | "address" | "notes"> & {
+export type OrderInput = Omit<Order, "id" | "createdAt" | "completedAt" | "status" | "address" | "notes" | "origin" | "needsReview" | "reviewReason" | "lockedFields" | "whatsappOwned"> & {
   status?: Order["status"];
   address?: string;
   notes?: string;
+  completedAt?: string | null;
+  origin?: Order["origin"];
+  needsReview?: boolean;
+  reviewReason?: string;
+  lockedFields?: string[];
+  whatsappOwned?: string[];
+  fromWhatsapp?: boolean;
 };
 
 export type MeasurementInput = Omit<Measurement, "id" | "createdAt" | "status" | "origin" | "needsReview" | "lockedFields" | "whatsappOwned"> & {
   status?: Measurement["status"];
   origin?: Measurement["origin"];
   needsReview?: boolean;
+  reviewReason?: string;
   lockedFields?: string[];
   whatsappOwned?: string[];
   fromWhatsapp?: boolean;

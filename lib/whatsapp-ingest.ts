@@ -1,8 +1,10 @@
 import { createHmac, timingSafeEqual } from "crypto";
 import { after } from "next/server";
 import { z } from "zod";
-import { captureConversation, normalizePhone } from "./whatsapp-capture";
-import { insertMessages, latestMessageId, type StoredMessage } from "./whatsapp-store";
+import { applyConversation, normalizePhone } from "./whatsapp-capture";
+import { deferLive, noteHistory, runImportBatch } from "./whatsapp-import";
+import { parseHistorySignal } from "./whatsapp-stage";
+import { insertMessages, latestMessageId, readImport, type StoredMessage } from "./whatsapp-store";
 
 const payloadSchema = z.object({
   entry: z.array(z.object({
@@ -17,11 +19,23 @@ type Incoming = StoredMessage;
 
 function textOf(message: Record<string, unknown>) {
   const text = message.text as { body?: string } | undefined;
-  if (typeof text?.body === "string") return text.body;
+  if (typeof text?.body === "string" && text.body.trim()) return text.body;
   const button = message.button as { text?: string } | undefined;
-  if (typeof button?.text === "string") return button.text;
+  if (typeof button?.text === "string" && button.text.trim()) return button.text;
   const interactive = message.interactive as { button_reply?: { title?: string }; list_reply?: { title?: string } } | undefined;
-  return interactive?.button_reply?.title || interactive?.list_reply?.title || "";
+  const choice = interactive?.button_reply?.title || interactive?.list_reply?.title;
+  if (choice) return choice;
+  const image = message.image as { caption?: string } | undefined;
+  if (image) return image.caption || "[görsel]";
+  const video = message.video as { caption?: string } | undefined;
+  if (video) return video.caption || "[video]";
+  const document = message.document as { filename?: string } | undefined;
+  if (document) return document.filename || "[dosya]";
+  if (message.audio || message.type === "audio") return "[ses]";
+  if (message.sticker || message.type === "sticker") return "[çıkartma]";
+  if (message.location || message.type === "location") return "[konum]";
+  if (message.contacts || message.type === "contacts") return "[kişi kartı]";
+  return "";
 }
 
 function asMessage(message: Record<string, unknown>, phone: string, direction: "in" | "out", profileName: string): Incoming | null {
@@ -82,30 +96,73 @@ export function verifyWebhookSignature(rawBody: string, header: string | null) {
 export async function ingestWhatsappPayload(raw: unknown) {
   const parsed = payloadSchema.safeParse(raw);
   if (!parsed.success) return;
-  const incoming: Incoming[] = [];
+  const live: Incoming[] = [];
+  const history: Incoming[] = [];
+  let progress: number | null = null;
+  let declined = false;
   for (const entry of parsed.data.entry ?? []) {
     for (const change of entry.changes ?? []) {
-      incoming.push(...messagesFromValue(change.field || "", change.value ?? {}));
+      const field = change.field || "";
+      const value = change.value ?? {};
+      const messages = messagesFromValue(field, value);
+      if (field === "history") {
+        history.push(...messages);
+        const signal = parseHistorySignal(value);
+        if (signal.progress != null) progress = Math.max(progress ?? 0, signal.progress);
+        if (signal.declined) declined = true;
+      } else live.push(...messages);
     }
   }
   const unique = new Map<string, Incoming>();
-  for (const message of incoming) {
+  for (const message of [...history, ...live]) {
     const existing = unique.get(message.id);
     if (!existing) unique.set(message.id, message);
     else if (!existing.profileName && message.profileName) existing.profileName = message.profileName;
   }
   const fresh = await insertMessages([...unique.values()]);
-  const byPhone = new Map<string, string>();
-  for (const message of fresh) byPhone.set(message.phone, message.id);
-  for (const phone of byPhone.keys()) byPhone.set(phone, await latestMessageId(phone));
-  if (!byPhone.size) return;
+  const freshIds = new Set(fresh.map((item) => item.id));
+  const historyPhones = new Map<string, string>();
+  for (const message of history) {
+    if (!historyPhones.has(message.phone)) historyPhones.set(message.phone, message.profileName);
+    else if (!historyPhones.get(message.phone) && message.profileName) historyPhones.set(message.phone, message.profileName);
+  }
+  if (history.length || declined || progress != null) {
+    const tick = `${Date.now()}-${progress ?? "x"}-${history.length}`;
+    const schedule = await noteHistory({
+      tick,
+      progress,
+      declined,
+      phones: [...historyPhones.entries()].map(([phone, profileName]) => ({ phone, profileName })),
+    });
+    if (schedule) {
+      const wait = progress != null && progress >= 100 ? 5000 : 45000;
+      after(async () => {
+        await new Promise((resolve) => setTimeout(resolve, wait));
+        if ((await readImport()).tick !== tick) return;
+        try {
+          await runImportBatch();
+        } catch {
+          // The WhatsApp tab continues a batch that stopped early.
+        }
+      });
+    }
+  }
+  const livePhones = new Map<string, string>();
+  for (const message of live) {
+    if (!freshIds.has(message.id)) continue;
+    livePhones.set(message.phone, message.profileName || livePhones.get(message.phone) || "");
+  }
+  if (!livePhones.size) return;
+  const triggers = new Map<string, string>();
+  for (const phone of livePhones.keys()) triggers.set(phone, await latestMessageId(phone));
   after(async () => {
     await new Promise((resolve) => setTimeout(resolve, 15000));
-    for (const [phone, messageId] of byPhone) {
+    for (const [phone, messageId] of triggers) {
       try {
         if ((await latestMessageId(phone)) !== messageId) continue;
-        const profileName = fresh.find((item) => item.phone === phone && item.profileName)?.profileName || "";
-        await captureConversation(phone, profileName);
+        const profileName = livePhones.get(phone) || "";
+        if (await deferLive(phone, profileName)) continue;
+        await applyConversation(phone, profileName);
       } catch {
         // A later message will try this conversation again.
       }

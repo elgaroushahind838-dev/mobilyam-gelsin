@@ -138,7 +138,12 @@ export default function OrdersScreen({ status }: { status: "active" | "completed
             <StageTrack current={status} />
             <div className="flex flex-wrap items-start justify-between gap-2">
               <div>
-                <h2 className="text-lg font-semibold">{order.customerName}</h2>
+                <div className="flex flex-wrap items-center gap-2">
+                  <h2 className="text-lg font-semibold">{order.customerName}</h2>
+                  {order.origin === "whatsapp" && <span className="rounded-full bg-[#e7f8ef] px-2 py-0.5 text-[11px] font-semibold text-[#128C7E]">WhatsApp&apos;tan</span>}
+                  {order.needsReview && <span className="rounded-full bg-[#fff4e5] px-2 py-0.5 text-[11px] font-semibold text-[#9a5b12]">İncele</span>}
+                </div>
+                {order.needsReview && order.reviewReason && <p className="mt-1 text-xs font-medium text-[#9a5b12]">{order.reviewReason}</p>}
                 <p className="text-sm text-[#6b625a]">{order.phone}</p>
               </div>
               {order.price ? <p className="font-serif text-xl">{order.price}</p> : null}

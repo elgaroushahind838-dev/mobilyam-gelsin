@@ -139,6 +139,7 @@ export default function MeasurementsScreen() {
               {item.origin === "whatsapp" && <span className="rounded-full bg-[#e7f8ef] px-2 py-0.5 text-[11px] font-semibold text-[#128C7E]">WhatsApp&apos;tan</span>}
               {item.needsReview && <span className="rounded-full bg-[#fff4e5] px-2 py-0.5 text-[11px] font-semibold text-[#9a5b12]">İncele</span>}
             </div>
+            {item.needsReview && item.reviewReason && <p className="mt-1 text-xs font-medium text-[#9a5b12]">{item.reviewReason}</p>}
             <p className="text-sm text-[#6b625a]">{item.phone}</p>
             <p className="mt-2 text-sm">{item.address}</p>
             <p className="mt-1 text-xs text-[#8c7f73]">{formatWhen(item.appointmentAt)}</p>

@@ -34,7 +34,7 @@ export async function POST(request: Request) {
   const ip = clientIp(request);
   if (!allowed(ip)) return new NextResponse(null, { status: 429 });
   const raw = await request.text();
-  if (raw.length > 1_000_000) return new NextResponse(null, { status: 413 });
+  if (raw.length > 3_000_000) return new NextResponse(null, { status: 413 });
   if (!verifyWebhookSignature(raw, request.headers.get("x-hub-signature-256"))) {
     return new NextResponse(null, { status: 401 });
   }
