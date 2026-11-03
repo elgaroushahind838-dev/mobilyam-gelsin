@@ -17,8 +17,8 @@ const productsDB = {
     name: { TR: "6 Kapılı 3 Çekmeceli MARKA Dolap", EN: "MARKA Wardrobe with 6 Doors and 3 Drawers", AR: "خزانة ماركا بستة أبواب وثلاثة أدراج" },
     description: {
       TR: "Geniş kullanım alanı ve fonksiyonel tasarımıyla MARKA Dolap, yatak odanızda düzeni ve estetiği bir araya getirerek ferah bir yaşam alanı sunar.",
-      EN: "With its spacious storage capacity and functional design, the MARKA Wardrobe combines organization and elegance in your bedroom, creating a comfortable and airy living space.",
-      AR: "بفضل مساحته الواسعة وتصميمه العملي، يجمع دولاب MARKA بين التنظيم والأناقة في غرفة نومك، ليمنحك مساحة مريحة وواسعة تضفي شعورًا بالراحة والانسجام."
+      EN: "With its generous storage and functional design, the MARKA wardrobe brings order and elegance together in the bedroom and offers a bright, roomy space.",
+      AR: "بفضل مساحتها الواسعة وتصميمها العملي، تجمع خزانة ماركا بين الترتيب والجمال في غرفة النوم وتمنحك مساحة مريحة وواسعة."
     },
     images: [
       "/images/6k3cmarka-on.jpeg",
@@ -69,8 +69,8 @@ const productsDB = {
     name: { TR: "Seher 4 Kapılı Dolap", EN: "Seher 4-Door Wardrobe", AR: "خزانة سحر بأربعة أبواب" },
     description: {
       TR: "Dört kapılı Seher dolap, yatak odasında sade bir görünüm ve düzenli depolama sunar.",
-      EN: "The four-door Seher wardrobe offers a calm look and tidy storage in the bedroom.",
-      AR: "تمنح خزانة سحر ذات الأربعة أبواب مظهراً هادئاً وتخزيناً منظماً في غرفة النوم.",
+      EN: "The four-door Seher wardrobe offers a simple look and tidy storage in the bedroom.",
+      AR: "تمنح خزانة سحر ذات الأربعة أبواب مظهراً بسيطاً وتخزيناً منظماً في غرفة النوم.",
     },
     images: [
       "/images/seher4kon.jpeg",
@@ -87,7 +87,7 @@ const productsDB = {
     description: {
       TR: "Üç kapılı dolap, daha kompakt odalar için üretilen bir gardırop modelidir.",
       EN: "A three-door wardrobe made for more compact rooms.",
-      AR: "خزانة بثلاثة أبواب، تُصنع للغرف الأكثر ضيقاً.",
+      AR: "خزانة بثلاثة أبواب، وهي موديل خزانة يُصنع للغرف الأصغر.",
     },
     images: [
       "/images/3kdolap-on.jpeg",
@@ -104,7 +104,7 @@ const productsDB = {
     description: {
       TR: "Altı kapılı dolap, geniş aileler için yüksek depolama kapasitesi sunar.",
       EN: "A six-door wardrobe with high storage capacity for larger families.",
-      AR: "خزانة بستة أبواب توفر سعة تخزين كبيرة للعائلات.",
+      AR: "خزانة بستة أبواب توفر سعة تخزين عالية للعائلات الكبيرة.",
     },
     images: [
       "/images/seher4kon.jpeg",
@@ -122,7 +122,7 @@ const copy = {
   },
   EN: {
     home: "Home",
-    whatsapp: "Contact us via WhatsApp",
+    whatsapp: "Get in touch with us on WhatsApp",
     message: (name: string) => `Hello, I would like information about ${name}.`,
   },
   AR: {

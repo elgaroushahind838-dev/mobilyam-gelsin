@@ -37,7 +37,7 @@ const footerTranslations = {
     kolBaslik: "المجموعات",
     fUrunler: "المنتجات",
     fHakkimizdaLink: "من نحن",
-    fIletisim: "تواصل معنا",
+    fIletisim: "التواصل",
     fDestek: "الدعم",
     fGizlilik: "سياسة الخصوصية",
     fWaSiparis: "طلب واتساب",

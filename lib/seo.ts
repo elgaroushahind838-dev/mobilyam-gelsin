@@ -130,7 +130,7 @@ async function breadcrumbs(pathname: string, lang: SeoLang) {
     items.push({ name: copy ? copy[lang === "en" ? "EN" : lang === "ar" ? "AR" : "TR"] : category[1], path: `/kategori/${category[1]}` });
   } else if (pack) {
     items.push({
-      name: lang === "en" ? "Wedding packages" : lang === "ar" ? "باقات الزفاف" : "Düğün Paketleri",
+      name: lang === "en" ? "Wedding Packages" : lang === "ar" ? "باقات الزفاف" : "Düğün Paketleri",
       path: `/paket/${pack[1]}`,
     });
   } else if (productMatch) {

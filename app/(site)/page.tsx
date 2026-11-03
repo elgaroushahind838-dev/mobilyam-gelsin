@@ -13,7 +13,7 @@ const translations = {
     baslik1: "Mekânınıza Özel",
     baslik2: "Tasarım",
     aciklama: "Özel tasarım mobilya ve sabit dolapları yaşam alanınıza göre tasarlıyor ve üretiyoruz.",
-    yerelGiris: "Mobilyam Gelsin, İstanbul’da gömme dolap, gömme gardırop ve özel ölçü mobilya üreten bir mobilya atölyesidir. Esenyurt’taki imalatımızdan sürgülü dolap ve kişiye özel mobilyayı yaşam alanınıza göre hazırlıyoruz.",
+    yerelGiris: "Evinize göre dolap ve mobilya hazırlıyoruz. Ölçüyü birlikte alıyor, üretimi İstanbul’daki atölyemizde yapıyoruz.",
     heroAlt: "İstanbul’da özel tasarım mobilyalarla döşenmiş aydınlık bir oturma odası",
     atolyeAlt: "Mobilyam Gelsin mobilya atölyesinde hazırlanan bir parça",
     imalatAlt: "İstanbul’daki atölyede mobilya imalatından bir detay",
@@ -51,7 +51,7 @@ const translations = {
     hikayemizBaslik: "İstanbul'un Kalbinde Modern Bir Atölye",
     hikayemizParagraf1: "Mobilyam Gelsin, mobilya tasarımını sadece bir eşya değil, bir yaşam biçimi olarak ele alır. İstanbul'un zengin tasarım mirasından beslenerek, küresel bir minimalizm anlayışını benimsiyoruz.",
     hikayemizParagraf2: "Her parçamız, sürdürülebilir ormanlardan elde edilen ahşaplar ve usta zanaatkarlarımızın titiz çalışmasıyla üretilir. Amacımız, nesiller boyu aktarılabilecek sessiz ve güçlü tasarımlar yaratmaktır.",
-    hikayemizStat1Sayi: "25+",
+    hikayemizStat1Sayi: "22+",
     hikayemizStat1Yazi: "Yıllık Tecrübe",
 
     enCokTercih: "En Çok Tercih Edilenler",
@@ -69,10 +69,10 @@ const translations = {
   },
   EN: {
     etiket: "NEW SEASON",
-    baslik1: "Designed for",
-    baslik2: "Your Space",
-    aciklama: "We design and produce custom furniture and fitted wardrobes for your living space.",
-    yerelGiris: "Mobilyam Gelsin is a furniture workshop in Istanbul. From our Esenyurt workshop we make fitted wardrobes, sliding-door closets, and made-to-measure furniture for your home.",
+    baslik1: "A Design",
+    baslik2: "For Your Space",
+    aciklama: "We design and make custom furniture and built-in cabinets to suit your living space.",
+    yerelGiris: "We make cabinets and furniture to fit your home. We take the measurements with you, and we build the pieces in our workshop in Istanbul.",
     heroAlt: "A bright Istanbul living room furnished with custom furniture",
     atolyeAlt: "A piece prepared in the Mobilyam Gelsin furniture workshop",
     imalatAlt: "A detail from furniture making in the Istanbul workshop",
@@ -93,7 +93,7 @@ const translations = {
     
     paketler: [
       {
-        isim1: "Economic",
+        isim1: "Economy",
         isim2: "Package"
       },
       {
@@ -108,9 +108,9 @@ const translations = {
 
     hikayemizEtiket: "OUR STORY",
     hikayemizBaslik: "A Modern Workshop in the Heart of Istanbul",
-    hikayemizParagraf1: "Mobilyam Gelsin considers furniture design not just an object, but a way of life. Nourished by Istanbul's rich design heritage, we embrace a global sense of minimalism.",
-    hikayemizParagraf2: "Every piece is crafted with wood from sustainable forests and the meticulous work of our master artisans. Our goal is to create quiet, powerful designs that can be passed down for generations.",
-    hikayemizStat1Sayi: "25+",
+    hikayemizParagraf1: "Mobilyam Gelsin treats furniture design as a way of life, not just an object. Drawing on Istanbul’s rich design heritage, we embrace a global sense of minimalism.",
+    hikayemizParagraf2: "Every piece is made from wood from sustainable forests and the careful work of our master craftspeople. Our aim is to create quiet, strong designs that can be passed down for generations.",
+    hikayemizStat1Sayi: "22+",
     hikayemizStat1Yazi: "Years of Experience",
 
     enCokTercih: "Most Preferred",
@@ -121,17 +121,17 @@ const translations = {
     atolyeAdres2: "34510 Esenyurt, Istanbul",
     haritadaAc: "Open in Google Maps",
     bizeUlasin: "CONTACT US",
-    iletisimKartBaslik: "Let's Design Your Dream Living Space Together",
-    iletisimKartMetin: "Contact us to get detailed information about our collections or to meet with our design team for your custom projects.",
-    whatsappHemen: "Get Info via WhatsApp Now",
-    elIsciligi: "100% Handmade"
+    iletisimKartBaslik: "Let’s Design the Living Space You Imagine, Together",
+    iletisimKartMetin: "Get in touch for a closer look at our collections, or to talk with our design team about your custom projects.",
+    whatsappHemen: "Get Information on WhatsApp Right Away",
+    elIsciligi: "100% Handcrafted"
   },
   AR: {
     etiket: "الموسم الجديد",
     baslik1: "تصميم خاص",
     baslik2: "لمساحتك",
-    aciklama: "نصمّم ونصنع الأثاث حسب الطلب والخزائن الثابتة لمساحتك.",
-    yerelGiris: "موبيليام غيلسين ورشة أثاث في إسطنبول. من مصنعنا في إسنيورت نجهّز خزائن مدمجة وخزائن بأبواب منزلقة وأثاثاً بمقاس مساحتك.",
+    aciklama: "نصمّم ونصنع الأثاث الخاص والخزائن الثابتة وفق مساحة معيشتك.",
+    yerelGiris: "نجهّز الخزائن والأثاث على مقاس بيتك. نأخذ المقاس معك، ونصنع القطع في ورشتنا في إسطنبول.",
     heroAlt: "غرفة معيشة مضيئة في إسطنبول بأثاث حسب التصميم",
     atolyeAlt: "قطعة تجهَّز في ورشة موبيليام غيلسين للأثاث",
     imalatAlt: "تفصيل من صناعة الأثاث في ورشة إسطنبول",
@@ -167,9 +167,9 @@ const translations = {
 
     hikayemizEtiket: "قصتنا",
     hikayemizBaslik: "ورشة حديثة في قلب إسطنبول",
-    hikayemizParagraf1: "ترى Mobilyam Gelsin تصميم الأثاث ليس مجرد قطعة، بل أسلوب حياة. نستلهم من تراث إسطنبول التصميمي الغني، ونتبنّى بساطة عالمية هادئة.",
-    hikayemizParagraf2: "تُصنع كل قطعة من أخشاب الغابات المستدامة، وبعمل دقيق من حرفيينا. هدفنا ابتكار تصاميم هادئة وقوية تُورَّث عبر الأجيال.",
-    hikayemizStat1Sayi: "+25",
+    hikayemizParagraf1: "تتعامل Mobilyam Gelsin مع تصميم الأثاث كأسلوب حياة، لا كقطعة فحسب. نستمد ذلك من تراث إسطنبول التصميمي الغني، ونتبنّى بساطة عالمية.",
+    hikayemizParagraf2: "تُصنع كل قطعة من أخشاب الغابات المستدامة، وبعمل دقيق من حرفيينا المهرة. هدفنا ابتكار تصاميم هادئة وقوية يمكن أن تنتقل عبر الأجيال.",
+    hikayemizStat1Sayi: "+22",
     hikayemizStat1Yazi: "سنوات من الخبرة",
 
     enCokTercih: "الأكثر تفضيلاً",
@@ -179,9 +179,9 @@ const translations = {
     atolyeAdres2: "34510 إسنيورت، إسطنبول",
     haritadaAc: "افتح في خرائط Google",
     bizeUlasin: "تواصل معنا",
-    iletisimKartBaslik: "دعنا نصمم مساحة المعيشة التي تحلم بها معًا",
-    iletisimKartMetin: "اتصل بنا للحصول على معلومات مفصلة حول مجموعاتنا أو لمقابلة فريق التصميم الخاص بنا لمشاريعك المخصصة.",
-    whatsappHemen: "احصل على معلومات عبر واتساب الآن",
+    iletisimKartBaslik: "لنصمّم معاً مساحة المعيشة التي تتخيلها",
+    iletisimKartMetin: "تواصلوا معنا للاطلاع على مجموعاتنا عن قرب، أو للحديث مع فريق التصميم عن مشاريعكم الخاصة.",
+    whatsappHemen: "احصلوا على المعلومات عبر واتساب فوراً",
     elIsciligi: "صناعة يدوية 100%"
   }
 };

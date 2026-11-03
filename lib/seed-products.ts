@@ -5,8 +5,8 @@ const PRODUCT_COPY: Record<string, { nameEn: string; nameAr: string; description
   "6-kapili-3-cekmeceli-marka-dolap": {
     nameEn: "MARKA Wardrobe with 6 Doors and 3 Drawers",
     nameAr: "خزانة ماركا بستة أبواب وثلاثة أدراج",
-    descriptionEn: "With its generous storage and functional design, the MARKA wardrobe brings order and elegance together in the bedroom.",
-    descriptionAr: "بفضل مساحتها الواسعة وتصميمها العملي، تجمع خزانة ماركا بين الترتيب والأناقة في غرفة النوم.",
+    descriptionEn: "With its generous storage and functional design, the MARKA wardrobe brings order and elegance together in the bedroom and offers a bright, roomy space.",
+    descriptionAr: "بفضل مساحتها الواسعة وتصميمها العملي، تجمع خزانة ماركا بين الترتيب والجمال في غرفة النوم وتمنحك مساحة مريحة وواسعة.",
   },
   "sardunya-ranza": {
     nameEn: "Sardunya Bunk Bed",
@@ -23,32 +23,32 @@ const PRODUCT_COPY: Record<string, { nameEn: string; nameAr: string; description
   "seher-4-kapili-dolap": {
     nameEn: "Seher 4-Door Wardrobe",
     nameAr: "خزانة سحر بأربعة أبواب",
-    descriptionEn: "The four-door Seher wardrobe offers a calm look and tidy storage in the bedroom.",
-    descriptionAr: "تمنح خزانة سحر ذات الأربعة أبواب مظهراً هادئاً وتخزيناً منظماً في غرفة النوم.",
+    descriptionEn: "The four-door Seher wardrobe offers a simple look and tidy storage in the bedroom.",
+    descriptionAr: "تمنح خزانة سحر ذات الأربعة أبواب مظهراً بسيطاً وتخزيناً منظماً في غرفة النوم.",
   },
   "3-kapili-dolap": {
     nameEn: "3-Door Wardrobe",
     nameAr: "خزانة بثلاثة أبواب",
     descriptionEn: "A three-door wardrobe made for more compact rooms.",
-    descriptionAr: "خزانة بثلاثة أبواب، تُصنع للغرف الأكثر ضيقاً.",
+    descriptionAr: "خزانة بثلاثة أبواب، وهي موديل خزانة يُصنع للغرف الأصغر.",
   },
   "6-kapili-dolap": {
     nameEn: "6-Door Wardrobe",
     nameAr: "خزانة بستة أبواب",
     descriptionEn: "A six-door wardrobe with high storage capacity for larger families.",
-    descriptionAr: "خزانة بستة أبواب توفر سعة تخزين كبيرة للعائلات.",
+    descriptionAr: "خزانة بستة أبواب توفر سعة تخزين عالية للعائلات الكبيرة.",
   },
   "comfort-yatak": {
     nameEn: "Comfort Bed",
     nameAr: "سرير كومفورت",
-    descriptionEn: "A comfort bed for the bedroom.",
-    descriptionAr: "سرير مريح لغرفة النوم.",
+    descriptionEn: "A comfort bed model for the bedroom.",
+    descriptionAr: "موديل سرير كومفورت لغرفة النوم.",
   },
   "royal-gardirop": {
     nameEn: "Royal Wardrobe",
     nameAr: "خزانة رويال",
-    descriptionEn: "A royal wardrobe with an oak finish.",
-    descriptionAr: "خزانة رويال بلمسة خشب البلوط.",
+    descriptionEn: "A royal wardrobe with an oak look.",
+    descriptionAr: "خزانة رويال بمظهر خشب البلوط.",
   },
   "soft-komodin": {
     nameEn: "Soft Nightstand",
@@ -78,7 +78,7 @@ const PRODUCT_COPY: Record<string, { nameEn: string; nameAr: string; description
     nameEn: "Office Desk",
     nameAr: "مكتب للعمل",
     descriptionEn: "A desk for the study room.",
-    descriptionAr: "مكتب لغرفة العمل.",
+    descriptionAr: "مكتب لغرفة الدراسة.",
   },
   "modern-portmanto": {
     nameEn: "Modern Hall Stand",
