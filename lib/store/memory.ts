@@ -74,6 +74,12 @@ export function createFileStore(): Store {
       const products = (await this.listProducts()).filter((item) => matchesQuery(`${item.name} ${item.categoryLabel} ${item.tag}`, q));
       return { products: products.slice(offset, offset + limit), total: products.length };
     },
+    async productCounts() {
+      const products = await this.listProducts();
+      const byCategory: Record<string, number> = {};
+      for (const item of products) byCategory[item.categorySlug] = (byCategory[item.categorySlug] || 0) + 1;
+      return { total: products.length, byCategory };
+    },
     async getProduct(idOrSlug) {
       const data = await readData();
       return data.products.find((item) => item.id === idOrSlug || item.slug === idOrSlug) ?? null;

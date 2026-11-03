@@ -26,6 +26,7 @@ function ProductsBody() {
   useEffect(() => setSection(tab), [tab]);
   const [products, setProducts] = useState<Product[]>([]);
   const [total, setTotal] = useState(0);
+  const [counts, setCounts] = useState<{ total: number; byCategory: Record<string, number> } | null>(null);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
   const [form, setForm] = useState(empty);
@@ -41,9 +42,10 @@ function ProductsBody() {
   }
 
   function load(offset = 0, needle = query, append = false) {
-    return adminJson<{ products: Product[]; total: number }>(adminPageUrl("/api/admin/products", { limit: ADMIN_PAGE_SIZE, offset, q: needle.trim() })).then((data) => {
+    return adminJson<{ products: Product[]; total: number; counts: { total: number; byCategory: Record<string, number> } }>(adminPageUrl("/api/admin/products", { limit: ADMIN_PAGE_SIZE, offset, q: needle.trim() })).then((data) => {
       setProducts((current) => (append ? [...current, ...data.products] : data.products));
       setTotal(data.total);
+      setCounts(data.counts);
       setLoading(false);
     });
   }
@@ -51,11 +53,12 @@ function ProductsBody() {
   useEffect(() => {
     let ignore = false;
     const handle = setTimeout(() => {
-      adminJson<{ products: Product[]; total: number }>(adminPageUrl("/api/admin/products", { limit: ADMIN_PAGE_SIZE, offset: 0, q: query.trim() }))
+      adminJson<{ products: Product[]; total: number; counts: { total: number; byCategory: Record<string, number> } }>(adminPageUrl("/api/admin/products", { limit: ADMIN_PAGE_SIZE, offset: 0, q: query.trim() }))
         .then((data) => {
           if (ignore) return;
           setProducts(data.products);
           setTotal(data.total);
+          setCounts(data.counts);
           setLoading(false);
         })
         .catch((err: Error) => {
@@ -164,8 +167,13 @@ function ProductsBody() {
       {section === "paketler" ? <PackagesScreen /> : <>
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="font-serif text-3xl">Ürünler</h1>
+          <h1 className="font-serif text-3xl">Ürünler{counts ? ` (${counts.total})` : ""}</h1>
           <p className="mt-1 text-sm text-[#6b625a]">Buradaki değişiklikler sitedeki koleksiyonlara yansır.</p>
+          {counts && (
+            <p className="mt-2 text-sm text-[#6b625a]">
+              {CATEGORIES.map((category) => `${category.label} (${counts.byCategory[category.slug] || 0})`).join(" · ")}
+            </p>
+          )}
         </div>
         <button type="button" className={primaryClass} onClick={() => { setOpen(true); setEditing(null); setForm(empty); }}>Yeni ürün</button>
       </div>
