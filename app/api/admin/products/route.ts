@@ -10,8 +10,11 @@ export async function GET(request: Request) {
   if (!isStore(store)) return store;
   const url = new URL(request.url);
   if (!url.searchParams.has("limit")) return NextResponse.json({ products: await store.listProducts() });
-  const page = await store.listProductsPage({ ...clampPage(url.searchParams.get("limit"), url.searchParams.get("offset")), q: searchText(url.searchParams.get("q")) });
-  return NextResponse.json(page);
+  const [page, counts] = await Promise.all([
+    store.listProductsPage({ ...clampPage(url.searchParams.get("limit"), url.searchParams.get("offset")), q: searchText(url.searchParams.get("q")) }),
+    store.productCounts(),
+  ]);
+  return NextResponse.json({ ...page, counts });
 }
 
 export async function POST(request: Request) {

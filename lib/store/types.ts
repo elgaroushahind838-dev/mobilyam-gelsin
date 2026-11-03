@@ -23,6 +23,7 @@ export type DashboardSummary = {
 export interface Store {
   listProducts(): Promise<Product[]>;
   listProductsPage(page: ListPage): Promise<{ products: Product[]; total: number }>;
+  productCounts(): Promise<{ total: number; byCategory: Record<string, number> }>;
   getProduct(idOrSlug: string): Promise<Product | null>;
   createProduct(input: ProductInput): Promise<Product>;
   updateProduct(id: string, input: ProductInput): Promise<Product | null>;

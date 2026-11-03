@@ -264,6 +264,14 @@ export function createPostgresStore(): Store {
       ]);
       return { products: rows.map((row) => asProduct(row as Record<string, unknown>)), total: Number(count[0]?.count ?? 0) };
     },
+    async productCounts() {
+      const sql = await sqlClient();
+      const rows = await sql`SELECT category_slug, COUNT(*)::int AS count FROM products GROUP BY category_slug`;
+      const byCategory: Record<string, number> = {};
+      for (const row of rows) byCategory[String(row.category_slug)] = Number(row.count ?? 0);
+      const total = Object.values(byCategory).reduce((sum, count) => sum + count, 0);
+      return { total, byCategory };
+    },
     async getProduct(idOrSlug) {
       const sql = await sqlClient();
       const rows = await sql`SELECT * FROM products WHERE id = ${idOrSlug} OR slug = ${idOrSlug} LIMIT 1`;
