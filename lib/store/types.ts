@@ -6,8 +6,13 @@ export type OrderInput = Omit<Order, "id" | "createdAt" | "completedAt" | "statu
   notes?: string;
 };
 
-export type MeasurementInput = Omit<Measurement, "id" | "createdAt" | "status"> & {
+export type MeasurementInput = Omit<Measurement, "id" | "createdAt" | "status" | "origin" | "needsReview" | "lockedFields" | "whatsappOwned"> & {
   status?: Measurement["status"];
+  origin?: Measurement["origin"];
+  needsReview?: boolean;
+  lockedFields?: string[];
+  whatsappOwned?: string[];
+  fromWhatsapp?: boolean;
 };
 
 export type ProductInput = Omit<Product, "id" | "createdAt" | "slug"> & { slug?: string };

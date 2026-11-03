@@ -9,7 +9,7 @@ const HEADER_LIST = [
 ] as const;
 
 export function securityHeaders(): { key: string; value: string }[] {
-  const script = ["'self'", "'unsafe-inline'", "https://va.vercel-scripts.com"];
+  const script = ["'self'", "'unsafe-inline'", "https://va.vercel-scripts.com", "https://connect.facebook.net"];
   if (process.env.NODE_ENV !== "production") script.push("'unsafe-eval'");
   const csp = [
     "default-src 'self'",
@@ -17,8 +17,8 @@ export function securityHeaders(): { key: string; value: string }[] {
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: blob: https:",
     "font-src 'self' data:",
-    "connect-src 'self' https://va.vercel-scripts.com https://vitals.vercel-insights.com",
-    "frame-src https://maps.google.com https://www.google.com https://www.google.com.tr https://maps.googleapis.com",
+    "connect-src 'self' https://va.vercel-scripts.com https://vitals.vercel-insights.com https://connect.facebook.net https://graph.facebook.com https://www.facebook.com https://web.facebook.com",
+    "frame-src https://maps.google.com https://www.google.com https://www.google.com.tr https://maps.googleapis.com https://www.facebook.com https://web.facebook.com",
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",
