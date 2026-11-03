@@ -1,7 +1,7 @@
 import { mkdir, readFile, writeFile } from "fs/promises";
 import path from "path";
 import { monthKeyIstanbul, slugify } from "../format";
-import { lockEditedFields } from "../measurement-fields";
+import { lockEditedFields, lockOrderFields } from "../measurement-fields";
 import { matchesQuery } from "./paging";
 import { SEED_PACKAGES } from "../seed-packages";
 import { inferSubtype, SEED_SUBTYPES } from "../subtypes";
@@ -150,8 +150,13 @@ export function createFileStore(): Store {
           orderDate: input.orderDate,
           address: input.address ?? "",
           notes: input.notes ?? "",
-          completedAt: input.status === "completed" ? new Date().toISOString() : null,
+          completedAt: input.completedAt !== undefined ? input.completedAt : input.status === "completed" ? new Date().toISOString() : null,
           createdAt: new Date().toISOString(),
+          origin: input.origin ?? "manual",
+          needsReview: Boolean(input.needsReview),
+          reviewReason: input.reviewReason ?? "",
+          lockedFields: input.lockedFields ?? [],
+          whatsappOwned: input.whatsappOwned ?? [],
         };
         data.orders.push(order);
         await writeData(data);
@@ -164,7 +169,23 @@ export function createFileStore(): Store {
         const index = data.orders.findIndex((item) => item.id === id);
         if (index < 0) return null;
         const current = data.orders[index];
-        const next: Order = { ...current, ...input, id: current.id, createdAt: current.createdAt };
+        const fromWhatsapp = Boolean(input.fromWhatsapp);
+        const rest = { ...input };
+        delete rest.fromWhatsapp;
+        const status = input.status ?? current.status;
+        const next: Order = {
+          ...current,
+          ...rest,
+          id: current.id,
+          createdAt: current.createdAt,
+          status,
+          completedAt: input.completedAt !== undefined ? input.completedAt : status === "completed" && !current.completedAt ? new Date().toISOString() : current.completedAt,
+          origin: input.origin ?? current.origin ?? "manual",
+          needsReview: input.needsReview !== undefined ? input.needsReview : fromWhatsapp ? Boolean(current.needsReview) : false,
+          reviewReason: input.reviewReason !== undefined ? input.reviewReason : fromWhatsapp ? (current.reviewReason ?? "") : "",
+          lockedFields: fromWhatsapp ? (current.lockedFields ?? []) : lockOrderFields(current, input),
+          whatsappOwned: input.whatsappOwned ?? current.whatsappOwned ?? [],
+        };
         data.orders[index] = next;
         await writeData(data);
         return next;
@@ -175,7 +196,7 @@ export function createFileStore(): Store {
         const data = await readData();
         const index = data.orders.findIndex((item) => item.id === id);
         if (index < 0) return null;
-        data.orders[index] = { ...data.orders[index], status: "completed", completedAt: new Date().toISOString() };
+        data.orders[index] = { ...data.orders[index], status: "completed", completedAt: new Date().toISOString(), needsReview: false, reviewReason: "" };
         await writeData(data);
         return data.orders[index];
       });
@@ -315,6 +336,7 @@ export function createFileStore(): Store {
           status: input.status ?? "scheduled",
           origin: input.origin ?? "manual",
           needsReview: Boolean(input.needsReview),
+          reviewReason: input.reviewReason ?? "",
           lockedFields: input.lockedFields ?? [],
           whatsappOwned: input.whatsappOwned ?? [],
           id: crypto.randomUUID(),
@@ -340,6 +362,7 @@ export function createFileStore(): Store {
           id,
           origin: input.origin ?? current.origin ?? "manual",
           needsReview: input.needsReview !== undefined ? input.needsReview : fromWhatsapp ? Boolean(current.needsReview) : false,
+          reviewReason: input.reviewReason !== undefined ? input.reviewReason : fromWhatsapp ? (current.reviewReason ?? "") : "",
           lockedFields: fromWhatsapp ? (current.lockedFields ?? []) : lockEditedFields(current, input),
           whatsappOwned: input.whatsappOwned ?? current.whatsappOwned ?? [],
         };

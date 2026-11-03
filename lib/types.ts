@@ -37,6 +37,11 @@ export type Order = {
   notes: string;
   completedAt: string | null;
   createdAt: string;
+  origin?: "manual" | "whatsapp";
+  needsReview?: boolean;
+  reviewReason?: string;
+  lockedFields?: string[];
+  whatsappOwned?: string[];
 };
 
 export type MeasurementStatus = "scheduled" | "done" | "cancelled";
@@ -52,6 +57,7 @@ export type Measurement = {
   createdAt: string;
   origin?: "manual" | "whatsapp";
   needsReview?: boolean;
+  reviewReason?: string;
   lockedFields?: string[];
   whatsappOwned?: string[];
 };
