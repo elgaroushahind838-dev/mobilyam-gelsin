@@ -93,7 +93,7 @@ export default function Footer() {
               <a href="https://wa.me/905514835322" target="_blank" rel="noreferrer" className="text-white font-semibold hover:text-white/80 transition-colors text-[15px] w-fit">{t.fWaSiparis}</a>
               <a href="tel:+905514835322" className="flex items-center gap-3 text-white font-bold hover:text-white/80 transition-colors group mt-2 w-fit">
                 <Phone size={20} className="text-white/80 group-hover:text-white transition-colors" />
-                +90 551 483 53 22
+                <bdi dir="ltr" style={{ unicodeBidi: "isolate" }}>+90 551 483 53 22</bdi>
               </a>
               <a href="mailto:info@mobilyam-gelsin.com" className="flex items-center gap-3 text-white font-bold hover:text-white/80 transition-colors group w-fit">
                 <Mail size={20} className="text-white/80 group-hover:text-white transition-colors" />
