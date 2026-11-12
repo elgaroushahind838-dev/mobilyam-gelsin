@@ -38,11 +38,11 @@ const translations = {
         isim2: "Paket"
       },
       {
-        isim1: "Premium",
+        isim1: "Standart",
         isim2: "Paket"
       },
       {
-        isim1: "Standart",
+        isim1: "Premium",
         isim2: "Paket"
       }
     ],
@@ -97,11 +97,11 @@ const translations = {
         isim2: "Package"
       },
       {
-        isim1: "Premium",
+        isim1: "Standard",
         isim2: "Package"
       },
       {
-        isim1: "Standard",
+        isim1: "Premium",
         isim2: "Package"
       }
     ],
@@ -157,11 +157,11 @@ const translations = {
       },
       {
         isim1: "الباقة",
-        isim2: "المميزة"
+        isim2: "القياسية"
       },
       {
         isim1: "الباقة",
-        isim2: "القياسية"
+        isim2: "المميزة"
       }
     ],
 
