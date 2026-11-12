@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { emptyPackageContent } from "@/lib/seed-packages";
-import type { ColorOption, L10n, WeddingPackage } from "@/lib/types";
+import type { ColorOption, L10n, Product, WeddingPackage } from "@/lib/types";
 import { adminJson, dangerClass, fieldClass, ghostClass, primaryClass } from "./client";
 
 type Draft = Omit<WeddingPackage, "id" | "createdAt">;
@@ -42,10 +42,18 @@ export default function PackagesScreen() {
   const [error, setError] = useState("");
   const [included, setIncluded] = useState({ tr: "", en: "", ar: "" });
   const [fabrics, setFabrics] = useState({ tr: "", en: "", ar: "" });
+  const [products, setProducts] = useState<Product[]>([]);
+  const [pickedProduct, setPickedProduct] = useState("");
 
   function load() {
     return adminJson<{ packages: WeddingPackage[] }>("/api/admin/packages").then((data) => setPackages(data.packages));
   }
+
+  useEffect(() => {
+    adminJson<{ products: Product[] }>("/api/admin/products")
+      .then((data) => setProducts(data.products))
+      .catch(() => undefined);
+  }, []);
 
   useEffect(() => {
     let ignore = false;
@@ -109,6 +117,30 @@ export default function PackagesScreen() {
     await load();
   }
 
+  function addCatalogProduct() {
+    const product = products.find((item) => item.id === pickedProduct);
+    if (!product || !draft) return;
+    const line = {
+      tr: product.name,
+      en: product.nameEn && product.nameEn !== product.name ? product.nameEn : product.name,
+      ar: product.nameAr && product.nameAr !== product.name ? product.nameAr : product.name,
+    };
+    setIncluded({
+      tr: [included.tr, line.tr].filter(Boolean).join("\n"),
+      en: [included.en, line.en].filter(Boolean).join("\n"),
+      ar: [included.ar, line.ar].filter(Boolean).join("\n"),
+    });
+    const room = product.categorySlug === "oturma-odasi" ? "sofa" : product.categorySlug === "yemek-odasi" ? "dining" : product.categorySlug === "yatak-odasi" ? "bed" : null;
+    const photo = product.images[0];
+    const items = [...(draft.items ?? []), { productId: product.id, room: room === "sofa" ? "living" as const : room === "dining" ? "dining" as const : room === "bed" ? "bedroom" as const : "entry" as const, quantity: 1 }];
+    if (room && photo && !draft.images[room].includes(photo)) {
+      setDraft({ ...draft, items, images: { ...draft.images, [room]: [...draft.images[room], photo] } });
+    } else {
+      setDraft({ ...draft, items });
+    }
+    setPickedProduct("");
+  }
+
   function patchColors(key: "woods" | "sofaColors", index: number, patch: Partial<ColorOption>) {
     if (!draft) return;
     const next = draft[key].map((item, itemIndex) => (itemIndex === index ? { ...item, ...patch, name: patch.name ?? item.name } : item));
@@ -160,6 +192,15 @@ export default function PackagesScreen() {
                 <textarea value={included[key]} onChange={(event) => setIncluded({ ...included, [key]: event.target.value })} rows={4} className={`${fieldClass} mt-1`} />
               </label>
             ))}
+          </div>
+          <div className="flex flex-wrap items-end gap-2">
+            <label className="min-w-64 flex-1 text-sm">Katalogdan ürün ekle
+              <select value={pickedProduct} onChange={(event) => setPickedProduct(event.target.value)} className={`${fieldClass} mt-1`}>
+                <option value="">Ürün seç</option>
+                {products.map((product) => <option key={product.id} value={product.id}>{product.name}</option>)}
+              </select>
+            </label>
+            <button type="button" className={ghostClass} disabled={!pickedProduct} onClick={addCatalogProduct}>Ekle</button>
           </div>
           <div className="grid gap-2 md:grid-cols-3">
             {(["tr", "en", "ar"] as const).map((key) => (

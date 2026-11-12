@@ -63,6 +63,16 @@ export const packageSchema = z.looseObject({
   diningTitle: l10n,
   diningDescription: l10n,
   included: z.array(l10n).max(40).optional(),
+  items: z
+    .array(
+      z.object({
+        productId: text(80),
+        room: z.enum(["bedroom", "living", "dining", "entry"]),
+        quantity: z.number().int().min(1).max(12),
+      }),
+    )
+    .max(24)
+    .optional(),
   tabletop: l10n,
   chairs: l10n,
   expert: l10n,

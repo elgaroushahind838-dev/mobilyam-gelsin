@@ -102,7 +102,7 @@ export const SEED_PACKAGES: WeddingPackage[] = [
   pack({
     id: "pkg-premium",
     slug: "premium",
-    displayOrder: 1,
+    displayOrder: 2,
     cardLine1: text("Premium", "Premium", "الباقة"),
     cardLine2: text("Paket", "Package", "المميزة"),
     name: text("Premium Düğün Paketi", "Premium Wedding Package", "باقة الزفاف البريميوم"),
@@ -116,7 +116,7 @@ export const SEED_PACKAGES: WeddingPackage[] = [
   pack({
     id: "pkg-standart",
     slug: "standart",
-    displayOrder: 2,
+    displayOrder: 1,
     cardLine1: text("Standart", "Standard", "الباقة"),
     cardLine2: text("Paket", "Package", "القياسية"),
     name: text("Standart Düğün Paketi", "Standard Wedding Package", "باقة الزفاف القياسية"),

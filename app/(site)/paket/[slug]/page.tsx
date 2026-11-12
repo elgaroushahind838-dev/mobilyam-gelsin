@@ -33,7 +33,6 @@ const translations = {
     sandalyeDetay: "6 veya 8 Kişilik Seçenekler", 
     uzmanDestegi: "UZMAN DESTEĞİ", 
     uzmanDetay: "İç mimarlarımız konfigürasyon yapabilir.",
-    indirimBaslik: "DÜĞÜN PAKETİNE ÖZEL -20% İNDİRİM", 
     waMesaj: "Merhaba, konfigürasyon detaylarım:"
   },
   EN: {
@@ -61,7 +60,6 @@ const translations = {
     sandalyeDetay: "Options for 6 or 8 people", 
     uzmanDestegi: "EXPERT SUPPORT", 
     uzmanDetay: "Our interior architects can set up the configuration.",
-    indirimBaslik: "20% OFF, EXCLUSIVE TO THE WEDDING PACKAGE",
     waMesaj: "Hello, here are my configuration details:"
   },
   AR: {
@@ -89,7 +87,6 @@ const translations = {
     sandalyeDetay: "خيارات لستة أو ثمانية أشخاص", 
     uzmanDestegi: "دعم المختصين", 
     uzmanDetay: "يمكن لمصممينا الداخليين إعداد هذا التكوين.",
-    indirimBaslik: "خصم 20% خاص بباقة الزفاف",
     waMesaj: "مرحباً، إليك تفاصيل التكوين:"
   }
 };
@@ -102,6 +99,7 @@ export default function PackageDetailPage() {
   const locale: keyof L10n = lang === "EN" ? "en" : lang === "AR" ? "ar" : "tr";
   const [currentPackage, setCurrentPackage] = useState<WeddingPackage | null>(null);
   const [missing, setMissing] = useState(false);
+  const [catalog, setCatalog] = useState<Array<{ id: string; slug: string; name: { TR?: string } }>>([]);
 
   useEffect(() => {
     let ignore = false;
@@ -120,6 +118,19 @@ export default function PackageDetailPage() {
     };
   }, [slug]);
 
+  useEffect(() => {
+    let ignore = false;
+    fetch("/api/catalog", { cache: "no-store" })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data) => {
+        if (!ignore && Array.isArray(data?.products)) setCatalog(data.products);
+      })
+      .catch(() => undefined);
+    return () => {
+      ignore = true;
+    };
+  }, []);
+
   const [selectedWood, setSelectedWood] = useState(0);
   const [selectedFabric, setSelectedFabric] = useState(1);
   const [selectedSofaColor, setSelectedSofaColor] = useState(5);
@@ -132,21 +143,14 @@ export default function PackageDetailPage() {
     return <main className="min-h-screen bg-[#faf9f6] px-6 pt-32"><h1 className="font-serif text-4xl">{missing ? "Paket bulunamadı" : "Yükleniyor"}</h1></main>;
   }
 
-  const woodColors = currentPackage.woods.map((item) => item.color);
   const woodNames = currentPackage.woods.map((item) => item.name[locale]);
-  const sofaColors = currentPackage.sofaColors.map((item) => item.color);
   const sofaColorNames = currentPackage.sofaColors.map((item) => item.name[locale]);
   const fabricNames = currentPackage.fabrics.map((item) => item[locale]);
 
-  const bedImages = woodColors.map((_, idx) => {
-    const base = currentPackage.images.bed;
-    return [base[idx % 3], base[(idx+1) % 3], base[(idx+2) % 3]];
-  });
-
-  const sofaImages = sofaColors.map((_, idx) => {
-    const base = currentPackage.images.sofa;
-    return [base[idx % 3], base[(idx+1) % 3], base[(idx+2) % 3]];
-  });
+  const bedSlides = [...new Set(currentPackage.images.bed.filter(Boolean))];
+  const sofaSlides = [...new Set(currentPackage.images.sofa.filter(Boolean))];
+  const diningSlides = [...new Set(currentPackage.images.dining.filter(Boolean))];
+  const productByName = new Map(catalog.map((item) => [item.name?.TR || "", item]));
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>, setSlideIndex: (idx: number) => void) => {
     const scrollLeft = e.currentTarget.scrollLeft;
@@ -180,14 +184,14 @@ export default function PackageDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           <div className="w-full lg:col-span-7">
             <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-2" style={{ scrollbarWidth: 'none' }} onScroll={(e) => handleScroll(e, setBedSlide)}>
-              {bedImages[selectedWood].map((img, idx) => (
+              {bedSlides.map((img, idx) => (
                 <div key={idx} className="relative flex-none w-full h-[320px] md:h-[450px] snap-center rounded-[20px] overflow-hidden bg-[#e8e4dc]">
                   <Image src={img} alt={`${currentPackage.name[locale]} — ${currentPackage.bedroomTitle[locale]}`} fill sizes="(max-width: 1024px) 100vw, 60vw" className="object-cover" />
                 </div>
               ))}
             </div>
             <div className="flex justify-center gap-2 mt-2">
-              {bedImages[selectedWood].map((_, idx) => <div key={idx} className={`w-2 h-2 rounded-full transition-all ${idx === bedSlide ? 'bg-[#2a241e]' : 'bg-[#d4d4d8]'}`}></div>)}
+              {bedSlides.map((_, idx) => <div key={idx} className={`w-2 h-2 rounded-full transition-all ${idx === bedSlide ? 'bg-[#2a241e]' : 'bg-[#d4d4d8]'}`}></div>)}
             </div>
           </div>
 
@@ -197,7 +201,15 @@ export default function PackageDetailPage() {
             <p className="text-[#52525b] text-[13px] leading-relaxed mb-4">{currentPackage.bedroomDescription[locale]}</p>
             {currentPackage.included.length > 0 && (
               <ul className="mb-4 space-y-1 text-sm text-[#2a241e]">
-                {currentPackage.included.map((item) => <li key={item.tr}>{t.dahil}: {item[locale]}</li>)}
+                {currentPackage.included.map((item, index) => {
+                  const product = productByName.get(item.tr);
+                  const label = `${t.dahil}: ${item[locale]}`;
+                  return (
+                    <li key={`${item.tr}-${index}`}>
+                      {product ? <Link href={`/urun/${product.slug}`} className="underline decoration-[#d9d1c7] underline-offset-4 hover:text-[#ba7e6a]">{label}</Link> : label}
+                    </li>
+                  );
+                })}
               </ul>
             )}
             <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#8c7f73]">{t.ahsapSecenek}</p>
@@ -232,14 +244,14 @@ export default function PackageDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           <div className="w-full lg:col-span-7">
             <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-2" style={{ scrollbarWidth: 'none' }} onScroll={(e) => handleScroll(e, setSofaSlide)}>
-              {sofaImages[selectedSofaColor].map((img, idx) => (
+              {sofaSlides.map((img, idx) => (
                 <div key={idx} className="relative flex-none w-full h-[320px] md:h-[450px] snap-center rounded-[20px] overflow-hidden bg-[#e8e4dc]">
                   <Image src={img} alt={`${currentPackage.name[locale]} — ${currentPackage.livingTitle[locale]}`} fill sizes="(max-width: 1024px) 100vw, 60vw" className="object-cover" />
                 </div>
               ))}
             </div>
             <div className="flex justify-center gap-2 mt-2">
-              {sofaImages[selectedSofaColor].map((_, idx) => <div key={idx} className={`w-2 h-2 rounded-full transition-all ${idx === sofaSlide ? 'bg-[#2a241e]' : 'bg-[#d4d4d8]'}`}></div>)}
+              {sofaSlides.map((_, idx) => <div key={idx} className={`w-2 h-2 rounded-full transition-all ${idx === sofaSlide ? 'bg-[#2a241e]' : 'bg-[#d4d4d8]'}`}></div>)}
             </div>
           </div>
 
@@ -266,12 +278,12 @@ export default function PackageDetailPage() {
           </div>
           <div className="relative lg:col-span-7">
             <div className="flex overflow-x-auto snap-x snap-mandatory gap-4" style={{ scrollbarWidth: 'none' }} onScroll={(e) => handleScroll(e, setDiningSlide)}>
-              {currentPackage.images.dining.map((img, idx) => (
+              {diningSlides.map((img, idx) => (
                 <div key={idx} className="relative flex-none w-full h-[320px] md:h-[450px] snap-center rounded-[20px] overflow-hidden bg-[#e8e4dc]"><Image src={img} alt={`${currentPackage.name[locale]} — ${currentPackage.diningTitle[locale]}`} fill sizes="(max-width: 1024px) 100vw, 60vw" className="object-cover" /></div>
               ))}
             </div>
             <div className="flex justify-center gap-2 mt-2">
-              {currentPackage.images.dining.map((_, idx) => <div key={idx} className={`w-2 h-2 rounded-full transition-all ${idx === diningSlide ? 'bg-[#2a241e]' : 'bg-[#d4d4d8]'}`}></div>)}
+              {diningSlides.map((_, idx) => <div key={idx} className={`w-2 h-2 rounded-full transition-all ${idx === diningSlide ? 'bg-[#2a241e]' : 'bg-[#d4d4d8]'}`}></div>)}
             </div>
           </div>
         </div>

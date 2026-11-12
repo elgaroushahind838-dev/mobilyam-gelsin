@@ -62,6 +62,20 @@ function colorList(value: unknown): { color: string; name: L10n }[] {
     .filter((item) => item.name.tr || item.name.en || item.name.ar);
 }
 
+function packageItems(value: unknown) {
+  if (!Array.isArray(value)) return [];
+  return value
+    .map((item) => {
+      const record = item && typeof item === "object" ? (item as Record<string, unknown>) : {};
+      const room = record.room;
+      const quantity = Number(record.quantity);
+      const productId = String(record.productId ?? "").trim();
+      if (!productId || (room !== "bedroom" && room !== "living" && room !== "dining" && room !== "entry")) return null;
+      return { productId, room, quantity: Number.isFinite(quantity) ? Math.min(12, Math.max(1, Math.round(quantity))) : 1 };
+    })
+    .filter((item): item is { productId: string; room: "bedroom" | "living" | "dining" | "entry"; quantity: number } => Boolean(item));
+}
+
 function imageList(value: unknown): string[] {
   if (!Array.isArray(value)) return [];
   return value.map((item) => String(item ?? "").trim()).filter(isSafeMediaUrl);
@@ -94,6 +108,7 @@ export function packageFromBody(body: Record<string, unknown>): Omit<WeddingPack
     diningTitle: l10n(body.diningTitle, "Yemek Odası"),
     diningDescription: l10n(body.diningDescription),
     included: l10nList(body.included),
+    items: packageItems(body.items),
     tabletop: l10n(body.tabletop),
     chairs: l10n(body.chairs),
     expert: l10n(body.expert),

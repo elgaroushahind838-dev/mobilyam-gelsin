@@ -74,11 +74,18 @@ export type ProductSubtype = {
 
 export type ColorOption = { color: string; name: L10n };
 
+export type PackageItem = {
+  productId: string;
+  room: "bedroom" | "living" | "dining" | "entry";
+  quantity: number;
+};
+
 export type WeddingPackage = {
   id: string;
   slug: string;
   active: boolean;
   displayOrder: number;
+  items?: PackageItem[];
   cardLine1: L10n;
   cardLine2: L10n;
   name: L10n;
